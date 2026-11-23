@@ -6,7 +6,7 @@
 #
 # **Trigger Strategy**:
 # - Scheduled: 3x daily at randomized minutes (avoids GitHub "thundering herd")
-# - Automatic: After bushel-cloud binary build succeeds (testing integration)
+# - Automatic: After swoopmist binary build succeeds (testing integration)
 # - Manual: workflow_dispatch for on-demand testing
 #
 # **Concurrency**: cancel-in-progress (newer syncs supersede older ones)

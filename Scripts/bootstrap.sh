@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# BushelCloud Bootstrap Script
-# This script sets up the development environment for BushelCloud
+# SwoopMistKit Bootstrap Script
+# This script sets up the development environment for SwoopMistKit
 
 set -eo pipefail
 
@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo "========================================"
-echo "BushelCloud Development Setup"
+echo "SwoopMistKit Development Setup"
 echo "========================================"
 echo ""
 
@@ -98,7 +98,7 @@ if command -v xcodegen &> /dev/null; then
             echo "Generating Xcode project..."
             if xcodegen generate; then
                 echo -e "${GREEN}✓${NC} Xcode project generated"
-                echo "  You can now open BushelCloud.xcodeproj"
+                echo "  You can now open SwoopMistKit.xcodeproj"
             else
                 echo -e "${RED}ERROR: Failed to generate Xcode project${NC}"
             fi
@@ -135,7 +135,7 @@ echo "Building the project..."
 if swift build; then
     echo -e "${GREEN}✓${NC} Project built successfully"
     echo ""
-    echo "Executable location: .build/debug/bushel-cloud"
+    echo "Executable location: .build/debug/swoopmist"
 else
     echo -e "${RED}ERROR: Build failed${NC}"
     echo "Please check the error messages above and resolve any issues."
@@ -168,11 +168,11 @@ echo "  2. Import CloudKit schema:"
 echo "     ./Scripts/setup-cloudkit-schema.sh"
 echo ""
 echo "  3. Run the CLI tool:"
-echo "     .build/debug/bushel-cloud --help"
-echo "     .build/debug/bushel-cloud sync --verbose"
+echo "     .build/debug/swoopmist --help"
+echo "     .build/debug/swoopmist sync --verbose"
 echo ""
 echo "  4. For Xcode development:"
-echo "     open BushelCloud.xcodeproj"
+echo "     open SwoopMistKit.xcodeproj"
 echo ""
 echo "Documentation: See README.md and CLAUDE.md for detailed guides"
 echo ""

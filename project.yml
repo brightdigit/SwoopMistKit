@@ -1,8 +1,8 @@
-name: BushelCloud
+name: SwoopMistKit
 settings:
   LINT_MODE: ${LINT_MODE}
 packages:
-  BushelCloud:
+  SwoopMistKit:
     path: .
 aggregateTargets:
   Lint:

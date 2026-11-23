@@ -1,6 +1,6 @@
 # Bushel Demo - CloudKit Data Synchronization
 
-[![CI](https://github.com/brightdigit/BushelCloud/actions/workflows/BushelCloud.yml/badge.svg)](https://github.com/brightdigit/BushelCloud/actions/workflows/BushelCloud.yml)
+[![CI](https://github.com/brightdigit/BushelCloud/actions/workflows/SwoopMistKit.yml/badge.svg)](https://github.com/brightdigit/BushelCloud/actions/workflows/SwoopMistKit.yml)
 [![codecov](https://codecov.io/gh/brightdigit/BushelCloud/branch/main/graph/badge.svg)](https://codecov.io/gh/brightdigit/BushelCloud)
 [![SwiftLint](https://img.shields.io/badge/SwiftLint-passing-success.svg)](https://github.com/realm/SwiftLint)
 [![Swift 6.4+](https://img.shields.io/badge/Swift-6.4%2B-orange.svg)](https://swift.org)
@@ -49,7 +49,7 @@ graph LR
     B --> C[DataSourcePipeline]
     C --> D[Deduplication<br/>and Merge]
     D --> E[RecordBuilder]
-    E --> F[BushelCloudKitService]
+    E --> F[SwoopMistKitService]
     F --> G[MistKit<br/>CloudKitService]
     G --> H[(CloudKit<br/>Web Services)]
 ```
@@ -89,7 +89,7 @@ The demo integrates with multiple data sources to gather comprehensive version i
 ### Components
 
 ```text
-BushelCloud/
+SwoopMistKit/
 ├── DataSources/           # Data fetchers for external APIs
 │   ├── IPSWFetcher.swift
 │   ├── XcodeReleasesFetcher.swift
@@ -102,11 +102,11 @@ BushelCloud/
 │   ├── XcodeVersionRecord.swift
 │   └── SwiftVersionRecord.swift
 ├── CloudKit/              # CloudKit integration
-│   ├── BushelCloudKitService.swift
+│   ├── SwoopMistKitService.swift
 │   ├── RecordBuilder.swift
 │   └── SyncEngine.swift
 └── Commands/              # CLI commands
-    ├── BushelCloudCLI.swift
+    ├── SwoopMistKitCLI.swift
     ├── SyncCommand.swift
     └── ExportCommand.swift
 ```
@@ -115,9 +115,9 @@ The modules interact as follows — the CLI drives `SyncEngine`, which fans out 
 
 ```mermaid
 graph TD
-    CLI[BushelCloudCLI<br/>sync · export · clear · list · status] --> SE[SyncEngine]
+    CLI[SwoopMistKitCLI<br/>sync · export · clear · list · status] --> SE[SyncEngine]
     SE --> DSP[DataSourcePipeline]
-    SE --> SVC[BushelCloudKitService]
+    SE --> SVC[SwoopMistKitService]
     DSP --> FET[Fetchers<br/>IPSW · AppleDB · MESU<br/>XcodeReleases · SwiftVersion · VirtualBuddy]
     SVC --> MK[MistKit<br/>CloudKitService]
     MK --> CK[(CloudKit API)]
@@ -125,7 +125,7 @@ graph TD
 
 ### MistKit Integration Pattern
 
-BushelCloud authenticates with **Server-to-Server** credentials (no signed-in iCloud user). An ECDSA P-256 `.pem` key and key ID build a `ServerToServerAuthManager`, which is injected into `CloudKitService`. The database scope is chosen per call (`.public(.prefers(.serverToServer))`), and writes are chunked to CloudKit's 200-operations-per-request limit:
+SwoopMistKit authenticates with **Server-to-Server** credentials (no signed-in iCloud user). An ECDSA P-256 `.pem` key and key ID build a `ServerToServerAuthManager`, which is injected into `CloudKitService`. The database scope is chosen per call (`.public(.prefers(.serverToServer))`), and writes are chunked to CloudKit's 200-operations-per-request limit:
 
 ```mermaid
 graph TD
@@ -140,7 +140,7 @@ graph TD
 
 ### BushelKit Integration
 
-BushelCloud uses [BushelKit](https://github.com/brightdigit/BushelKit) as its modular foundation, providing:
+SwoopMistKit uses [BushelKit](https://github.com/brightdigit/BushelKit) as its modular foundation, providing:
 
 **Core Modules:**
 - **BushelFoundation** - Domain models (RestoreImageRecord, XcodeVersionRecord, SwiftVersionRecord)
@@ -217,7 +217,7 @@ For detailed setup instructions, run `swift package generate-documentation` and 
 swift build
 
 # Run the demo
-.build/debug/bushel-cloud --help
+.build/debug/swoopmist --help
 ```
 
 ### First Sync (Learning Mode)
@@ -232,10 +232,10 @@ export CLOUDKIT_PRIVATE_KEY_PATH="./path/to/private-key.pem"
 export VIRTUALBUDDY_API_KEY="YOUR_VIRTUALBUDDY_API_KEY"
 
 # Sync with verbose logging to learn how MistKit works
-.build/debug/bushel-cloud sync --verbose
+.build/debug/swoopmist sync --verbose
 
 # Or do a dry run first to see what would be synced
-.build/debug/bushel-cloud sync --dry-run --verbose
+.build/debug/swoopmist sync --dry-run --verbose
 ```
 
 **What the verbose flag shows:**
@@ -253,9 +253,9 @@ Clone and build the project:
 
 ```bash
 git clone https://github.com/brightdigit/BushelCloud.git
-cd BushelCloud
+cd SwoopMistKit
 swift build -c release
-.build/release/bushel-cloud --help
+.build/release/swoopmist --help
 ```
 
 ### Method 2: Install to System Path
@@ -264,11 +264,11 @@ Build and install to `/usr/local/bin`:
 
 ```bash
 git clone https://github.com/brightdigit/BushelCloud.git
-cd BushelCloud
+cd SwoopMistKit
 make install
 ```
 
-This makes `bushel-cloud` available globally.
+This makes `swoopmist` available globally.
 
 ### Method 3: Docker
 
@@ -276,7 +276,7 @@ Run without local Swift installation:
 
 ```bash
 git clone https://github.com/brightdigit/BushelCloud.git
-cd BushelCloud
+cd SwoopMistKit
 make docker-run
 ```
 
@@ -297,27 +297,28 @@ Fetch data from all sources and upload to CloudKit:
 
 ```bash
 # Basic usage
-bushel-cloud sync \
+swoopmist sync \
   --container-id "iCloud.com.brightdigit.Bushel" \
   --key-id "YOUR_KEY_ID" \
   --key-file ./path/to/private-key.pem
 
 # With verbose logging (recommended for learning)
-bushel-cloud sync --verbose
+swoopmist sync --verbose
 
 # Dry run (fetch data but don't upload to CloudKit)
-bushel-cloud sync --dry-run
+swoopmist sync --dry-run
 
 # Selective sync
-bushel-cloud sync --restore-images-only
-bushel-cloud sync --xcode-only
-bushel-cloud sync --swift-only
-bushel-cloud sync --no-betas  # Exclude beta/RC releases
+swoopmist sync --restore-images-only
+swoopmist sync --xcode-only   # Xcode, SDK and simulator runtime records
+BUSHEL_SYNC_RUNTIMES_ONLY=true swoopmist sync  # Only SimulatorRuntime records
+swoopmist sync --swift-only
+swoopmist sync --no-betas  # Exclude beta/RC releases
 
 # Use environment variables (recommended)
 export CLOUDKIT_KEY_ID="YOUR_KEY_ID"
 export CLOUDKIT_PRIVATE_KEY_PATH="./path/to/private-key.pem"
-bushel-cloud sync --verbose
+swoopmist sync --verbose
 ```
 
 ### Export Command
@@ -326,28 +327,28 @@ Query and export CloudKit data to JSON file:
 
 ```bash
 # Export to file
-bushel-cloud export \
+swoopmist export \
   --container-id "iCloud.com.brightdigit.Bushel" \
   --key-id "YOUR_KEY_ID" \
   --key-file ./path/to/private-key.pem \
   --output ./bushel-data.json
 
 # With verbose logging
-bushel-cloud export --verbose --output ./bushel-data.json
+swoopmist export --verbose --output ./bushel-data.json
 
 # Pretty-print JSON
-bushel-cloud export --pretty --output ./bushel-data.json
+swoopmist export --pretty --output ./bushel-data.json
 
 # Export to stdout for piping
-bushel-cloud export --pretty | jq '.restoreImages | length'
+swoopmist export --pretty | jq '.restoreImages | length'
 ```
 
 ### Help
 
 ```bash
-bushel-cloud --help
-bushel-cloud sync --help
-bushel-cloud export --help
+swoopmist --help
+swoopmist sync --help
+swoopmist export --help
 ```
 
 ### Xcode Setup
@@ -515,7 +516,7 @@ After setting up your CloudKit schema, you need to create a Server-to-Server Key
 
 **Method 1: Command-line flags**
 ```bash
-bushel-cloud sync \
+swoopmist sync \
   --key-id "YOUR_KEY_ID" \
   --key-file ~/.cloudkit/bushel-private-key.pem
 ```
@@ -530,7 +531,7 @@ export CLOUDKIT_PRIVATE_KEY_PATH="$HOME/.cloudkit/bushel-private-key.pem"
 export VIRTUALBUDDY_API_KEY="YOUR_VIRTUALBUDDY_API_KEY"
 
 # Then simply run
-bushel-cloud sync
+swoopmist sync
 ```
 
 ## Dependencies
@@ -633,11 +634,11 @@ make xcode
 mint run xcodegen generate
 ```
 
-This creates `BushelCloud.xcodeproj` from `project.yml`. The project file is gitignored and regenerated as needed.
+This creates `SwoopMistKit.xcodeproj` from `project.yml`. The project file is gitignored and regenerated as needed.
 
 **Targets included:**
-- BushelCloud - Main executable
-- BushelCloudTests - Unit tests
+- SwoopMistKit - Main executable
+- SwoopMistKitTests - Unit tests
 - Linting - Aggregate target that runs SwiftLint
 
 ### CI/CD
@@ -737,7 +738,7 @@ See "Limitations" section for details on incremental sync
 **❌ "Operation failed" with no details**
 ```bash
 ✅ Solution: Use --verbose flag to see CloudKit error details
-bushel-cloud sync --verbose
+swoopmist sync --verbose
 # Look for serverErrorCode and reason in output
 ```
 
@@ -761,13 +762,13 @@ bushel-cloud sync --verbose
 ### For Beginners
 
 **Start Here:**
-1. Run `bushel-cloud sync --dry-run --verbose` to see what happens without uploading
+1. Run `swoopmist sync --dry-run --verbose` to see what happens without uploading
 2. Review the code in `SyncEngine.swift` to understand the flow
-3. Check `BushelCloudKitService.swift` for MistKit usage patterns
+3. Check `SwoopMistKitService.swift` for MistKit usage patterns
 4. Explore `RecordBuilder.swift` to see CloudKit record construction
 
 **Key Files to Study:**
-- `BushelCloudKitService.swift` - Server-to-Server authentication and batch operations
+- `SwoopMistKitService.swift` - Server-to-Server authentication and batch operations
 - `SyncEngine.swift` - Overall sync orchestration
 - `RecordBuilder.swift` - CloudKit record field mapping
 - `DataSourcePipeline.swift` - Multi-source data integration
@@ -776,7 +777,7 @@ bushel-cloud sync --verbose
 
 **This demo is designed to be reusable for your own CloudKit projects:**
 
-✅ **Copy the authentication pattern** from `BushelCloudKitService.swift`
+✅ **Copy the authentication pattern** from `SwoopMistKitService.swift`
 - Shows how to load private keys from disk
 - Demonstrates ServerToServerAuthManager setup
 - Handles all ECDSA signing automatically

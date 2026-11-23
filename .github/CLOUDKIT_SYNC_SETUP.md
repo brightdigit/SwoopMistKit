@@ -254,7 +254,7 @@ Or override with environment variable:
 ```yaml
 export CLOUDKIT_ENVIRONMENT=production
 BIN_PATH=$(swift build -c release --show-bin-path)
-"$BIN_PATH/bushel-cloud" sync --verbose
+"$BIN_PATH/swoopmist" sync --verbose
 ```
 
 **Valid values**: `development`, `production` (case-insensitive)
@@ -265,7 +265,7 @@ Add flags to the sync command in the workflow:
 
 ```yaml
 BIN_PATH=$(swift build -c release --show-bin-path)
-"$BIN_PATH/bushel-cloud" sync \
+"$BIN_PATH/swoopmist" sync \
   --verbose \
   --restore-images-only  # Or --xcode-only, --swift-only
 ```
@@ -276,7 +276,7 @@ Add `--force` flag to bypass fetch throttling:
 
 ```yaml
 BIN_PATH=$(swift build -c release --show-bin-path)
-"$BIN_PATH/bushel-cloud" sync \
+"$BIN_PATH/swoopmist" sync \
   --verbose \
   --force  # Fetch fresh data regardless of intervals
 ```

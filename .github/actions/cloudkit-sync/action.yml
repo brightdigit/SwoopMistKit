@@ -1,7 +1,7 @@
 # CloudKit Sync Action
 #
 # Reusable composite action that syncs macOS restore images, Xcode versions, and Swift
-# versions to CloudKit using the bushel-cloud CLI tool. Designed for both development
+# versions to CloudKit using the swoopmist CLI tool. Designed for both development
 # and production environments with comprehensive validation and reporting.
 #
 # ## What This Action Does
@@ -88,7 +88,7 @@
 #
 # - **cloudkit-sync-dev.yml**: Scheduled sync (3x daily) + auto-trigger after builds
 # - **cloudkit-sync-prod.yml**: Manual trigger only (for controlled production deploys)
-# - **bushel-cloud-build.yml**: Builds and caches the binary artifact
+# - **swoopmist-build.yml**: Builds and caches the binary artifact
 #
 # ## Troubleshooting
 #
@@ -98,7 +98,7 @@
 # - Ensure key has correct permissions in CloudKit Console
 #
 # **Binary download fails consistently**:
-# - Check bushel-cloud-build.yml workflow is running successfully
+# - Check swoopmist-build.yml workflow is running successfully
 # - Verify artifact retention hasn't expired (90 days)
 # - Fallback build will trigger automatically (adds ~2 minutes)
 #
@@ -139,9 +139,9 @@ runs:
       uses: dawidd6/action-download-artifact@v3
       continue-on-error: true  # Don't fail if artifact is missing
       with:
-        workflow: bushel-cloud-build.yml
+        workflow: swoopmist-build.yml
         workflow_conclusion: success
-        name: bushel-cloud-binary
+        name: swoopmist-binary
         path: ./binary
         branch: ${{ github.ref_name }}
 
@@ -159,15 +159,15 @@ runs:
 
         # Copy binary to expected location
         mkdir -p ./binary
-        cp .build/release/bushel-cloud ./binary/
+        cp .build/release/swoopmist ./binary/
 
         echo "✅ Binary built successfully"
 
     - name: Validate binary availability
       shell: bash
       run: |
-        if [ ! -f ./binary/bushel-cloud ]; then
-          echo "❌ Error: Binary not found at ./binary/bushel-cloud"
+        if [ ! -f ./binary/swoopmist ]; then
+          echo "❌ Error: Binary not found at ./binary/swoopmist"
           exit 1
         fi
 
@@ -178,11 +178,11 @@ runs:
           echo "✅ Using freshly-built binary (fallback path)"
         fi
 
-        ls -lh ./binary/bushel-cloud
+        ls -lh ./binary/swoopmist
 
     - name: Make binary executable
       shell: bash
-      run: chmod +x ./binary/bushel-cloud
+      run: chmod +x ./binary/swoopmist
 
     - name: Validate required secrets
       shell: bash
@@ -258,7 +258,7 @@ runs:
 
         # Run sync with JSON output written directly to file
         # All verbose logs go to console (will be captured in workflow logs)
-        ./binary/bushel-cloud sync \
+        ./binary/swoopmist sync \
           --verbose \
           --container-identifier "$CLOUDKIT_CONTAINER_ID"
 
@@ -321,7 +321,7 @@ runs:
         echo "Exporting CloudKit data for audit trail..."
 
         # Export to JSON
-        ./binary/bushel-cloud export \
+        ./binary/swoopmist export \
           --output "cloudkit-export-${{ inputs.environment }}.json" \
           --pretty \
           --verbose \

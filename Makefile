@@ -4,14 +4,14 @@
 .DEFAULT_GOAL := help
 
 # Variables
-EXECUTABLE_NAME = bushel-cloud
+EXECUTABLE_NAME = swoopmist
 INSTALL_PATH = /usr/local/bin
 BUILD_PATH = .build/release/$(EXECUTABLE_NAME)
 DOCKER_IMAGE = swiftlang/swift:nightly-6.4.x-noble
 
 ## build: Build the project in release mode
 build:
-	@echo "Building BushelCloud..."
+	@echo "Building SwoopMistKit..."
 	swift build -c release
 
 ## test: Run unit tests
@@ -60,10 +60,10 @@ docker-run:
 xcode:
 	@echo "Generating Xcode project..."
 	@mint run xcodegen generate
-	@echo "Xcode project generated! Open BushelCloud.xcodeproj"
+	@echo "Xcode project generated! Open SwoopMistKit.xcodeproj"
 
 ## help: Show this help message
 help:
-	@echo "BushelCloud Makefile targets:"
+	@echo "SwoopMistKit Makefile targets:"
 	@echo ""
 	@sed -n 's/^##//p' $(MAKEFILE_LIST) | column -t -s ':' | sed -e 's/^/ /'

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # CloudKit Schema Setup Script
-# This script imports the BushelCloud schema into your CloudKit container
+# This script imports the SwoopMistKit schema into your CloudKit container
 
 set -eo pipefail
 
@@ -41,7 +41,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo "========================================"
-echo "CloudKit Schema Setup for BushelCloud"
+echo "CloudKit Schema Setup for SwoopMistKit"
 echo "========================================"
 if [ "$DRY_RUN" = true ]; then
   echo "(DRY RUN MODE - No changes will be made)"
@@ -79,7 +79,7 @@ if ! xcrun cktool get-teams 2>&1 | grep -qE "^[A-Z0-9]+:"; then
     echo "  7. Paste your Management Token when prompted"
     echo ""
     echo "Note: Management Token is for schema operations (cktool)."
-    echo "      Server-to-Server Key is for runtime API operations (bushel-cloud sync)."
+    echo "      Server-to-Server Key is for runtime API operations (swoopmist sync)."
     echo ""
     exit 1
 fi
@@ -175,6 +175,7 @@ if xcrun cktool import-schema \
     echo "  • RestoreImage - macOS restore images for virtualization"
     echo "  • XcodeVersion - Xcode releases with requirements"
     echo "  • SwiftVersion - Swift compiler versions"
+    echo "  • SDKVersion - Platform SDK builds, with beta → release supersession"
     echo "  • DataSourceMetadata - Data source tracking metadata"
     echo ""
     echo "Next steps:"
@@ -189,8 +190,8 @@ if xcrun cktool import-schema \
     echo "     export CLOUDKIT_KEY_FILE=~/.cloudkit/bushel-private-key.pem"
     echo "     export CLOUDKIT_CONTAINER_ID=$CLOUDKIT_CONTAINER_ID"
     echo ""
-    echo "  3. Run 'bushel-cloud sync' to populate data:"
-    echo "     .build/debug/bushel-cloud sync --verbose"
+    echo "  3. Run 'swoopmist sync' to populate data:"
+    echo "     .build/debug/swoopmist sync --verbose"
     echo ""
     echo "  4. Verify data in CloudKit Dashboard: https://icloud.developer.apple.com/"
     echo ""

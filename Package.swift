@@ -78,7 +78,7 @@ let swiftSettings: [SwiftSetting] = [
 ]
 
 let package = Package(
-    name: "BushelCloud",
+    name: "SwoopMistKit",
     platforms: [
         .macOS(.v15),
         .iOS(.v18),
@@ -87,13 +87,14 @@ let package = Package(
         .visionOS(.v2)
     ],
     products: [
-        .library(name: "BushelCloudKit", targets: ["BushelCloudKit"]),
-        .executable(name: "bushel-cloud", targets: ["BushelCloudCLI"])
+        .library(name: "SwoopMistKit", targets: ["SwoopMistKit"]),
+        .executable(name: "swoopmist", targets: ["SwoopMistKitCLI"])
     ],
     dependencies: [
         .package(url: "https://github.com/brightdigit/MistKit.git", from: "1.0.0-beta.4"),
         .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.2"),
-        .package(url: "https://github.com/brightdigit/BushelKit.git", from: "3.0.0-alpha.4"),
+        .package(name: "BushelKit", path: "../BushelKit"),
+        .package(name: "SwoopKit", path: "../SwoopKit"),
         .package(url: "https://github.com/brightdigit/IPSWDownloads.git", from: "1.0.0"),
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
         .package(
@@ -104,12 +105,13 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "BushelCloudKit",
+            name: "SwoopMistKit",
             dependencies: [
                 .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
                 .product(name: "MistKit", package: "MistKit"),
                 .product(name: "BushelLogging", package: "BushelKit"),
                 .product(name: "BushelFoundation", package: "BushelKit"),
+                .product(name: "SwoopKit", package: "SwoopKit"),
                 .product(name: "BushelUtilities", package: "BushelKit"),
                 .product(name: "BushelVirtualBuddy", package: "BushelKit"),
                 .product(name: "IPSWDownloads", package: "IPSWDownloads"),
@@ -119,16 +121,19 @@ let package = Package(
             swiftSettings: swiftSettings
         ),
         .executableTarget(
-            name: "BushelCloudCLI",
+            name: "SwoopMistKitCLI",
             dependencies: [
-                .target(name: "BushelCloudKit")
+                .target(name: "SwoopMistKit")
             ],
             swiftSettings: swiftSettings
         ),
         .testTarget(
-            name: "BushelCloudKitTests",
+            name: "SwoopMistKitTests",
             dependencies: [
-                .target(name: "BushelCloudKit")
+                .target(name: "SwoopMistKit")
+            ],
+            resources: [
+                .copy("Fixtures")
             ],
             swiftSettings: swiftSettings
         )

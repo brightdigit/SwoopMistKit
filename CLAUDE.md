@@ -17,29 +17,33 @@ Bushel is a CloudKit demonstration project that syncs macOS restore images, Xcod
 swift build
 
 # Run the CLI tool
-.build/debug/bushel-cloud --help
+.build/debug/swoopmist --help
 ```
 
 ### Common Commands
 
 ```bash
 # Sync data to CloudKit (verbose mode recommended)
-.build/debug/bushel-cloud sync --verbose
+.build/debug/swoopmist sync --verbose
 
 # Dry run (fetch data without uploading)
-.build/debug/bushel-cloud sync --dry-run --verbose
+.build/debug/swoopmist sync --dry-run --verbose
 
 # Export CloudKit data to JSON
-.build/debug/bushel-cloud export --output data.json --verbose
+.build/debug/swoopmist export --output data.json --verbose
 
 # Clear all CloudKit data
-.build/debug/bushel-cloud clear
+.build/debug/swoopmist clear
+
+# Delete only SimulatorRuntime records (Development only), by names computed from
+# Apple's simulator index; a dry run that prints the count unless --confirm-delete
+.build/debug/swoopmist delete-runtimes
 
 # List records in CloudKit
-.build/debug/bushel-cloud list
+.build/debug/swoopmist list
 
 # Check CloudKit status
-.build/debug/bushel-cloud status
+.build/debug/swoopmist status
 ```
 
 ### Environment Variables
@@ -83,14 +87,14 @@ gh run watch <run-id>
 
 ### Modular Architecture with BushelKit
 
-Starting with v0.0.1, BushelCloud uses **BushelKit** as a modular foundation:
+Starting with v0.0.1, SwoopMistKit uses **BushelKit** as a modular foundation:
 
 **BushelKit** (`Packages/BushelKit/`):
 - `BushelFoundation` - Core domain models (RestoreImageRecord, XcodeVersionRecord, SwiftVersionRecord)
 - `BushelUtilities` - Shared utilities (FormattingHelpers, JSONDecoder extensions)
 - `BushelLogging` - Logging abstractions
 
-**BushelCloudKit** (`Sources/BushelCloudKit/`):
+**SwoopMistKit** (`Sources/SwoopMistKit/`):
 - Extends BushelKit models with CloudKit integration
 - `Extensions/*+CloudKit.swift` - CloudKitRecord protocol conformance
 - `DataSources/` - API fetchers (IPSW, AppleDB, MESU, etc.)
@@ -98,7 +102,7 @@ Starting with v0.0.1, BushelCloud uses **BushelKit** as a modular foundation:
 
 **Dependency Flow**:
 ```
-BushelCloudCLI → BushelCloudKit → BushelFoundation → BushelUtilities → MistKit
+SwoopMistKitCLI → SwoopMistKit → BushelFoundation → BushelUtilities → MistKit
 ```
 
 **Why This Architecture**:
@@ -120,17 +124,17 @@ External Data Sources → DataSourcePipeline → CloudKitService → CloudKit
 **Three-Phase Sync Process**:
 1. **Fetch**: `DataSourcePipeline` fetches from multiple external APIs in parallel
 2. **Transform**: Records are deduplicated and references resolved
-3. **Upload**: `BushelCloudKitService` batches operations and uploads to CloudKit
+3. **Upload**: `SwoopMistKitService` batches operations and uploads to CloudKit
 
 ### Key Components
 
-**CloudKit Integration** (`Sources/BushelCloud/CloudKit/`):
-- `BushelCloudKitService.swift` - Server-to-Server auth setup and batch operations wrapper
+**CloudKit Integration** (`Sources/SwoopMistKit/CloudKit/`):
+- `SwoopMistKitService.swift` - Server-to-Server auth setup and batch operations wrapper
 - `SyncEngine.swift` - Orchestrates the full sync process from fetch to upload
 - `CloudKitFieldMapping.swift` - Type conversion helpers between Swift and CloudKit FieldValue
 - `RecordManaging+Query.swift` - Query extensions for fetching records
 
-**Data Sources** (`Sources/BushelCloud/DataSources/`):
+**Data Sources** (`Sources/SwoopMistKit/DataSources/`):
 - `DataSourcePipeline.swift` - Coordinates fetching from all sources with metadata tracking
 - Individual fetchers: `IPSWFetcher`, `AppleDBFetcher`, `MESUFetcher`, `XcodeReleasesFetcher`, etc.
 
@@ -140,14 +144,14 @@ External Data Sources → DataSourcePipeline → CloudKitService → CloudKit
 - `SwiftVersionRecord` - Swift compiler versions
 - `DataSourceMetadata` - Fetch metadata with timestamp tracking
 
-**CloudKit Extensions** (`Sources/BushelCloudKit/Extensions/`):
+**CloudKit Extensions** (`Sources/SwoopMistKit/Extensions/`):
 - `RestoreImageRecord+CloudKit.swift` - Implements CloudKitRecord protocol
 - `XcodeVersionRecord+CloudKit.swift` - Handles CKReference serialization
 - `SwiftVersionRecord+CloudKit.swift` - Basic CloudKit mapping
 - `DataSourceMetadata+CloudKit.swift` - Metadata sync record
 - `FieldValue+URL.swift` - URL ↔ STRING conversion
 
-**Commands** (`Sources/BushelCloud/Commands/`):
+**Commands** (`Sources/SwoopMistKit/Commands/`):
 - CLI commands using swift-argument-parser
 - Each command (sync, export, clear, list, status) is a separate file
 
@@ -162,9 +166,32 @@ RestoreImage (no dependencies)
     | CKReference (minimumMacOS, swiftVersion)
     ↓
 XcodeVersion
+    ↓
+    | CKReference (xcodeVersion, supersededBy → final SDKVersion)
+    ↓
+SDKVersion
+
+SimulatorRuntime (no references)
 ```
 
-**Upload Order**: SwiftVersion & RestoreImage → XcodeVersion (see `SyncEngine.swift:100`)
+**Upload Order**: SwiftVersion & RestoreImage → XcodeVersion → SDKVersion (final SDKs before prereleases) → SimulatorRuntime
+
+`SDKVersion` records are derived from the SDK lists in the xcodereleases.com feed by
+`SDKVersionBuilder` — one record per platform + SDK build. A beta SDK's `supersededBy`
+points at the final SDK for the same platform and version, which lets simulator
+managers flag old beta runtimes that are safe to delete.
+
+`SimulatorRuntime` records come from Apple's simulator index
+(`index2.dvtdownloadableindex`, a public plist) via `SimulatorIndexFetcher` and
+`SimulatorRuntimeBuilder`: one record per platform + runtime build, device-specific runtimes
+such as iPhone Duo's included. A runtime's build often differs from its SDK's, so these are
+what simulator managers match installed runtimes against. `releaseLabel` ("Beta N", "RC N",
+"Final") is parsed from the runtime's name, never from its build; a name that doesn't parse
+is printed and skipped. `sdkBuildNumbers` lists the SDK builds the index maps to it; in
+CloudKit it's one comma-separated `STRING` field, `sdkBuildNumbersText`, because MistKit can't
+decode `STRING_LIST` responses yet (brightdigit/MistKit#509). The
+index has no release dates. `--xcode-only` includes them; `BUSHEL_SYNC_RUNTIMES_ONLY=true`
+syncs only them.
 
 ### Data Deduplication
 
@@ -206,7 +233,7 @@ GET https://tss.virtualbuddy.app/v1/status?apiKey=<key>&ipsw=<IPSW URL>
 - **Client-side implementation**: Random delays of 2.5-3.5 seconds with 1-second tolerance between requests
 
 **Implementation Details**:
-- **File**: `Sources/BushelCloudKit/DataSources/VirtualBuddyFetcher.swift`
+- **File**: `Sources/SwoopMistKit/DataSources/VirtualBuddyFetcher.swift`
 - **Integration**: Enriches RestoreImageRecord with real-time signing status after other data sources
 - **Error handling**: HTTP 429 errors are logged; original record preserved on any error
 - **Progress tracking**: Shows "X/Y images checked" during sync
@@ -263,7 +290,7 @@ BushelKit is embedded as a git subrepo for rapid development during the migratio
 # 1. Edit files in Packages/BushelKit/
 vim Packages/BushelKit/Sources/BushelFoundation/RestoreImageRecord.swift
 
-# 2. Commit changes in BushelCloud repository
+# 2. Commit changes in SwoopMistKit repository
 git add Packages/BushelKit/
 git commit -m "Update BushelKit: add field documentation"
 
@@ -285,7 +312,7 @@ git subrepo pull Packages/BushelKit
 | After BushelKit v2.0 stable | Remote dependency | `.package(url: "https://github.com/brightdigit/BushelKit.git", from: "2.0.0")` |
 
 **Benefits of Subrepo Now:**
-- Edit BushelKit and BushelCloud together
+- Edit BushelKit and SwoopMistKit together
 - Test integration immediately
 - No version coordination overhead
 
@@ -296,7 +323,7 @@ git subrepo pull Packages/BushelKit
 4. Use standard SPM workflow
 
 ### Best Practices
-- Commit BushelKit changes separately from BushelCloud changes
+- Commit BushelKit changes separately from SwoopMistKit changes
 - Push to subrepo after each logical change
 - Pull before starting new work
 - Test both repositories after changes
@@ -355,7 +382,7 @@ let size: Int? = recordInfo.fields["fileSize"]?.intValue  // Returns Int
 
 **CloudKit Integration:**
 ```swift
-// Extension: Sources/BushelCloudKit/Extensions/FieldValue+URL.swift
+// Extension: Sources/SwoopMistKit/Extensions/FieldValue+URL.swift
 public extension FieldValue {
   init(url: URL) {
     self = .string(url.absoluteString)
@@ -370,7 +397,7 @@ public extension FieldValue {
 }
 ```
 
-**Tests:** See `Tests/BushelCloudTests/Extensions/FieldValueURLTests.swift` (13 test methods)
+**Tests:** See `Tests/SwoopMistKitTests/Extensions/FieldValueURLTests.swift` (13 test methods)
 
 ### CloudKitRecord Protocol
 
@@ -388,7 +415,7 @@ protocol CloudKitRecord {
 **When adding a new record type**:
 1. Create model struct in `Models/`
 2. Implement `CloudKitRecord` conformance
-3. Add to `BushelCloudKitService.recordTypes` (line 19)
+3. Add to `SwoopMistKitService.recordTypes` (line 19)
 4. Update CloudKit schema in Dashboard or via `cktool`
 
 ### Date Handling
@@ -459,7 +486,7 @@ See `.claude/s2s-auth-details.md` for detailed batch operation examples and erro
 
 ### Error Handling
 
-- `BushelCloudKitError` enum defines project-specific errors
+- `SwoopMistKitError` enum defines project-specific errors
 - MistKit operations throw `CloudKitError` for API failures
 - `modifyRecords(_:classification:database:)` returns a structured batch result (`createdCount`/`updatedCount`/`failedCount`/`failed`); inspect `.failed` for partial batch failures
 - Verbose mode logs error details (serverErrorCode, reason)
@@ -485,7 +512,7 @@ No formal test suite exists (this is a demo project).
 
 ### Server-to-Server Authentication Overview
 
-S2S authentication allows CLI tools to access CloudKit without a signed-in iCloud user. BushelCloud uses ECDSA P-256 private keys:
+S2S authentication allows CLI tools to access CloudKit without a signed-in iCloud user. SwoopMistKit uses ECDSA P-256 private keys:
 
 ```swift
 // Initialize with private key from .pem file
@@ -528,6 +555,7 @@ The project requires three record types in the public database:
 2. System fields (`___recordID`, `___createdTimestamp`, etc.) can be included in `.ckdb` schema files but are auto-generated when creating records via API
 3. Grant permissions to **both** `_creator` AND `_icloud` for S2S auth
 4. Use `INT64` for booleans (0 = false, 1 = true)
+5. `SDKVersion`, `XcodeVersion` and `SimulatorRuntime` grant `READ, CREATE, WRITE` to `_creator` and `READ, CREATE` to `_icloud`, with no `_world` grant and no `_icloud` write. `CREATE` on `_icloud` is what lets the S2S key create records (verified in Development, 2026-11-16); `WRITE` stays with `_creator`. Simulator managers read them with a signed-in iCloud account; only the S2S sync writes.
 
 ### Basic cktool Commands
 
@@ -562,7 +590,7 @@ See `.claude/schema-management.md` for complete cktool reference, schema version
 
 ```bash
 # From Terminal
-cd /Users/leo/Documents/Projects/BushelCloud
+cd /Users/leo/Documents/Projects/SwoopMistKit
 open Package.swift
 
 # Or: File > Open in Xcode, select Package.swift
@@ -584,17 +612,17 @@ open Package.swift
 ### Key Debugging Workflows
 
 **Test data fetching without CloudKit**:
-- Use `--dry-run` flag: `.build/debug/bushel-cloud sync --dry-run --verbose`
+- Use `--dry-run` flag: `.build/debug/swoopmist sync --dry-run --verbose`
 - Or set breakpoint in `SyncEngine.swift` after `fetchAllData()` to inspect fetched records
 
 **Debug CloudKit upload**:
-- Set breakpoint in `BushelCloudKitService.modifyRecords()` before upload
+- Set breakpoint in `SwoopMistKitService.modifyRecords()` before upload
 - Inspect `operations` array and `results` for errors
 
 **Useful breakpoint locations**:
 - `SyncEngine.swift` - `sync()` method start
 - `DataSourcePipeline.swift` - `fetchAllData()` to inspect fetched records
-- `BushelCloudKitService.swift` - `modifyRecords()` before CloudKit upload
+- `SwoopMistKitService.swift` - `modifyRecords()` before CloudKit upload
 - Individual fetchers - `fetch()` methods for data source issues
 
 ### Common Xcode Issues
@@ -613,7 +641,7 @@ Generate Xcode project with pre-configured settings:
 ```bash
 brew install xcodegen
 xcodegen generate
-open BushelCloud.xcodeproj
+open SwoopMistKit.xcodeproj
 ```
 
 Note: The `.xcodeproj` is in `.gitignore` - always regenerate rather than committing.
@@ -626,7 +654,7 @@ Note: The `.xcodeproj` is in `.gitignore` - always regenerate rather than commit
 - **ArgumentParser** - CLI framework
 - **swift-log** - Logging infrastructure
 
-BushelCloud consumes MistKit as a tagged Swift Package Manager dependency from GitHub.
+SwoopMistKit consumes MistKit as a tagged Swift Package Manager dependency from GitHub.
 
 ## CI/CD and Code Quality
 
@@ -653,7 +681,7 @@ Note: Currently only placeholder tests exist (demo project focused on CloudKit p
 
 ### GitHub Actions Workflows
 
-- **BushelCloud.yml** - Main CI with multi-platform testing (Ubuntu, Windows, macOS)
+- **SwoopMistKit.yml** - Main CI with multi-platform testing (Ubuntu, Windows, macOS)
 - **claude.yml** - Claude Code integration for issues/PRs
 - **claude-code-review.yml** - Automated PR reviews
 
@@ -691,7 +719,7 @@ For detailed guides on advanced topics, see:
 
 - **[.claude/s2s-auth-details.md](.claude/s2s-auth-details.md)** - Server-to-Server authentication implementation
   - How S2S authentication works internally
-  - BushelCloudKitService implementation pattern
+  - SwoopMistKitService implementation pattern
   - Security best practices and key management
   - Common authentication errors and solutions
   - Operation types and permissions
