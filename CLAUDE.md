@@ -601,7 +601,7 @@ open Package.swift
 1. **Edit Scheme** (Cmd+Shift+,)
 2. **Run → Arguments tab**:
    - Add environment variables:
-     - `CLOUDKIT_CONTAINER_ID`: `iCloud.com.brightdigit.Bushel`
+     - `CLOUDKIT_CONTAINER_ID`: `iCloud.com.brightdigit.Swoop`
      - `CLOUDKIT_KEY_ID`: Your key ID
      - `CLOUDKIT_PRIVATE_KEY_PATH`: `$HOME/.cloudkit/bushel-private-key.pem`
    - Add arguments for testing:

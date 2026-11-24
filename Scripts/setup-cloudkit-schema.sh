@@ -21,7 +21,7 @@ while [[ $# -gt 0 ]]; do
       echo "  --help, -h   Show this help message"
       echo ""
       echo "Environment variables:"
-      echo "  CLOUDKIT_CONTAINER_ID   CloudKit container ID (default: iCloud.com.brightdigit.Bushel)"
+      echo "  CLOUDKIT_CONTAINER_ID   CloudKit container ID (default: iCloud.com.brightdigit.Swoop)"
       echo "  CLOUDKIT_TEAM_ID        Apple Developer Team ID (10-character)"
       echo "  CLOUDKIT_ENVIRONMENT    Environment (development or production, default: development)"
       exit 0
@@ -90,8 +90,8 @@ echo ""
 # Check for required parameters
 if [ -z "$CLOUDKIT_CONTAINER_ID" ]; then
     echo -e "${YELLOW}CLOUDKIT_CONTAINER_ID not set.${NC}"
-    read -p "Enter your CloudKit Container ID [iCloud.com.brightdigit.Bushel]: " CLOUDKIT_CONTAINER_ID
-    CLOUDKIT_CONTAINER_ID=${CLOUDKIT_CONTAINER_ID:-iCloud.com.brightdigit.Bushel}
+    read -p "Enter your CloudKit Container ID [iCloud.com.brightdigit.Swoop]: " CLOUDKIT_CONTAINER_ID
+    CLOUDKIT_CONTAINER_ID=${CLOUDKIT_CONTAINER_ID:-iCloud.com.brightdigit.Swoop}
 fi
 
 if [ -z "$CLOUDKIT_TEAM_ID" ]; then

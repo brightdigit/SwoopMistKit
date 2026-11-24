@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/actions/cloudkit-sync
         with:
           environment: development
-          container-id: iCloud.com.brightdigit.Bushel
+          container-id: iCloud.com.brightdigit.Swoop
           cloudkit-key-id: ${{ secrets.CLOUDKIT_KEY_ID }}
           cloudkit-private-key: ${{ secrets.CLOUDKIT_PRIVATE_KEY }}
           virtualbuddy-api-key: ${{ secrets.VIRTUALBUDDY_API_KEY }}

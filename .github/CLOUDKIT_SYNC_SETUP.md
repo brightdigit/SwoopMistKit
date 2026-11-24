@@ -13,7 +13,7 @@ This document explains how to configure the scheduled CloudKit sync workflow.
 ### 1. Create Server-to-Server Key (If Not Already Created)
 
 1. Visit https://icloud.developer.apple.com/dashboard/
-2. Select your container: `iCloud.com.brightdigit.Bushel`
+2. Select your container: `iCloud.com.brightdigit.Swoop`
 3. Navigate to: **API Access → Server-to-Server Keys**
 4. Click **+** to create a new key
 5. Download the `.pem` file immediately (you can only download it once)
@@ -111,7 +111,7 @@ The workflow runs automatically every 12 hours at:
 **Error:** `Cannot find container`
 
 **Solution:**
-- Verify container ID: `iCloud.com.brightdigit.Bushel`
+- Verify container ID: `iCloud.com.brightdigit.Swoop`
 - Ensure your Apple Developer account has access to this container
 - Check that the S2S key has permissions for this container
 
@@ -208,7 +208,7 @@ Simply change the environment variable in `.github/workflows/cloudkit-sync.yml`:
     CLOUDKIT_KEY_ID: ${{ secrets.CLOUDKIT_KEY_ID }}
     CLOUDKIT_PRIVATE_KEY: ${{ secrets.CLOUDKIT_PRIVATE_KEY }}
     CLOUDKIT_ENVIRONMENT: production  # ← Change from 'development' to 'production'
-    CLOUDKIT_CONTAINER_ID: iCloud.com.brightdigit.Bushel
+    CLOUDKIT_CONTAINER_ID: iCloud.com.brightdigit.Swoop
 ```
 
 **Important**: The same key works for both environments. The environment parameter tells CloudKit which database to use.

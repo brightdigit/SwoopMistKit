@@ -41,7 +41,7 @@ internal enum ConfigurationKeys {
   internal enum CloudKit {
     internal static let containerID = ConfigKey<String>(
       "cloudkit.container_id",
-      default: "iCloud.com.brightdigit.Bushel"
+      default: "iCloud.com.brightdigit.Swoop"
     )
 
     internal static let keyID = OptionalConfigKey<String>(

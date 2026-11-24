@@ -233,7 +233,7 @@ internal struct ConfigurationLoaderTests {
       )
 
       let config = try await loader.loadConfiguration()
-      #expect(config.cloudKit?.containerID == "iCloud.com.brightdigit.Bushel")
+      #expect(config.cloudKit?.containerID == "iCloud.com.brightdigit.Swoop")
     }
   }
 

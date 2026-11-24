@@ -86,7 +86,7 @@ Set the following environment variables:
 ```bash
 export CLOUDKIT_KEY_ID="your-key-id-here"
 export CLOUDKIT_KEY_FILE="$HOME/.cloudkit/bushel-private-key.pem"
-export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Bushel"  # Optional
+export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"  # Optional
 ```
 
 Add these to your shell profile (~/.zshrc or ~/.bashrc) for persistence:
@@ -95,7 +95,7 @@ Add these to your shell profile (~/.zshrc or ~/.bashrc) for persistence:
 # Add to ~/.zshrc
 echo 'export CLOUDKIT_KEY_ID="your-key-id-here"' >> ~/.zshrc
 echo 'export CLOUDKIT_KEY_FILE="$HOME/.cloudkit/bushel-private-key.pem"' >> ~/.zshrc
-echo 'export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Bushel"' >> ~/.zshrc
+echo 'export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"' >> ~/.zshrc
 ```
 
 ### Step 5: Verify Setup

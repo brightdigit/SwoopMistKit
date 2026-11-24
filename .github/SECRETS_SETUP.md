@@ -7,7 +7,7 @@ This file lists exactly what secrets you need to configure for the scheduled Clo
 Before adding secrets, you need a CloudKit Server-to-Server key:
 
 1. Visit https://icloud.developer.apple.com/dashboard/
-2. Select container: `iCloud.com.brightdigit.Bushel`
+2. Select container: `iCloud.com.brightdigit.Swoop`
 3. Navigate to: **API Access → Server-to-Server Keys**
 4. Click **+** to create a new key
 5. Download the `.pem` file (you can only download once!)

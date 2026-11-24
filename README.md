@@ -297,7 +297,7 @@ Fetch data from all sources and upload to CloudKit:
 ```bash
 # Basic usage
 swoopmist sync \
-  --container-id "iCloud.com.brightdigit.Bushel" \
+  --container-id "iCloud.com.brightdigit.Swoop" \
   --key-id "YOUR_KEY_ID" \
   --key-file ./path/to/private-key.pem
 
@@ -327,7 +327,7 @@ Query and export CloudKit data to JSON file:
 ```bash
 # Export to file
 swoopmist export \
-  --container-id "iCloud.com.brightdigit.Bushel" \
+  --container-id "iCloud.com.brightdigit.Swoop" \
   --key-id "YOUR_KEY_ID" \
   --key-file ./path/to/private-key.pem \
   --output ./bushel-data.json

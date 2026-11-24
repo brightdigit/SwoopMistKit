@@ -100,7 +100,7 @@ chmod 600 ~/.cloudkit/bushel-private-key.pem
 # Add to ~/.zshrc or ~/.bashrc
 export CLOUDKIT_KEY_ID="your_key_id"
 export CLOUDKIT_KEY_FILE="$HOME/.cloudkit/bushel-private-key.pem"
-export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Bushel"
+export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"
 ```
 
 **Git protection:**
