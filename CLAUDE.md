@@ -71,7 +71,7 @@ Manually trigger the scheduled CloudKit sync workflow:
 gh workflow run cloudkit-sync.yml --ref 8-scheduled-job
 
 # Or using the API directly
-gh api repos/brightdigit/BushelCloud/actions/workflows/cloudkit-sync.yml/dispatches -f ref=8-scheduled-job
+gh api repos/brightdigit/SwoopMistKit/actions/workflows/cloudkit-sync.yml/dispatches -f ref=8-scheduled-job
 
 # Check status of recent workflow runs
 gh run list --workflow=cloudkit-sync.yml --limit 5

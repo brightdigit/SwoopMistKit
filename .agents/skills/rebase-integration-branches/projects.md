@@ -1,4 +1,4 @@
-# BushelCloud config
+# SwoopMistKit config (repo was BushelCloud until 2026-11-24)
 
 | Key | Value |
 |-----|-------|
@@ -9,8 +9,8 @@
 | `MISTKIT_REF` | `v1.0.0-beta.4` |
 | `KIT_PACKAGE` | `BushelKit` |
 | `KIT_PATH` | `../BushelKit` |
-| Primary workflow | `.github/workflows/BushelCloud.yml` |
-| Build binary workflow | `.github/workflows/bushel-cloud-build.yml` |
+| Primary workflow | `.github/workflows/SwoopMistKit.yml` |
+| Build binary workflow | `.github/workflows/swoopmist-build.yml` |
 | CloudKit sync action | `.github/actions/cloudkit-sync/action.yml` |
 | MistKit path (if used) | `../..` (monorepo: `Examples/BushelCloud`) |
 
@@ -27,9 +27,9 @@
 
 Copy this skill folder to CelestraCloud and adjust:
 
-| BushelCloud | CelestraCloud |
+| SwoopMistKit | CelestraCloud |
 |-------------|---------------|
 | `BushelKit` | `CelestraKit` |
-| `BushelCloud.yml` | `CelestraCloud.yml` |
-| `bushel-cloud-build.yml` | check for `update-feeds.yml` |
+| `SwoopMistKit.yml` | `CelestraCloud.yml` |
+| `swoopmist-build.yml` | check for `update-feeds.yml` |
 | `v1.0.0-alpha.3` | discover release branch (e.g. `v1.0.0-dev.1-mistkit`) |

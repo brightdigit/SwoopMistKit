@@ -1,6 +1,6 @@
 # Bushel Demo - CloudKit Data Synchronization
 
-[![CI](https://github.com/brightdigit/BushelCloud/actions/workflows/SwoopMistKit.yml/badge.svg)](https://github.com/brightdigit/BushelCloud/actions/workflows/SwoopMistKit.yml)
+[![CI](https://github.com/brightdigit/SwoopMistKit/actions/workflows/SwoopMistKit.yml/badge.svg)](https://github.com/brightdigit/SwoopMistKit/actions/workflows/SwoopMistKit.yml)
 [![SwiftLint](https://img.shields.io/badge/SwiftLint-passing-success.svg)](https://github.com/realm/SwiftLint)
 [![Swift 6.4+](https://img.shields.io/badge/Swift-6.4%2B-orange.svg)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20Linux%20%7C%20Windows-blue.svg)](https://swift.org)
@@ -251,7 +251,7 @@ export VIRTUALBUDDY_API_KEY="YOUR_VIRTUALBUDDY_API_KEY"
 Clone and build the project:
 
 ```bash
-git clone https://github.com/brightdigit/BushelCloud.git
+git clone https://github.com/brightdigit/SwoopMistKit.git
 cd SwoopMistKit
 swift build -c release
 .build/release/swoopmist --help
@@ -262,7 +262,7 @@ swift build -c release
 Build and install to `/usr/local/bin`:
 
 ```bash
-git clone https://github.com/brightdigit/BushelCloud.git
+git clone https://github.com/brightdigit/SwoopMistKit.git
 cd SwoopMistKit
 make install
 ```
@@ -274,7 +274,7 @@ This makes `swoopmist` available globally.
 Run without local Swift installation:
 
 ```bash
-git clone https://github.com/brightdigit/BushelCloud.git
+git clone https://github.com/brightdigit/SwoopMistKit.git
 cd SwoopMistKit
 make docker-run
 ```

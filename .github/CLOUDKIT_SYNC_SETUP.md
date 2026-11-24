@@ -91,7 +91,7 @@ The workflow runs automatically every 12 hours at:
 - **Email notifications:** GitHub sends emails on workflow failures (configure in Settings → Notifications)
 - **Status badge (optional):** Add to README.md:
   ```markdown
-  ![CloudKit Sync](https://github.com/brightdigit/BushelCloud-Schedule/actions/workflows/cloudkit-sync.yml/badge.svg)
+  ![CloudKit Sync](https://github.com/brightdigit/SwoopMistKit/actions/workflows/cloudkit-sync-dev.yml/badge.svg)
   ```
 
 ## Troubleshooting
@@ -287,4 +287,4 @@ BIN_PATH=$(swift build -c release --show-bin-path)
 
 - Review project documentation: [CLAUDE.md](../CLAUDE.md)
 - Check S2S authentication details: [.claude/s2s-auth-details.md](../.claude/s2s-auth-details.md)
-- File an issue: https://github.com/brightdigit/BushelCloud-Schedule/issues
+- File an issue: https://github.com/brightdigit/SwoopMistKit/issues

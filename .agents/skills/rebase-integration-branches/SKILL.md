@@ -33,8 +33,8 @@ Read [projects.md](projects.md). Defaults for this repo:
 | `MISTKIT_REF` | `v1.0.0-beta.4` |
 | `KIT_PACKAGE` | `BushelKit` |
 | `KIT_PATH` | `../BushelKit` |
-| Primary workflow | `.github/workflows/BushelCloud.yml` |
-| Build binary workflow | `.github/workflows/bushel-cloud-build.yml` |
+| Primary workflow | `.github/workflows/SwoopMistKit.yml` |
+| Build binary workflow | `.github/workflows/swoopmist-build.yml` |
 | CloudKit sync action | `.github/actions/cloudkit-sync/action.yml` |
 | MistKit path (if used) | `../..` |
 
@@ -124,7 +124,7 @@ git reset --hard $RELEASE_BRANCH
    ```
 
 3. **Secondary workflows** (if missing on release branch):
-   - `.github/workflows/bushel-cloud-build.yml`
+   - `.github/workflows/swoopmist-build.yml`
    - `.github/workflows/codeql.yml`
    - `.github/actions/cloudkit-sync/action.yml` — `mistkit-branch` input +
      conditional Setup MistKit before fallback docker build
