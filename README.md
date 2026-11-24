@@ -1,7 +1,6 @@
 # Bushel Demo - CloudKit Data Synchronization
 
 [![CI](https://github.com/brightdigit/BushelCloud/actions/workflows/SwoopMistKit.yml/badge.svg)](https://github.com/brightdigit/BushelCloud/actions/workflows/SwoopMistKit.yml)
-[![codecov](https://codecov.io/gh/brightdigit/BushelCloud/branch/main/graph/badge.svg)](https://codecov.io/gh/brightdigit/BushelCloud)
 [![SwiftLint](https://img.shields.io/badge/SwiftLint-passing-success.svg)](https://github.com/realm/SwiftLint)
 [![Swift 6.4+](https://img.shields.io/badge/Swift-6.4%2B-orange.svg)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20Linux%20%7C%20Windows-blue.svg)](https://swift.org)
@@ -649,7 +648,6 @@ This project uses GitHub Actions for continuous integration:
 - **Swift versions**: 6.4 (nightly toolchain)
 - **Xcode versions**: 27.0
 - **Linting**: SwiftLint, swift-format, periphery
-- **Coverage**: Codecov integration
 - **AI Review**: Claude Code for automated PR reviews
 
 See `.github/workflows/` for workflow configurations.
