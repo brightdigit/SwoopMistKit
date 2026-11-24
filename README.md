@@ -310,7 +310,7 @@ swoopmist sync --dry-run
 # Selective sync
 swoopmist sync --restore-images-only
 swoopmist sync --xcode-only   # Xcode, SDK and simulator runtime records
-BUSHEL_SYNC_RUNTIMES_ONLY=true swoopmist sync  # Only SimulatorRuntime records
+SWOOP_SYNC_RUNTIMES_ONLY=true swoopmist sync  # Only SimulatorRuntime records
 swoopmist sync --swift-only
 swoopmist sync --no-betas  # Exclude beta/RC releases
 
@@ -319,6 +319,8 @@ export CLOUDKIT_KEY_ID="YOUR_KEY_ID"
 export CLOUDKIT_PRIVATE_KEY_PATH="./path/to/private-key.pem"
 swoopmist sync --verbose
 ```
+
+Every command option can also be set with an environment variable named `SWOOP_` plus the option's key in capitals, for example `SWOOP_SYNC_DRY_RUN=true` or `SWOOP_FETCH_INTERVAL_GLOBAL=3600`. The names from before the rename (`BUSHEL_SYNC_DRY_RUN`, …) still work, with a deprecation warning, and a `SWOOP_` value wins when both are set. `CLOUDKIT_*` and `VIRTUALBUDDY_API_KEY` keep their names.
 
 ### Export Command
 

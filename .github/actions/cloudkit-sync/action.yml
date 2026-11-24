@@ -250,7 +250,7 @@ runs:
         CLOUDKIT_ENVIRONMENT: ${{ inputs.environment }}
         CLOUDKIT_CONTAINER_ID: ${{ inputs.container-id }}
         VIRTUALBUDDY_API_KEY: ${{ inputs.virtualbuddy-api-key }}
-        BUSHEL_SYNC_JSON_OUTPUT_FILE: sync-result.json
+        SWOOP_SYNC_JSON_OUTPUT_FILE: sync-result.json
       run: |
         echo "Starting CloudKit sync with change tracking..."
         echo "Container: $CLOUDKIT_CONTAINER_ID"

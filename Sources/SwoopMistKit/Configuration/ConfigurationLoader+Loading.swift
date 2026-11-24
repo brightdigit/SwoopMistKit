@@ -57,21 +57,16 @@ extension ConfigurationLoader {
     // Fetch configuration: Start with BushelKit's environment loading, then override with CLI
     var fetch = FetchConfiguration.loadFromEnvironment()
 
-    // Override global interval if --min-interval provided
-    if let minInterval = read(ConfigurationKeys.Sync.minInterval) {
-      fetch = FetchConfiguration(
-        globalMinimumFetchInterval: TimeInterval(minInterval),
-        perSourceIntervals: fetch.perSourceIntervals,
-        useDefaults: true
-      )
-    }
+    // SWOOP_FETCH_INTERVAL_GLOBAL overrides BushelKit's
+    // BUSHEL_FETCH_INTERVAL_GLOBAL; --min-interval overrides both.
+    fetch = applyingGlobalInterval(to: fetch)
 
     // Override per-source intervals from CLI or ENV
     var perSourceIntervals = fetch.perSourceIntervals
 
     for source in DataSource.allCases {
       // Try CLI arg first (e.g., "fetch.interval.appledb_dev")
-      // Then try ENV var (e.g., "BUSHEL_FETCH_INTERVAL_APPLEDB_DEV")
+      // Then try ENV var (e.g., "SWOOP_FETCH_INTERVAL_APPLEDB_DEV")
       let intervalKey = ConfigurationKeys.Fetch.intervalKey(for: source.rawValue)
       if let interval = read(intervalKey) {
         perSourceIntervals[source.rawValue] = interval
@@ -141,5 +136,29 @@ extension ConfigurationLoader {
       list: list,
       clear: clear
     )
+  }
+
+  /// `fetch` with the global interval from ``ConfigurationKeys/Fetch/intervalGlobal``,
+  /// then from ``ConfigurationKeys/Sync/minInterval``, when they're set.
+  private func applyingGlobalInterval(
+    to fetch: FetchConfiguration
+  ) -> FetchConfiguration {
+    var fetch = fetch
+    if let globalInterval = read(ConfigurationKeys.Fetch.intervalGlobal) {
+      fetch = FetchConfiguration(
+        globalMinimumFetchInterval: globalInterval,
+        perSourceIntervals: fetch.perSourceIntervals,
+        useDefaults: fetch.useDefaults
+      )
+    }
+    // --min-interval (or SWOOP_SYNC_MIN_INTERVAL) wins.
+    if let minInterval = read(ConfigurationKeys.Sync.minInterval) {
+      fetch = FetchConfiguration(
+        globalMinimumFetchInterval: TimeInterval(minInterval),
+        perSourceIntervals: fetch.perSourceIntervals,
+        useDefaults: true
+      )
+    }
+    return fetch
   }
 }

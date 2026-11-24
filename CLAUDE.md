@@ -190,7 +190,7 @@ what simulator managers match installed runtimes against. `releaseLabel` ("Beta 
 is printed and skipped. `sdkBuildNumbers` lists the SDK builds the index maps to it; in
 CloudKit it's one comma-separated `STRING` field, `sdkBuildNumbersText`, because MistKit can't
 decode `STRING_LIST` responses yet (brightdigit/MistKit#509). The
-index has no release dates. `--xcode-only` includes them; `BUSHEL_SYNC_RUNTIMES_ONLY=true`
+index has no release dates. `--xcode-only` includes them; `SWOOP_SYNC_RUNTIMES_ONLY=true`
 syncs only them.
 
 ### Data Deduplication

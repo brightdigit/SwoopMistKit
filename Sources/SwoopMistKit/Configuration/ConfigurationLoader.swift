@@ -51,8 +51,15 @@ public actor ConfigurationLoader {
       )
     )
 
-    // Priority 2: Environment variables
-    providers.append(EnvironmentVariablesProvider())
+    // Priority 2: Environment variables. Old BUSHEL_* names still work,
+    // with a warning, until they're removed.
+    let migration = LegacyEnvironment.migrating(ProcessInfo.processInfo.environment)
+    for (legacy, current) in migration.renamed {
+      FileHandle.standardError.write(
+        Data("warning: \(legacy) is deprecated; use \(current) instead.\n".utf8)
+      )
+    }
+    providers.append(EnvironmentVariablesProvider(environmentVariables: migration.environment))
 
     self.configReader = ConfigReader(providers: providers)
   }

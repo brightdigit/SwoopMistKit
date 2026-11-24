@@ -62,7 +62,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvTrue() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": "true"]
+        env: ["SWOOP_SYNC_VERBOSE": "true"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -73,7 +73,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvOne() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": "1"]
+        env: ["SWOOP_SYNC_VERBOSE": "1"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -87,7 +87,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvYes(value: String) async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": value]
+        env: ["SWOOP_SYNC_VERBOSE": value]
       )
 
       let config = try await loader.loadConfiguration()
@@ -98,7 +98,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvFalse() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": "false"]
+        env: ["SWOOP_SYNC_VERBOSE": "false"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -109,7 +109,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvZero() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": "0"]
+        env: ["SWOOP_SYNC_VERBOSE": "0"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -120,7 +120,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvNo() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": "no"]
+        env: ["SWOOP_SYNC_VERBOSE": "no"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -131,7 +131,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvEmpty() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": ""]
+        env: ["SWOOP_SYNC_VERBOSE": ""]
       )
 
       let config = try await loader.loadConfiguration()
@@ -142,7 +142,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvInvalid() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": "maybe"]
+        env: ["SWOOP_SYNC_VERBOSE": "maybe"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -153,7 +153,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEnvWhitespace() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": "  true  "]
+        env: ["SWOOP_SYNC_VERBOSE": "  true  "]
       )
 
       let config = try await loader.loadConfiguration()
@@ -169,7 +169,7 @@ internal struct ConfigurationLoaderTests {
     internal func testCLIOverridesEnvFalse() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: ["sync.verbose"],
-        env: ["BUSHEL_SYNC_VERBOSE": "false"]
+        env: ["SWOOP_SYNC_VERBOSE": "false"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -180,7 +180,7 @@ internal struct ConfigurationLoaderTests {
     internal func testNoCLIRespectsEnvTrue() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_VERBOSE": "true"]
+        env: ["SWOOP_SYNC_VERBOSE": "true"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -256,7 +256,7 @@ internal struct ConfigurationLoaderTests {
     internal func testValidIntFromEnv() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_MIN_INTERVAL": "7200"]
+        env: ["SWOOP_SYNC_MIN_INTERVAL": "7200"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -267,7 +267,7 @@ internal struct ConfigurationLoaderTests {
     internal func testInvalidInt() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_MIN_INTERVAL": "not-a-number"]
+        env: ["SWOOP_SYNC_MIN_INTERVAL": "not-a-number"]
       )
 
       let config = try await loader.loadConfiguration()
@@ -278,7 +278,7 @@ internal struct ConfigurationLoaderTests {
     internal func testEmptyInt() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
-        env: ["BUSHEL_SYNC_MIN_INTERVAL": ""]
+        env: ["SWOOP_SYNC_MIN_INTERVAL": ""]
       )
 
       let config = try await loader.loadConfiguration()
@@ -601,8 +601,8 @@ internal struct ConfigurationLoaderTests {
           "sync.min_interval=3600",
         ],
         env: [
-          "BUSHEL_SYNC_NO_BETAS": "true",
-          "BUSHEL_SYNC_SOURCE": "ipsw.me",
+          "SWOOP_SYNC_NO_BETAS": "true",
+          "SWOOP_SYNC_SOURCE": "ipsw.me",
           "CLOUDKIT_CONTAINER_ID": "iCloud.com.test.App",
           "CLOUDKIT_KEY_ID": "test-key",
           "CLOUDKIT_PRIVATE_KEY_PATH": "/path/to/key.pem",
@@ -629,8 +629,8 @@ internal struct ConfigurationLoaderTests {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [],
         env: [
-          "FETCH_INTERVAL_APPLEDB_DEV": "7200",
-          "FETCH_INTERVAL_IPSW_ME": "10800",
+          "SWOOP_FETCH_INTERVAL_APPLEDB_DEV": "7200",
+          "SWOOP_FETCH_INTERVAL_IPSW_ME": "10800",
         ]
       )
 

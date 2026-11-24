@@ -1,5 +1,5 @@
 //
-//  ConfigKey+BUSHEL.swift
+//  ConfigKey+Swoop.swift
 //  SwoopMistKit
 //
 //  Created by Leo Dion.
@@ -31,30 +31,39 @@ public import ConfigKeyKit
 
 // MARK: - SwoopMistKit-Specific Config Key Helpers
 
+/// The environment-variable prefixes for SwoopMistKit's own keys.
+public enum ConfigKeyPrefix {
+  /// The prefix every key uses: `SWOOP_SYNC_DRY_RUN`, for example.
+  public static let current = "SWOOP"
+  /// The prefix from before the rename (`BUSHEL_SYNC_DRY_RUN`), still read
+  /// with a deprecation warning. See ``ConfigurationLoader``.
+  public static let legacy = "BUSHEL"
+}
+
 extension ConfigKey {
-  /// Convenience initializer for keys with `BUSHEL_` environment-variable prefix.
+  /// Convenience initializer for keys with `SWOOP_` environment-variable prefix.
   /// - Parameters:
   ///   - base: Base key string (e.g., "sync.dry_run")
   ///   - defaultVal: Required default value
-  public init(bushelPrefixed base: String, default defaultVal: Value) {
-    self.init(base, envPrefix: "BUSHEL", default: defaultVal)
+  public init(swoopPrefixed base: String, default defaultVal: Value) {
+    self.init(base, envPrefix: ConfigKeyPrefix.current, default: defaultVal)
   }
 }
 
 extension ConfigKey where Value == Bool {
-  /// Convenience initializer for boolean keys with `BUSHEL_` environment-variable prefix.
+  /// Convenience initializer for boolean keys with `SWOOP_` environment-variable prefix.
   /// - Parameters:
   ///   - base: Base key string (e.g., "sync.verbose")
   ///   - defaultVal: Default value (defaults to false)
-  public init(bushelPrefixed base: String, default defaultVal: Bool = false) {
-    self.init(base, envPrefix: "BUSHEL", default: defaultVal)
+  public init(swoopPrefixed base: String, default defaultVal: Bool = false) {
+    self.init(base, envPrefix: ConfigKeyPrefix.current, default: defaultVal)
   }
 }
 
 extension OptionalConfigKey {
-  /// Convenience initializer for optional keys with `BUSHEL_` environment-variable prefix.
+  /// Convenience initializer for optional keys with `SWOOP_` environment-variable prefix.
   /// - Parameter base: Base key string (e.g., "sync.min_interval")
-  public init(bushelPrefixed base: String) {
-    self.init(base, envPrefix: "BUSHEL")
+  public init(swoopPrefixed base: String) {
+    self.init(base, envPrefix: ConfigKeyPrefix.current)
   }
 }
