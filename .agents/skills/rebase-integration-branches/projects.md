@@ -1,18 +1,20 @@
 # SwoopMistKit config (repo was BushelCloud until 2026-11-24)
 
+The `subrepo` steps below date from the BushelKit subrepo. SwoopMistKit has no
+kit path dependency any more, so they don't apply until one comes back.
+
 | Key | Value |
 |-----|-------|
-| Container root | Parent of worktree dirs (contains `.git`, `BushelCloud.git/`) |
-| Bare store | `BushelCloud.git` |
+| Container root | Parent of worktree dirs (contains `.git`, `trees-bare.git/`) |
+| Bare store | `trees-bare.git` |
 | `RELEASE_BRANCH` | `v1.0.0-alpha.3` |
 | `MAIN_BRANCH` | `main` |
-| `MISTKIT_REF` | `v1.0.0-beta.4` |
-| `KIT_PACKAGE` | `BushelKit` |
-| `KIT_PATH` | `../BushelKit` |
+| `MISTKIT_REF` | `mistico` (branch dependency in `Package.swift`) |
+| `KIT_PACKAGE` | none: BushelKit is no longer a dependency, and SwoopKit resolves by URL (`simulator` branch) |
+| `KIT_PATH` | none |
 | Primary workflow | `.github/workflows/SwoopMistKit.yml` |
 | Build binary workflow | `.github/workflows/swoopmist-build.yml` |
 | CloudKit sync action | `.github/actions/cloudkit-sync/action.yml` |
-| MistKit path (if used) | `../..` (monorepo: `Examples/BushelCloud`) |
 
 ## Expected commit counts
 

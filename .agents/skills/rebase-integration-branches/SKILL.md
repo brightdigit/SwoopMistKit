@@ -73,7 +73,7 @@ git rev-list --count origin/mistkit..origin/$MAIN_BRANCH     # expect: 0
 ## Step 0: Pre-flight
 
 ```bash
-cd <container-root>   # e.g. .../BushelCloud
+cd <container-root>   # e.g. .../SwoopMistKit
 git fetch origin
 
 git rev-list --count $RELEASE_BRANCH..mistkit
@@ -240,7 +240,7 @@ Warn: subrepo sed steps require `.package(path: "../BushelKit")` in Package.swif
 
 ## Rules
 
-1. Never modify `BushelCloud.git/` directly.
+1. Never modify the bare store (`trees-bare.git/`) directly.
 2. Never touch the release-branch worktree while rebasing integration branches.
 3. Use `git trees add --no-push`.
 4. Always `--force-with-lease`.
