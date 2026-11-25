@@ -28,10 +28,9 @@
 //
 
 internal import Foundation
-
-@testable import SwoopKit
 internal import SwoopMistKit
 
+@testable import SwoopKit
 
 /// Mock fetcher for IPSW data source
 internal struct MockIPSWFetcher: DataSourceFetcher, Sendable {

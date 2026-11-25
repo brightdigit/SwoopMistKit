@@ -27,9 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import SwoopKit
-
 internal import Foundation
+internal import SwoopKit
 
 #if canImport(FoundationNetworking)
   internal import FoundationNetworking

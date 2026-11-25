@@ -27,8 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
 public import Foundation
+public import SwoopKit
 
 /// One SDK as listed inside one Xcode release on xcodereleases.com.
 public struct SDKAppearance: Sendable, Equatable {

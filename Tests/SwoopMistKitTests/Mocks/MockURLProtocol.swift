@@ -34,6 +34,8 @@ public import Foundation
 #endif
 
 /// Mock URLProtocol for intercepting and simulating HTTP requests in tests
+// URLProtocol isn't Sendable; the handler is test-only shared state.
+// swiftlint:disable:next no_unchecked_sendable
 internal final class MockURLProtocol: URLProtocol, @unchecked Sendable {
   /// Request handler that returns a response and optional data for a given request
   nonisolated(unsafe) internal static var requestHandler:

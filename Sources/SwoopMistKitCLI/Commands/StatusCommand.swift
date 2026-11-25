@@ -27,10 +27,10 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import SwoopMistKit
-internal import SwoopKit
 internal import Foundation
 internal import MistKit
+internal import SwoopKit
+internal import SwoopMistKit
 
 internal enum StatusCommand {
   internal static func run(_ args: [String]) async throws {

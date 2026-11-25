@@ -27,15 +27,16 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
-
 public import Foundation
 internal import Logging
 public import MistKit
+public import SwoopKit
 
 #if canImport(FelinePineSwift)
   internal import FelinePineSwift
 #endif
+
+// swiftlint:disable file_length
 
 /// Orchestrates the complete sync process from data sources to CloudKit
 ///
@@ -201,6 +202,7 @@ public struct SyncEngine: Sendable {
   ///
   /// - Parameter options: Sync options including dry-run mode
   /// - Returns: Detailed sync result with per-type breakdown
+  // swiftlint:disable:next function_body_length
   public func sync(options: SyncOptions = SyncOptions()) async throws -> DetailedSyncResult {
     ConsoleOutput.print("\n" + String(repeating: "=", count: 60))
     ConsoleOutput.info("Starting Bushel CloudKit Sync")
@@ -448,3 +450,4 @@ public struct SyncEngine: Sendable {
 extension SyncEngine: Loggable {
   public static let loggingCategory: SwoopLogging.Category = .application
 }
+// swiftlint:enable file_length

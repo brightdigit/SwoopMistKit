@@ -30,8 +30,10 @@
 internal import Foundation
 internal import Testing
 
-@testable import SwoopMistKit
 @testable import SwoopKit
+@testable import SwoopMistKit
+
+// swiftlint:disable file_length type_body_length
 
 // MARK: - Suite 2: RestoreImage Merge Tests
 
@@ -363,3 +365,4 @@ internal struct RestoreImageMergeTests {
     #expect(merged.notes == "First note; Second note")
   }
 }
+// swiftlint:enable file_length type_body_length

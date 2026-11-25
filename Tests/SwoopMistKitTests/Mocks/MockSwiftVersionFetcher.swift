@@ -28,10 +28,9 @@
 //
 
 internal import Foundation
-
-@testable import SwoopKit
 internal import SwoopMistKit
 
+@testable import SwoopKit
 
 /// Mock fetcher for Swift version data source
 internal struct MockSwiftVersionFetcher: DataSourceFetcher, Sendable {

@@ -27,9 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import SwoopMistKit
-internal import SwoopKit
 internal import Foundation
+internal import SwoopKit
+internal import SwoopMistKit
 
 internal enum SyncCommand {
   internal static func run(_ args: [String]) async throws {

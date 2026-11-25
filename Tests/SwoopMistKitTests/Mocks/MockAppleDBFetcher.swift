@@ -28,10 +28,9 @@
 //
 
 internal import Foundation
-
-@testable import SwoopKit
 internal import SwoopMistKit
 
+@testable import SwoopKit
 
 /// Mock fetcher for AppleDB data source
 internal struct MockAppleDBFetcher: DataSourceFetcher, Sendable {

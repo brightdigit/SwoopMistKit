@@ -30,8 +30,8 @@
 internal import MistKit
 internal import Testing
 
-@testable import SwoopMistKit
 @testable import SwoopKit
+@testable import SwoopMistKit
 
 @Suite("XcodeVersionRecord CloudKit Mapping")
 internal struct XcodeVersionRecordTests {

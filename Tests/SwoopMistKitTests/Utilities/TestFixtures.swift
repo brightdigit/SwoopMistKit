@@ -29,8 +29,10 @@
 
 public import Foundation
 
-@testable public import SwoopMistKit
 @testable public import SwoopKit
+@testable public import SwoopMistKit
+
+// swiftlint:disable identifier_name file_length type_body_length
 
 /// Centralized test data fixtures for all record types
 internal enum TestFixtures: Sendable {

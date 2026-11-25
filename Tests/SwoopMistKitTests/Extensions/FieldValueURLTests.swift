@@ -97,7 +97,8 @@ internal struct FieldValueURLTests {
 
   @Test("Extract URL from string FieldValue with path")
   internal func testExtractURLFromStringFieldValueWithPath() throws {
-    let fieldValue: FieldValue = .string(.value("https://downloads.apple.com/restore/macOS/23C71.ipsw"))
+    let fieldValue: FieldValue = .string(
+      .value("https://downloads.apple.com/restore/macOS/23C71.ipsw"))
     let url = fieldValue.urlValue
 
     #expect(url != nil)

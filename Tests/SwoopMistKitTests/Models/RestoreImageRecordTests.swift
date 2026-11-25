@@ -31,8 +31,8 @@ internal import Foundation
 internal import MistKit
 internal import Testing
 
-@testable import SwoopMistKit
 @testable import SwoopKit
+@testable import SwoopMistKit
 
 @Suite("RestoreImageRecord CloudKit Mapping")
 internal struct RestoreImageRecordTests {

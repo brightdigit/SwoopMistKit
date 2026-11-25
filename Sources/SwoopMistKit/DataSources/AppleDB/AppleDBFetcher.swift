@@ -27,10 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
-
 internal import Foundation
 internal import Logging
+public import SwoopKit
 
 #if canImport(FelinePineSwift)
   internal import FelinePineSwift

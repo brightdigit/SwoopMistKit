@@ -28,10 +28,9 @@
 //
 
 internal import Foundation
-
-@testable import SwoopKit
 internal import SwoopMistKit
 
+@testable import SwoopKit
 
 /// Mock fetcher for MESU data source
 internal struct MockMESUFetcher: DataSourceFetcher, Sendable {

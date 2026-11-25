@@ -27,9 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
 internal import Foundation
 internal import MistKit
+public import SwoopKit
 
 // MARK: - Configuration Error
 

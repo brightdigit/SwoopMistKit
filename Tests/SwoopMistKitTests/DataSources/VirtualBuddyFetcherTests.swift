@@ -30,12 +30,14 @@
 internal import Foundation
 internal import Testing
 
-@testable import SwoopMistKit
 @testable import SwoopKit
+@testable import SwoopMistKit
 
 #if canImport(FoundationNetworking)
   internal import FoundationNetworking
 #endif
+
+// swiftlint:disable file_length type_body_length
 
 /// All VirtualBuddy tests wrapped in a serialized suite to prevent mock handler conflicts
 @Suite(
@@ -754,3 +756,4 @@ internal struct VirtualBuddyFetcherTests {
     }
   }
 }  // VirtualBuddyFetcherAllTests
+// swiftlint:enable file_length type_body_length

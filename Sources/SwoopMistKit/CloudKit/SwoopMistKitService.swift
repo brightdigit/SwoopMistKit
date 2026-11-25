@@ -27,14 +27,16 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
 public import Foundation
 internal import Logging
 public import MistKit
+public import SwoopKit
 
 #if canImport(FelinePineSwift)
   internal import FelinePineSwift
 #endif
+
+// swiftlint:disable file_length
 
 /// CloudKit service wrapper for Bushel demo operations
 ///
@@ -313,3 +315,4 @@ public struct SwoopMistKitService: Sendable, RecordManaging, CloudKitRecordColle
 extension SwoopMistKitService: Loggable {
   public static let loggingCategory: SwoopLogging.Category = .data
 }
+// swiftlint:enable file_length

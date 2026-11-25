@@ -27,8 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
 public import Foundation
+public import SwoopKit
 
 /// Builds `SDKVersionRecord`s from the SDKs listed in each Xcode release.
 ///

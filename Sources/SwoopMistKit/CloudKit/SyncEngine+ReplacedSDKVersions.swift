@@ -27,8 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import SwoopKit
 internal import MistKit
+internal import SwoopKit
 
 extension SyncEngine {
   /// Delete `SDKVersion` records whose build Apple's index replaced

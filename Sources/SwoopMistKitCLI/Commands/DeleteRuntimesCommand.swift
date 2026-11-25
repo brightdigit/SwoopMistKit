@@ -27,9 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import SwoopMistKit
 internal import Foundation
 internal import MistKit
+internal import SwoopMistKit
 
 /// Deletes only `SimulatorRuntime` records, by names computed from Apple's simulator index.
 ///

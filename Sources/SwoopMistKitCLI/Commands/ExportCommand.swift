@@ -27,10 +27,10 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import SwoopMistKit
-internal import SwoopKit
 internal import Foundation
 internal import MistKit
+internal import SwoopKit
+internal import SwoopMistKit
 
 internal enum ExportCommand {
   // MARK: - Export Types

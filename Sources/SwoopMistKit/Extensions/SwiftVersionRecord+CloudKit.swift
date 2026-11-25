@@ -27,9 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
 internal import Foundation
 public import MistKit
+public import SwoopKit
 
 // MARK: - CloudKitRecord Conformance
 

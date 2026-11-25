@@ -1,5 +1,5 @@
 //
-//  CommandConfigurations.swift
+//  SyncConfiguration.swift
 //  SwoopMistKit
 //
 //  Created by Leo Dion.
@@ -26,10 +26,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
-
-internal import Foundation
-
-// MARK: - Sync Configuration
 
 /// Sync command configuration
 public struct SyncConfiguration: Sendable {
@@ -73,81 +69,5 @@ public struct SyncConfiguration: Sendable {
     self.minInterval = minInterval
     self.source = source
     self.jsonOutputFile = jsonOutputFile
-  }
-}
-
-// MARK: - Export Configuration
-
-/// Export command configuration
-public struct ExportConfiguration: Sendable {
-  public var output: String?
-  public var pretty: Bool
-  public var signedOnly: Bool
-  public var noBetas: Bool
-  public var verbose: Bool
-
-  public init(
-    output: String? = nil,
-    pretty: Bool = false,
-    signedOnly: Bool = false,
-    noBetas: Bool = false,
-    verbose: Bool = false
-  ) {
-    self.output = output
-    self.pretty = pretty
-    self.signedOnly = signedOnly
-    self.noBetas = noBetas
-    self.verbose = verbose
-  }
-}
-
-// MARK: - Status Configuration
-
-/// Status command configuration
-public struct StatusConfiguration: Sendable {
-  public var errorsOnly: Bool
-  public var detailed: Bool
-
-  public init(
-    errorsOnly: Bool = false,
-    detailed: Bool = false
-  ) {
-    self.errorsOnly = errorsOnly
-    self.detailed = detailed
-  }
-}
-
-// MARK: - List Configuration
-
-/// List command configuration
-public struct ListConfiguration: Sendable {
-  public var restoreImages: Bool
-  public var xcodeVersions: Bool
-  public var swiftVersions: Bool
-
-  public init(
-    restoreImages: Bool = false,
-    xcodeVersions: Bool = false,
-    swiftVersions: Bool = false
-  ) {
-    self.restoreImages = restoreImages
-    self.xcodeVersions = xcodeVersions
-    self.swiftVersions = swiftVersions
-  }
-}
-
-// MARK: - Clear Configuration
-
-/// Clear command configuration
-public struct ClearConfiguration: Sendable {
-  public var yes: Bool
-  public var verbose: Bool
-
-  public init(
-    yes: Bool = false,
-    verbose: Bool = false
-  ) {
-    self.yes = yes
-    self.verbose = verbose
   }
 }

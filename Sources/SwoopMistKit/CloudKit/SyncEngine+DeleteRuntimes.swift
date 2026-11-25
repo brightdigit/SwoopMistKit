@@ -27,8 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
 public import MistKit
+public import SwoopKit
 
 extension SyncEngine {
   /// Outcome of ``deleteSimulatorRuntimes(dryRun:)``

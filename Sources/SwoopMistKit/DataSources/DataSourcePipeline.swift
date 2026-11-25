@@ -27,9 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
-
 internal import Foundation
+public import SwoopKit
 
 /// Orchestrates fetching data from all sources with deduplication and relationship resolution
 public struct DataSourcePipeline: Sendable {

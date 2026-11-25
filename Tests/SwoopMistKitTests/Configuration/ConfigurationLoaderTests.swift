@@ -32,8 +32,10 @@ internal import Foundation
 internal import MistKit
 internal import Testing
 
-@testable import SwoopMistKit
 @testable import SwoopKit
+@testable import SwoopMistKit
+
+// swiftlint:disable file_length type_body_length
 
 /// Comprehensive tests for ConfigurationLoader
 ///
@@ -684,3 +686,4 @@ internal struct ConfigurationLoaderTests {
     return ConfigurationLoader(configReader: configReader)
   }
 }
+// swiftlint:enable file_length type_body_length

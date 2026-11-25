@@ -27,9 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public import SwoopKit
 public import Foundation
 public import MistKit
+public import SwoopKit
 
 extension RecordManaging {
   // MARK: - Query Operations

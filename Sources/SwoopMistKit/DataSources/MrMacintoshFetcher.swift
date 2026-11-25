@@ -27,11 +27,10 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import SwoopKit
-
 internal import Foundation
 internal import Logging
 internal import SwiftSoup
+internal import SwoopKit
 
 #if canImport(FelinePineSwift)
   internal import FelinePineSwift

@@ -28,11 +28,12 @@
 //
 
 internal import Foundation
+internal import SwoopMistKit
 internal import Testing
 
 @testable import SwoopKit
-internal import SwoopMistKit
 
+// swiftlint:disable file_length
 
 @Suite("FetchConfiguration Logic")
 internal struct FetchConfigurationTests {
@@ -322,3 +323,4 @@ internal struct FetchConfigurationTests {
     #expect(config.perSourceIntervals.isEmpty)
   }
 }
+// swiftlint:enable file_length

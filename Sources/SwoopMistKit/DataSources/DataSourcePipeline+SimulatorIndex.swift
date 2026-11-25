@@ -27,8 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import SwoopKit
 internal import Foundation
+internal import SwoopKit
 
 // MARK: - Apple's simulator index
 extension DataSourcePipeline {

@@ -30,8 +30,8 @@
 internal import Foundation
 internal import Testing
 
-@testable import SwoopMistKit
 @testable import SwoopKit
+@testable import SwoopMistKit
 
 // MARK: - Suite 5: SwiftVersion Deduplication Tests
 
