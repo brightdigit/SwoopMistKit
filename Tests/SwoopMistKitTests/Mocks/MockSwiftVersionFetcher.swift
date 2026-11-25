@@ -30,9 +30,9 @@
 internal import Foundation
 
 @testable import SwoopKit
+internal import SwoopMistKit
 
 
-internal import protocol BushelFoundation.DataSourceFetcher
 /// Mock fetcher for Swift version data source
 internal struct MockSwiftVersionFetcher: DataSourceFetcher, Sendable {
   internal typealias Record = [SwiftVersionRecord]

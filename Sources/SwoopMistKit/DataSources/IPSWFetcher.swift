@@ -29,8 +29,6 @@
 
 internal import SwoopKit
 
-internal import protocol BushelFoundation.DataSourceFetcher
-internal import BushelUtilities
 internal import Foundation
 internal import IPSWDownloads
 internal import OpenAPIURLSession

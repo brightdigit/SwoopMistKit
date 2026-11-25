@@ -29,7 +29,6 @@
 
 public import SwoopKit
 
-public import protocol BushelFoundation.DataSourceFetcher
 internal import Foundation
 
 #if canImport(FoundationNetworking)

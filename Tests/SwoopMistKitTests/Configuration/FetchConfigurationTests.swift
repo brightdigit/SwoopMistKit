@@ -31,9 +31,9 @@ internal import Foundation
 internal import Testing
 
 @testable import SwoopKit
+internal import SwoopMistKit
 
 
-internal import struct BushelFoundation.FetchConfiguration
 @Suite("FetchConfiguration Logic")
 internal struct FetchConfigurationTests {
   // MARK: - Minimum Interval Tests
@@ -272,5 +272,53 @@ internal struct FetchConfigurationTests {
 
     // Should allow fetch when time >= interval
     #expect(config.shouldFetch(source: "ipsw.me", lastFetchedAt: lastFetch) == true)
+  }
+
+  // MARK: - Environment
+
+  @Test("Reads SWOOP_FETCH_INTERVAL_* variables")
+  internal func testLoadFromEnvironmentReadsSwoopNames() {
+    let config = FetchConfiguration.loadFromEnvironment([
+      "SWOOP_FETCH_INTERVAL_GLOBAL": "600",
+      "SWOOP_FETCH_INTERVAL_APPLEDB_DEV": "7200",
+    ])
+
+    #expect(config.globalMinimumFetchInterval == 600)
+    #expect(config.perSourceIntervals == ["appledb.dev": 7_200])
+  }
+
+  @Test("Still reads the old BUSHEL_FETCH_INTERVAL_* names")
+  internal func testLoadFromEnvironmentReadsLegacyNames() {
+    let config = FetchConfiguration.loadFromEnvironment([
+      "BUSHEL_FETCH_INTERVAL_GLOBAL": "600",
+      "BUSHEL_FETCH_INTERVAL_IPSW_ME": "10800",
+    ])
+
+    #expect(config.globalMinimumFetchInterval == 600)
+    #expect(config.perSourceIntervals == ["ipsw.me": 10_800])
+  }
+
+  @Test("SWOOP_ names win over BUSHEL_ names")
+  internal func testLoadFromEnvironmentPrefersSwoopNames() {
+    let config = FetchConfiguration.loadFromEnvironment([
+      "BUSHEL_FETCH_INTERVAL_GLOBAL": "600",
+      "SWOOP_FETCH_INTERVAL_GLOBAL": "900",
+      "BUSHEL_FETCH_INTERVAL_APPLEDB_DEV": "1",
+      "SWOOP_FETCH_INTERVAL_APPLEDB_DEV": "2",
+    ])
+
+    #expect(config.globalMinimumFetchInterval == 900)
+    #expect(config.perSourceIntervals == ["appledb.dev": 2])
+  }
+
+  @Test("Ignores values that aren't numbers")
+  internal func testLoadFromEnvironmentIgnoresInvalidValues() {
+    let config = FetchConfiguration.loadFromEnvironment([
+      "SWOOP_FETCH_INTERVAL_GLOBAL": "soon",
+      "SWOOP_FETCH_INTERVAL_APPLEDB_DEV": "invalid",
+    ])
+
+    #expect(config.globalMinimumFetchInterval == nil)
+    #expect(config.perSourceIntervals.isEmpty)
   }
 }

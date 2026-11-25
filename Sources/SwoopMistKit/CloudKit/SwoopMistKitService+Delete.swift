@@ -27,7 +27,6 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import BushelLogging
 internal import Foundation
 internal import Logging
 public import MistKit

@@ -29,8 +29,6 @@
 
 internal import SwoopKit
 
-internal import protocol BushelFoundation.DataSourceFetcher
-public import BushelLogging
 internal import Foundation
 internal import Logging
 internal import SwiftSoup
@@ -241,5 +239,5 @@ internal struct MrMacintoshFetcher: DataSourceFetcher, Sendable {
 
 // MARK: - Loggable Conformance
 extension MrMacintoshFetcher: Loggable {
-  internal static let loggingCategory: BushelLogging.Category = .hub
+  internal static let loggingCategory: SwoopLogging.Category = .hub
 }

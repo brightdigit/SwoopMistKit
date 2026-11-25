@@ -30,9 +30,9 @@
 internal import Foundation
 
 @testable import SwoopKit
+internal import SwoopMistKit
 
 
-internal import protocol BushelFoundation.DataSourceFetcher
 /// Mock fetcher for MESU data source
 internal struct MockMESUFetcher: DataSourceFetcher, Sendable {
   internal typealias Record = RestoreImageRecord?

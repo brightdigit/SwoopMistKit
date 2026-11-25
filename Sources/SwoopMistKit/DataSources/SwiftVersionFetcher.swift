@@ -29,7 +29,6 @@
 
 internal import SwoopKit
 
-internal import protocol BushelFoundation.DataSourceFetcher
 internal import Foundation
 internal import SwiftSoup
 

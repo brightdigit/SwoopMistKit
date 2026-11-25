@@ -29,8 +29,6 @@
 
 internal import SwoopMistKit
 internal import SwoopKit
-internal import struct BushelFoundation.FetchConfiguration
-internal import BushelUtilities
 internal import Foundation
 
 internal enum SyncCommand {
@@ -41,7 +39,7 @@ internal enum SyncCommand {
     let config = try rawConfig.validated()
 
     // Enable verbose console output if requested
-    BushelUtilities.ConsoleOutput.isVerbose = config.sync?.verbose ?? false
+    ConsoleOutput.isVerbose = config.sync?.verbose ?? false
 
     // Build sync options from configuration
     let options = buildSyncOptions(from: config.sync)

@@ -34,7 +34,6 @@ internal import Testing
 
 @testable import SwoopMistKit
 @testable import SwoopKit
-import struct BushelFoundation.FetchConfiguration
 
 /// Comprehensive tests for ConfigurationLoader
 ///

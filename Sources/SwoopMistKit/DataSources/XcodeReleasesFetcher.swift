@@ -29,8 +29,6 @@
 
 public import SwoopKit
 
-public import protocol BushelFoundation.DataSourceFetcher
-public import BushelLogging
 internal import Foundation
 internal import Logging
 
@@ -282,5 +280,5 @@ public struct XcodeReleasesFetcher: DataSourceFetcher, Sendable {
 
 // MARK: - Loggable Conformance
 extension XcodeReleasesFetcher: Loggable {
-  public static let loggingCategory: BushelLogging.Category = .hub
+  public static let loggingCategory: SwoopLogging.Category = .hub
 }

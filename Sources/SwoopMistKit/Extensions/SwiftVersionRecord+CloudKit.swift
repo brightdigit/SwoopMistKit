@@ -28,8 +28,6 @@
 //
 
 public import SwoopKit
-internal import enum BushelFoundation.Formatters
-internal import BushelUtilities
 internal import Foundation
 public import MistKit
 

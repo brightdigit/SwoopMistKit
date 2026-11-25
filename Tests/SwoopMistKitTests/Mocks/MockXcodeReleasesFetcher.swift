@@ -30,9 +30,9 @@
 internal import Foundation
 
 @testable import SwoopKit
+internal import SwoopMistKit
 
 
-internal import protocol BushelFoundation.DataSourceFetcher
 /// Mock fetcher for Xcode Releases data source
 internal struct MockXcodeReleasesFetcher: DataSourceFetcher, Sendable {
   internal typealias Record = [XcodeVersionRecord]

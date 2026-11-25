@@ -30,9 +30,9 @@
 internal import Foundation
 
 @testable import SwoopKit
+internal import SwoopMistKit
 
 
-internal import protocol BushelFoundation.DataSourceFetcher
 /// Mock fetcher for IPSW data source
 internal struct MockIPSWFetcher: DataSourceFetcher, Sendable {
   internal typealias Record = [RestoreImageRecord]

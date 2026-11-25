@@ -29,7 +29,6 @@
 
 internal import SwoopMistKit
 internal import SwoopKit
-internal import struct BushelFoundation.FetchConfiguration
 internal import Foundation
 internal import MistKit
 

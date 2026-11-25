@@ -1,5 +1,5 @@
 {
-  "originHash" : "f19064c7c1ecb3cd9497bda0db6ce83bcb3fef3fc378d6d6951263f41c2f5234",
+  "originHash" : "68e323f612dfec38b913b31de260018838033ed07abb48d25e09a7674171d65c",
   "pins" : [
     {
       "identity" : "configkeykit",
@@ -53,24 +53,6 @@
       "state" : {
         "revision" : "448f170babc2f6c9897194a4b42719994639325d",
         "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "radiantkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/brightdigit/RadiantKit.git",
-      "state" : {
-        "revision" : "a65d6721b6b396f0503a3876ddab3f2399b21d4e",
-        "version" : "1.0.0-beta.5"
-      }
-    },
-    {
-      "identity" : "swift-argument-parser",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser",
-      "state" : {
-        "revision" : "626b5b7b2f45e1b0b1c6f4a309296d1d21d7311b",
-        "version" : "1.7.1"
       }
     },
     {

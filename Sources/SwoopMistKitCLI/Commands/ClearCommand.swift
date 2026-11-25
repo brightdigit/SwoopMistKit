@@ -29,7 +29,6 @@
 
 internal import SwoopMistKit
 internal import SwoopKit
-internal import BushelUtilities
 internal import Foundation
 
 internal enum ClearCommand {
@@ -40,7 +39,7 @@ internal enum ClearCommand {
     let config = try rawConfig.validated()
 
     // Enable verbose console output if requested
-    BushelUtilities.ConsoleOutput.isVerbose = config.clear?.verbose ?? false
+    ConsoleOutput.isVerbose = config.clear?.verbose ?? false
 
     // Confirm deletion unless --yes flag is provided
     let skipConfirmation = config.clear?.yes ?? false

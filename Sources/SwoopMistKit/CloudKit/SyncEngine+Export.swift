@@ -27,8 +27,6 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-internal import BushelLogging
-internal import BushelUtilities
 internal import Logging
 public import MistKit
 
@@ -66,7 +64,7 @@ extension SyncEngine {
   /// Export all records from CloudKit to a structured format
   public func export() async throws -> ExportResult {
     ConsoleOutput.print("\n" + String(repeating: "=", count: 60))
-    BushelUtilities.ConsoleOutput.info("Exporting data from CloudKit")
+    ConsoleOutput.info("Exporting data from CloudKit")
     ConsoleOutput.print(String(repeating: "=", count: 60))
     Self.logger.info("Exporting CloudKit data")
 

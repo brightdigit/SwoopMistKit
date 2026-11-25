@@ -28,7 +28,6 @@
 //
 
 public import SwoopKit
-internal import BushelUtilities
 public import MistKit
 
 extension SyncEngine {

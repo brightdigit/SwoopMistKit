@@ -29,9 +29,7 @@
 
 internal import SwoopKit
 
-internal import enum BushelFoundation.DataSource
 
-internal import struct BushelFoundation.FetchConfiguration
 internal import Foundation
 
 // MARK: - Configuration Loading
@@ -54,11 +52,10 @@ extension ConfigurationLoader {
       apiKey: read(ConfigurationKeys.VirtualBuddy.apiKey)
     )
 
-    // Fetch configuration: Start with BushelKit's environment loading, then override with CLI
+    // Fetch configuration: start with the environment, then override with CLI
     var fetch = FetchConfiguration.loadFromEnvironment()
 
-    // SWOOP_FETCH_INTERVAL_GLOBAL overrides BushelKit's
-    // BUSHEL_FETCH_INTERVAL_GLOBAL; --min-interval overrides both.
+    // --fetch.interval_global and SWOOP_FETCH_INTERVAL_GLOBAL; --min-interval overrides both.
     fetch = applyingGlobalInterval(to: fetch)
 
     // Override per-source intervals from CLI or ENV

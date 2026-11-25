@@ -28,7 +28,6 @@
 //
 
 public import SwoopKit
-public import BushelLogging
 public import Foundation
 internal import Logging
 public import MistKit
@@ -312,5 +311,5 @@ public struct SwoopMistKitService: Sendable, RecordManaging, CloudKitRecordColle
 
 // MARK: - Loggable Conformance
 extension SwoopMistKitService: Loggable {
-  public static let loggingCategory: BushelLogging.Category = .data
+  public static let loggingCategory: SwoopLogging.Category = .data
 }

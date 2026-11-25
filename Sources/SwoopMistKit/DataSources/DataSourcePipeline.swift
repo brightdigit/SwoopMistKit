@@ -29,8 +29,6 @@
 
 public import SwoopKit
 
-public import struct BushelFoundation.FetchConfiguration
-internal import BushelLogging
 internal import Foundation
 
 /// Orchestrates fetching data from all sources with deduplication and relationship resolution

@@ -93,7 +93,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/brightdigit/MistKit.git", from: "1.0.0-beta.4"),
         .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.2"),
-        .package(name: "BushelKit", path: "../BushelKit"),
+        .package(url: "https://github.com/brightdigit/FelinePine.git", from: "1.0.0"),
+        .package(url: "https://github.com/brightdigit/FelinePineSwift.git", from: "1.0.0"),
         .package(name: "SwoopKit", path: "../SwoopKit"),
         .package(url: "https://github.com/brightdigit/IPSWDownloads.git", from: "1.0.0"),
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
@@ -109,11 +110,13 @@ let package = Package(
             dependencies: [
                 .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
                 .product(name: "MistKit", package: "MistKit"),
-                .product(name: "BushelLogging", package: "BushelKit"),
-                .product(name: "BushelFoundation", package: "BushelKit"),
+                .product(name: "FelinePine", package: "FelinePine"),
+                .product(
+                    name: "FelinePineSwift",
+                    package: "FelinePineSwift",
+                    condition: .when(platforms: [.android, .linux, .openbsd, .wasi, .windows])
+                ),
                 .product(name: "SwoopKit", package: "SwoopKit"),
-                .product(name: "BushelUtilities", package: "BushelKit"),
-                .product(name: "BushelVirtualBuddy", package: "BushelKit"),
                 .product(name: "IPSWDownloads", package: "IPSWDownloads"),
                 .product(name: "SwiftSoup", package: "SwiftSoup"),
                 .product(name: "Configuration", package: "swift-configuration")
