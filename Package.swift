@@ -1,145 +1,82 @@
 // swift-tools-version: 6.4
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 // swiftlint:disable explicit_acl explicit_top_level_acl
 
 import PackageDescription
 
-// MARK: - Swift Settings Configuration
-
+// Syncs Apple OS, Xcode, Swift, SDK and simulator release data into CloudKit
+// with MistKit. The records themselves live in SwoopKit.
 let swiftSettings: [SwiftSetting] = [
-  // Swift 6.4 Upcoming Features (not yet enabled by default)
   // SE-0335: Introduce existential `any`
   .enableUpcomingFeature("ExistentialAny"),
   // SE-0409: Access-level modifiers on import declarations
   .enableUpcomingFeature("InternalImportsByDefault"),
-  // SE-0444: Member import visibility (Swift 6.1+)
-  .enableUpcomingFeature("MemberImportVisibility"),
-  // SE-0413: Typed throws
-  .enableUpcomingFeature("FullTypedThrows"),
-
-  // Experimental Features (stable enough for use)
-  // SE-0426: BitwiseCopyable protocol
-  .enableExperimentalFeature("BitwiseCopyable"),
-  // SE-0432: Borrowing and consuming pattern matching for noncopyable types
-  .enableExperimentalFeature("BorrowingSwitch"),
-  // Extension macros
-  .enableExperimentalFeature("ExtensionMacros"),
-  // Freestanding expression macros
-  .enableExperimentalFeature("FreestandingExpressionMacros"),
-  // Init accessors
-  .enableExperimentalFeature("InitAccessors"),
-  // Isolated any types
-  .enableExperimentalFeature("IsolatedAny"),
-  // Move-only classes
-  .enableExperimentalFeature("MoveOnlyClasses"),
-  // Move-only enum deinits
-  .enableExperimentalFeature("MoveOnlyEnumDeinits"),
-  // SE-0429: Partial consumption of noncopyable values
-  .enableExperimentalFeature("MoveOnlyPartialConsumption"),
-  // Move-only resilient types
-  .enableExperimentalFeature("MoveOnlyResilientTypes"),
-  // Move-only tuples
-  .enableExperimentalFeature("MoveOnlyTuples"),
-  // SE-0427: Noncopyable generics
-  .enableExperimentalFeature("NoncopyableGenerics"),
-  // One-way closure parameters
-  // .enableExperimentalFeature("OneWayClosureParameters"),
-  // Raw layout types
-  .enableExperimentalFeature("RawLayout"),
-  // Reference bindings
-  .enableExperimentalFeature("ReferenceBindings"),
-  // SE-0430: sending parameter and result values
-  .enableExperimentalFeature("SendingArgsAndResults"),
-  // Symbol linkage markers
-  .enableExperimentalFeature("SymbolLinkageMarkers"),
-  // Transferring args and results
-  .enableExperimentalFeature("TransferringArgsAndResults"),
-  // SE-0393: Value and Type Parameter Packs
-  .enableExperimentalFeature("VariadicGenerics"),
-  // Warn unsafe reflection
-  .enableExperimentalFeature("WarnUnsafeReflection"),
-
-  // Enhanced compiler checking
-  // .unsafeFlags([
-  //   // Enable concurrency warnings
-  //   "-warn-concurrency",
-  //   // Enable actor data race checks
-  //   "-enable-actor-data-race-checks",
-  //   // Complete strict concurrency checking
-  //   "-strict-concurrency=complete",
-  //   // Enable testing support
-  //   "-enable-testing",
-  //   // Warn about functions with >100 lines
-  //   "-Xfrontend", "-warn-long-function-bodies=100",
-  //   // Warn about slow type checking expressions
-  //   "-Xfrontend", "-warn-long-expression-type-checking=100"
-  // ])
 ]
 
 let package = Package(
-    name: "SwoopMistKit",
-    platforms: [
-        .macOS(.v15),
-        .iOS(.v18),
-        .watchOS(.v11),
-        .tvOS(.v18),
-        .visionOS(.v2)
-    ],
-    products: [
-        .library(name: "SwoopMistKit", targets: ["SwoopMistKit"]),
-        .executable(name: "swoopmist", targets: ["SwoopMistKitCLI"])
-    ],
-    dependencies: [
-        .package(url: "https://github.com/brightdigit/MistKit.git", branch: "mistico"),
-        .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.2"),
-        .package(url: "https://github.com/brightdigit/FelinePine.git", from: "1.0.0"),
-        .package(url: "https://github.com/brightdigit/FelinePineSwift.git", from: "1.0.0"),
-        .package(url: "https://github.com/brightdigit/SwoopKit.git", branch: "simulator"),
-        .package(url: "https://github.com/brightdigit/IPSWDownloads.git", from: "1.0.0"),
-        .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
-        .package(
-            url: "https://github.com/apple/swift-configuration.git",
-            from: "1.0.0",
-            traits: ["CommandLineArguments"]
-        )
-    ],
-    targets: [
-        .target(
-            name: "SwoopMistKit",
-            dependencies: [
-                .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
-                .product(name: "MistKit", package: "MistKit"),
-                .product(name: "FelinePine", package: "FelinePine"),
-                .product(
-                    name: "FelinePineSwift",
-                    package: "FelinePineSwift",
-                    condition: .when(platforms: [.android, .linux, .openbsd, .wasi, .windows])
-                ),
-                .product(name: "SwoopKit", package: "SwoopKit"),
-                .product(name: "IPSWDownloads", package: "IPSWDownloads"),
-                .product(name: "SwiftSoup", package: "SwiftSoup"),
-                .product(name: "Configuration", package: "swift-configuration")
-            ],
-            swiftSettings: swiftSettings
+  name: "SwoopMistKit",
+  platforms: [
+    .macOS(.v15),
+    .iOS(.v18),
+    .watchOS(.v11),
+    .tvOS(.v18),
+    .visionOS(.v2),
+  ],
+  products: [
+    .library(name: "SwoopMistKit", targets: ["SwoopMistKit"]),
+    .executable(name: "swoopmist", targets: ["SwoopMistKitCLI"]),
+  ],
+  dependencies: [
+    .package(url: "https://github.com/brightdigit/MistKit.git", branch: "mistico"),
+    .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.2"),
+    .package(url: "https://github.com/brightdigit/FelinePine.git", from: "1.0.0"),
+    .package(url: "https://github.com/brightdigit/FelinePineSwift.git", from: "1.0.0"),
+    .package(url: "https://github.com/brightdigit/SwoopKit.git", branch: "simulator"),
+    .package(url: "https://github.com/brightdigit/IPSWDownloads.git", from: "1.0.0"),
+    .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
+    .package(
+      url: "https://github.com/apple/swift-configuration.git",
+      from: "1.0.0",
+      traits: ["CommandLineArguments"]
+    ),
+  ],
+  targets: [
+    .target(
+      name: "SwoopMistKit",
+      dependencies: [
+        .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
+        .product(name: "MistKit", package: "MistKit"),
+        .product(name: "FelinePine", package: "FelinePine"),
+        .product(
+          name: "FelinePineSwift",
+          package: "FelinePineSwift",
+          condition: .when(platforms: [.android, .linux, .openbsd, .wasi, .windows])
         ),
-        .executableTarget(
-            name: "SwoopMistKitCLI",
-            dependencies: [
-                .target(name: "SwoopMistKit")
-            ],
-            swiftSettings: swiftSettings
-        ),
-        .testTarget(
-            name: "SwoopMistKitTests",
-            dependencies: [
-                .target(name: "SwoopMistKit")
-            ],
-            resources: [
-                .copy("Fixtures")
-            ],
-            swiftSettings: swiftSettings
-        )
-    ]
+        .product(name: "SwoopKit", package: "SwoopKit"),
+        .product(name: "IPSWDownloads", package: "IPSWDownloads"),
+        .product(name: "SwiftSoup", package: "SwiftSoup"),
+        .product(name: "Configuration", package: "swift-configuration"),
+      ],
+      swiftSettings: swiftSettings
+    ),
+    .executableTarget(
+      name: "SwoopMistKitCLI",
+      dependencies: [
+        .target(name: "SwoopMistKit")
+      ],
+      swiftSettings: swiftSettings
+    ),
+    .testTarget(
+      name: "SwoopMistKitTests",
+      dependencies: [
+        .target(name: "SwoopMistKit")
+      ],
+      resources: [
+        .copy("Fixtures")
+      ],
+      swiftSettings: swiftSettings
+    ),
+  ],
+  swiftLanguageModes: [.v6]
 )
 // swiftlint:enable explicit_acl explicit_top_level_acl
