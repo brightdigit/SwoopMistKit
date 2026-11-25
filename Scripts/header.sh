@@ -7,7 +7,8 @@ usage() {
   echo "  -c creator    Name of the creator"
   echo "  -o company    Name of the company with the copyright"
   echo "  -p package    Package or library name"
-  echo "  -y year       Copyright year (optional, defaults to current year)"
+  echo "  -y year       Copyright year for new headers (optional, defaults to"
+  echo "                the current year; an existing header keeps its year)"
   exit 1
 }
 
@@ -68,15 +69,16 @@ EOF
 
 # Loop through each Swift file in the specified directory and subdirectories
 find "$directory" -type f -name "*.swift" | while read -r file; do
-  # Skip files in the Generated directory
-  if [[ "$file" == *"/Generated/"* ]]; then
-    echo "Skipping $file (generated file)"
-    continue
-  fi
-
-  # Check if the first line is the swift-format-ignore indicator
-  first_line=$(head -n 1 "$file")
-  if [[ "$first_line" == "// swift-format-ignore-file" ]]; then
+  # Skip files carrying `// swift-format-ignore-file` anywhere in the leading
+  # comment block. This is the opt-out used by generated files (e.g.
+  # swift-openapi-generator emits it via `additionalFileComments`) and lets
+  # them sit anywhere in the tree without needing a path-based exclusion.
+  if awk '
+    /^\/\/[[:space:]]*swift-format-ignore-file[[:space:]]*$/ { found = 1; exit }
+    /^[[:space:]]*$/ || /^\/\// { next }
+    { exit }
+    END { exit !found }
+  ' "$file"; then
     echo "Skipping $file due to swift-format-ignore directive."
     continue
   fi
@@ -86,7 +88,10 @@ find "$directory" -type f -name "*.swift" | while read -r file; do
   filename=$(basename "$file" | sed 's/%/%%/g')
   package_safe=$(printf '%s' "$package" | sed 's/%/%%/g')
   creator_safe=$(printf '%s' "$creator" | sed 's/%/%%/g')
-  year_safe=$(printf '%s' "$year" | sed 's/%/%%/g')
+  # Keep the year of an existing header so re-running the script doesn't churn
+  # every file each January.
+  file_year=$(sed -n 's|^//  Copyright © \([0-9]\{4\}\) .*|\1|p' "$file" | head -n 1)
+  year_safe=$(printf '%s' "${file_year:-$year}" | sed 's/%/%%/g')
   company_safe=$(printf '%s' "$company" | sed 's/%/%%/g')
 
   header=$(printf "$header_template" "$filename" "$package_safe" "$creator_safe" "$year_safe" "$company_safe")
