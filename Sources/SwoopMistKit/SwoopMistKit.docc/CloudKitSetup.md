@@ -57,7 +57,7 @@ openssl ec -in eckey.pem -pubout -out eckey_pub.pem
 
 3. **Create New Server-to-Server Key**
    - Click the "+" button to create a new key
-   - **Name:** Give it a descriptive name (e.g., "SwoopMistKit Demo Key")
+   - **Name:** Give it a descriptive name (e.g., "SwoopMistKit Development Key")
    - **Public Key:** Paste the contents of `eckey_pub.pem`
 
 4. **Save and Record Key ID**
@@ -75,8 +75,8 @@ mkdir -p ~/.cloudkit
 chmod 700 ~/.cloudkit
 
 # Move private key to secure location
-mv eckey.pem ~/.cloudkit/bushel-private-key.pem
-chmod 600 ~/.cloudkit/bushel-private-key.pem
+mv eckey.pem ~/.cloudkit/swoop-private-key.pem
+chmod 600 ~/.cloudkit/swoop-private-key.pem
 ```
 
 ### Step 4: Configure Environment Variables
@@ -85,8 +85,8 @@ Set the following environment variables:
 
 ```bash
 export CLOUDKIT_KEY_ID="your-key-id-here"
-export CLOUDKIT_KEY_FILE="$HOME/.cloudkit/bushel-private-key.pem"
-export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"  # Optional
+export CLOUDKIT_PRIVATE_KEY_PATH="$HOME/.cloudkit/swoop-private-key.pem"
+export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"  # Optional; the default
 ```
 
 Add these to your shell profile (~/.zshrc or ~/.bashrc) for persistence:
@@ -94,7 +94,7 @@ Add these to your shell profile (~/.zshrc or ~/.bashrc) for persistence:
 ```bash
 # Add to ~/.zshrc
 echo 'export CLOUDKIT_KEY_ID="your-key-id-here"' >> ~/.zshrc
-echo 'export CLOUDKIT_KEY_FILE="$HOME/.cloudkit/bushel-private-key.pem"' >> ~/.zshrc
+echo 'export CLOUDKIT_PRIVATE_KEY_PATH="$HOME/.cloudkit/swoop-private-key.pem"' >> ~/.zshrc
 echo 'export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"' >> ~/.zshrc
 ```
 
@@ -120,7 +120,7 @@ Use the provided script to automatically import the schema:
 
 ```bash
 # Set required environment variables
-export CLOUDKIT_CONTAINER_ID="iCloud.com.yourcompany.Bushel"
+export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"
 export CLOUDKIT_TEAM_ID="YOUR_TEAM_ID"
 export CLOUDKIT_ENVIRONMENT="development"  # or "production"
 
@@ -160,7 +160,7 @@ xcrun cktool save-token
 ```bash
 xcrun cktool import-schema \
   --team-id YOUR_TEAM_ID \
-  --container-id iCloud.com.yourcompany.Bushel \
+  --container-id iCloud.com.brightdigit.Swoop \
   --environment development \
   --file schema.ckdb
 ```
@@ -170,7 +170,7 @@ xcrun cktool import-schema \
 ```bash
 xcrun cktool export-schema \
   --team-id YOUR_TEAM_ID \
-  --container-id iCloud.com.yourcompany.Bushel \
+  --container-id iCloud.com.brightdigit.Swoop \
   --environment development \
   > current-schema.ckdb
 
@@ -178,12 +178,8 @@ xcrun cktool export-schema \
 cat current-schema.ckdb | grep -A 2 "GRANT"
 ```
 
-You should see:
-```text
-GRANT READ, CREATE, WRITE TO "_creator",
-GRANT READ, CREATE, WRITE TO "_icloud",
-GRANT READ TO "_world"
-```
+You should see the grants from `schema.ckdb`: `READ, CREATE, WRITE` for `_creator` on every
+record type; "Critical Schema Permissions" below covers the rest.
 
 ---
 
@@ -219,11 +215,13 @@ Xcode releases and build numbers:
 | `version` | STRING | Xcode version (e.g., "16.0") |
 | `buildNumber` | STRING | Build number (e.g., "16A242") - unique key |
 | `releaseDate` | TIMESTAMP | Release date |
-| `downloadURL` | STRING | Download URL (optional) |
 | `isPrerelease` | INT64 | Prerelease status (0=no, 1=yes) |
-| `source` | STRING | Data source |
-| `minimumMacOS` | REFERENCE | Reference to RestoreImage record |
-| `swiftVersion` | REFERENCE | Reference to SwiftVersion record |
+| `prereleaseLabel` | STRING | "Beta 3", "RC 1", … (optional) |
+| `downloadURL` | STRING | Download URL (optional) |
+| `fileSize` | INT64 | File size in bytes (optional) |
+| `minimumMacOS` | REFERENCE | Reference to a RestoreImage record |
+| `includedSwiftVersion` | REFERENCE | Reference to a SwiftVersion record |
+| `sdkVersions` | STRING | The SDKs Xcode ships, as text |
 | `notes` | STRING | Optional metadata |
 
 ### SwiftVersion
@@ -234,9 +232,38 @@ Swift compiler versions:
 |-------|------|-------------|
 | `version` | STRING | Swift version (e.g., "6.0.2") - unique key |
 | `releaseDate` | TIMESTAMP | Release date |
+| `isPrerelease` | INT64 | Prerelease status (0=no, 1=yes) |
 | `downloadURL` | STRING | Download URL (optional) |
-| `source` | STRING | Data source |
 | `notes` | STRING | Optional metadata |
+
+### SDKVersion
+
+One record per platform and SDK build:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `platform` | STRING | "iOS", "macOS", … |
+| `version` | STRING | SDK version |
+| `buildNumber` | STRING | SDK build number |
+| `isPrerelease` | INT64 | Prerelease status (0=no, 1=yes) |
+| `prereleaseLabel` | STRING | "Beta 3", "RC 1", … (optional) |
+| `releaseDate` | TIMESTAMP | Release date (UTC day) |
+| `xcodeVersion` | REFERENCE | The Xcode that ships the SDK |
+| `supersededBy` | REFERENCE | For a beta, the final SDK of the same version |
+| `supersededAt` | TIMESTAMP | When the final SDK shipped |
+
+### SimulatorRuntime
+
+One record per platform and runtime build, from Apple's simulator index:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `platform` | STRING | "iOS", "watchOS", … |
+| `version` | STRING | Runtime version |
+| `buildNumber` | STRING | Runtime build number |
+| `isPrerelease` | INT64 | Prerelease status (0=no, 1=yes) |
+| `releaseLabel` | STRING | "Beta N", "RC N" or "Final" |
+| `sdkBuildNumbersText` | STRING | Comma-separated SDK builds the runtime maps to |
 
 ### DataSourceMetadata
 
@@ -249,27 +276,30 @@ Fetch metadata and throttling information:
 | `lastFetchedAt` | TIMESTAMP | Last fetch time |
 | `sourceUpdatedAt` | TIMESTAMP | Source last updated |
 | `recordCount` | INT64 | Number of records fetched |
-| `fetchDurationSeconds` | INT64 | Fetch duration |
+| `fetchDurationSeconds` | DOUBLE | Fetch duration |
 | `lastError` | STRING | Last error message (optional) |
 
 ---
 
 ## Critical Schema Permissions
 
-**Important:** For Server-to-Server authentication to work, your schema must grant permissions to **both** `_creator` and `_icloud` roles:
+A Server-to-Server key creates records as `_creator` but also needs `CREATE` on
+`_icloud`; granting only one role results in `ACCESS_DENIED` errors. `schema.ckdb` uses
+two patterns:
 
 ```text
+// RestoreImage, SwiftVersion, DataSourceMetadata
 GRANT READ, CREATE, WRITE TO "_creator",
 GRANT READ, CREATE, WRITE TO "_icloud",
 GRANT READ TO "_world"
+
+// XcodeVersion, SDKVersion, SimulatorRuntime
+GRANT READ, CREATE, WRITE TO "_creator",
+GRANT READ, CREATE TO "_icloud"
 ```
 
-**Why both are required:**
-- `_creator` - S2S keys authenticate as the developer/creator
-- `_icloud` - Required for public database operations
-- `_world` - Allows public read access (optional, but recommended for shared data)
-
-**Common mistake:** Only granting to one role results in `ACCESS_DENIED` errors.
+The second pattern has no `_world` grant and no `_icloud` write: simulator managers read
+those records with a signed-in iCloud account, and only the S2S sync writes them.
 
 ---
 
@@ -298,9 +328,9 @@ GRANT READ TO "_world"
 **Cause:** File doesn't exist at specified path
 
 **Solution:**
-- Use absolute path: `$HOME/.cloudkit/bushel-private-key.pem`
-- Verify file exists: `ls -la $CLOUDKIT_KEY_FILE`
-- Check file permissions: `chmod 600 $CLOUDKIT_KEY_FILE`
+- Use absolute path: `$HOME/.cloudkit/swoop-private-key.pem`
+- Verify file exists: `ls -la $CLOUDKIT_PRIVATE_KEY_PATH`
+- Check file permissions: `chmod 600 $CLOUDKIT_PRIVATE_KEY_PATH`
 
 ### "Schema validation failed: Was expecting DEFINE"
 

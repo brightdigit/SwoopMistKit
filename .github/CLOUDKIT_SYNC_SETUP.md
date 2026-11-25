@@ -129,7 +129,7 @@ The workflow runs automatically every 12 hours at:
 **Error:** Swift build errors
 
 **Solution:**
-- Check if dependencies are accessible (MistKit, BushelKit)
+- Check if dependencies are accessible (MistKit, SwoopKit)
 - Verify Package.resolved is committed to repository
 - Review workflow logs for specific compilation errors
 - Try clearing the cache: Delete the cache key in Actions → Caches

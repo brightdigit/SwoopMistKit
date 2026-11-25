@@ -2,7 +2,7 @@
 
 > **Note**: This is a detailed reference guide for CloudKit Server-to-Server authentication implementation. For daily development, see the main [CLAUDE.md](../CLAUDE.md) file.
 
-This document explains how BushelCloud implements CloudKit Server-to-Server (S2S) authentication using MistKit, including internal workings and best practices.
+This document explains how SwoopMistKit implements CloudKit Server-to-Server (S2S) authentication using MistKit, including internal workings and best practices.
 
 ## What is Server-to-Server Authentication?
 
@@ -21,12 +21,12 @@ Server-to-Server authentication allows backend services, scripts, or CLI tools t
 4. **CloudKit authenticates** requests as the developer/"_creator" role
 5. **Schema permissions** grant access based on "_creator" and "_icloud" roles
 
-## BushelCloudKitService Implementation Pattern
+## SwoopMistKitService Implementation Pattern
 
-BushelCloud wraps MistKit's `CloudKitService` for convenience:
+SwoopMistKit wraps MistKit's `CloudKitService` for convenience:
 
 ```swift
-struct BushelCloudKitService {
+struct SwoopMistKitService {
     let service: CloudKitService
 
     init(
@@ -36,7 +36,7 @@ struct BushelCloudKitService {
     ) throws {
         // 1. Validate file exists
         guard FileManager.default.fileExists(atPath: privateKeyPath) else {
-            throw BushelCloudKitError.privateKeyFileNotFound(path: privateKeyPath)
+            throw SwoopMistKitError.privateKeyFileNotFound(path: privateKeyPath)
         }
 
         // 2. Read PEM file
@@ -91,15 +91,15 @@ mkdir -p ~/.cloudkit
 chmod 700 ~/.cloudkit
 
 # Store private key securely
-mv ~/Downloads/AuthKey_*.pem ~/.cloudkit/bushel-private-key.pem
-chmod 600 ~/.cloudkit/bushel-private-key.pem
+mv ~/Downloads/AuthKey_*.pem ~/.cloudkit/swoop-private-key.pem
+chmod 600 ~/.cloudkit/swoop-private-key.pem
 ```
 
 **Environment setup:**
 ```bash
 # Add to ~/.zshrc or ~/.bashrc
 export CLOUDKIT_KEY_ID="your_key_id"
-export CLOUDKIT_KEY_FILE="$HOME/.cloudkit/bushel-private-key.pem"
+export CLOUDKIT_PRIVATE_KEY_PATH="$HOME/.cloudkit/swoop-private-key.pem"
 export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"
 ```
 
@@ -133,13 +133,13 @@ export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"
 ### "Private key file not found"
 
 ```text
-BushelCloudKitError.privateKeyFileNotFound(path: "./key.pem")
+SwoopMistKitError.privateKeyFileNotFound(path: "./key.pem")
 ```
 
 **Cause:** File doesn't exist at specified path or wrong working directory
 
 **Solution:**
-- Use absolute path: `$HOME/.cloudkit/bushel-private-key.pem`
+- Use absolute path: `$HOME/.cloudkit/swoop-private-key.pem`
 - Or verify current working directory matches expected location
 - Check file permissions (readable by current user)
 

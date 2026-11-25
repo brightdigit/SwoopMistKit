@@ -193,8 +193,7 @@ public struct DataSourcePipeline: Sendable {
       return (true, nil)
     }
 
-    // No CloudKit service in BushelCloudData - always fetch
-    // CloudKit metadata checking will be re-added in Phase 4
+    // The pipeline has no CloudKit service, so it always fetches
     return (true, nil)
   }
 
@@ -234,13 +233,11 @@ public struct DataSourcePipeline: Sendable {
     do {
       let results = try await fetcher()
 
-      // Metadata sync disabled in BushelCloudData (no CloudKit dependency)
-      // Will be re-enabled in Phase 4 when using BushelKit
+      // The pipeline has no CloudKit service, so it doesn't sync metadata.
 
       return results
     } catch {
-      // Metadata sync disabled in BushelCloudData (no CloudKit dependency)
-      // Will be re-enabled in Phase 4 when using BushelKit
+      // The pipeline has no CloudKit service, so it doesn't sync metadata.
 
       throw error
     }

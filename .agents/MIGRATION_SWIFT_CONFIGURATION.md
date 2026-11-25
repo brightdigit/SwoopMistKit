@@ -406,7 +406,7 @@ All tests passed successfully ✅
 4. **Keep Environment Variables**: Don't force users to change their setup
 5. **Add Secrets Handling**: Use `secretsSpecifier` for sensitive configuration
 
-## For New Projects (e.g., BushelCloud)
+## For New Projects (e.g., SwoopMistKit)
 
 If you're starting a new CLI project, you should **start with Swift Configuration from day one** rather than migrating later. Here's the recommended approach:
 
@@ -424,7 +424,7 @@ If you're starting a new CLI project, you should **start with Swift Configuratio
    ```
 
 2. **Create Configuration Structures** (similar to CelestraCloud):
-   - Root configuration struct (e.g., `BushelConfiguration`)
+   - Root configuration struct (e.g., `SwoopMistKitConfiguration`)
    - CloudKit configuration struct
    - Command-specific configuration structs
 
@@ -500,7 +500,7 @@ internal enum ConfigurationKeys {
 
 **Benefits**: Centralized key definitions, type-safe access, clear CLI vs ENV naming.
 
-**Note for BushelCloud**: This pattern uses string-based keys for simplicity. You may want to explore stronger typing (e.g., `ConfigKey<T>` with associated value types) for additional compile-time safety. See CelestraCloud implementation first to understand the basic pattern.
+**Note for SwoopMistKit**: This pattern uses string-based keys for simplicity. You may want to explore stronger typing (e.g., `ConfigKey<T>` with associated value types) for additional compile-time safety. See CelestraCloud implementation first to understand the basic pattern.
 
 #### Validation Pattern (in your configuration struct)
 ```swift
@@ -535,7 +535,7 @@ public struct ValidatedCloudKitConfiguration: Sendable {
 
 **Benefits**: Type safety (commands receive validated config with non-optional required fields), better error messages.
 
-#### Quick Start Checklist for BushelCloud
+#### Quick Start Checklist for SwoopMistKit
 - [ ] Add `swift-configuration` dependency with `traits: ["CommandLineArguments"]`
 - [ ] Create `ConfigurationKeys.swift` enum
 - [ ] Create configuration structs (`YourConfiguration`, `CloudKitConfiguration`, etc.)

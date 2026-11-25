@@ -11,7 +11,7 @@
 #   LINT_MODE=STRICT   warnings fail too (SwoopKit's default). Not the default
 #                      here yet: Sources and Tests still carry a backlog of
 #                      swift-format/SwiftLint warnings (mostly missing doc
-#                      comments and explicit ACLs) from the BushelCloud days.
+#                      comments and explicit ACLs) from before the SwoopMistKit rename.
 
 # Keep running after a failed step; ERRORS counts them.
 ERRORS=0

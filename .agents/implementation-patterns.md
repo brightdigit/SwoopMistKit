@@ -2,11 +2,11 @@
 
 > **Note**: This is a detailed reference guide documenting implementation decisions, patterns, and lessons learned. For daily development, see the main [CLAUDE.md](../CLAUDE.md) file.
 
-This document covers key implementation decisions, patterns, and lessons learned during BushelCloud development. Use this as reference when building similar CloudKit demos.
+This document covers key implementation decisions, patterns, and lessons learned during SwoopMistKit development. Use this as reference when building similar CloudKit demos.
 
 ## Data Source Integration Pattern
 
-BushelCloud integrates multiple external data sources. Here's the pattern for adding new sources:
+SwoopMistKit integrates multiple external data sources. Here's the pattern for adding new sources:
 
 **Step 1: Create Fetcher**
 ```swift
@@ -54,7 +54,7 @@ struct SyncCommand {
 
 **Build Number as Unique Key:**
 
-Multiple sources provide the same restore images. BushelCloud uses `buildNumber` as the unique key:
+Multiple sources provide the same restore images. SwoopMistKit uses `buildNumber` as the unique key:
 
 ```swift
 private func deduplicateRestoreImages(_ images: [RestoreImageRecord]) -> [RestoreImageRecord] {
@@ -135,7 +135,7 @@ let url = URL(string: "https://api.appledb.dev/ios/VirtualMac2,1.json")!
 
 ## Server-to-Server Authentication Migration
 
-BushelCloud was refactored from API Tokens to S2S Keys to demonstrate enterprise authentication patterns.
+SwoopMistKit was refactored from API Tokens to S2S Keys to demonstrate enterprise authentication patterns.
 
 **What Changed:**
 
@@ -143,13 +143,13 @@ BushelCloud was refactored from API Tokens to S2S Keys to demonstrate enterprise
 |-------------------|-----------------|
 | Single token string | Key ID + Private Key (.pem) |
 | `APITokenManager` | `ServerToServerAuthManager` |
-| `CLOUDKIT_API_TOKEN` env var | `CLOUDKIT_KEY_ID` + `CLOUDKIT_KEY_FILE` |
+| `CLOUDKIT_API_TOKEN` env var | `CLOUDKIT_KEY_ID` + `CLOUDKIT_PRIVATE_KEY_PATH` |
 | `--api-token` flag | `--key-id` + `--key-file` flags |
 
 **Migration Steps:**
 1. Generate ECDSA key pair with OpenSSL
 2. Register public key in CloudKit Dashboard
-3. Update `BushelCloudKitService` to use `ServerToServerAuthManager`
+3. Update `SwoopMistKitService` to use `ServerToServerAuthManager`
 4. Update all commands to accept new parameters
 5. Update environment variable handling
 6. Update documentation
@@ -220,7 +220,7 @@ CloudKit uses different tokens for different operations:
 | **API Token** | Simpler runtime auth (legacy) | Legacy apps | Dashboard → API Tokens |
 | **User Token** | User-specific operations | Web apps | OAuth flow |
 
-**For BushelCloud:**
+**For SwoopMistKit:**
 - Schema setup: **Management Token** (via `cktool save-token`)
 - Sync/export: **Server-to-Server Key** (Key ID + .pem file)
 
@@ -351,8 +351,8 @@ When building similar CloudKit demos (e.g., Celestra):
 - Deduplication by unique key
 - Merge priority rules for conflict resolution
 
-**4. Reusable patterns from BushelCloud:**
-- `BushelCloudKitService` wrapper pattern
+**4. Reusable patterns from SwoopMistKit:**
+- `SwoopMistKitService` wrapper pattern
 - `CloudKitRecord` protocol for models
 - CLI structure with swift-argument-parser
 - Environment variable handling

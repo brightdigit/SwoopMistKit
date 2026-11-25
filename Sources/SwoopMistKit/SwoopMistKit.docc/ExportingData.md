@@ -259,7 +259,6 @@ mv baseline.json exports/baseline-$(date +%Y%m%d).json
 - **No Format Options**: Only JSON format supported
 - **In-Memory Processing**: Large datasets may consume significant memory
 
-These are intentional limitations for this demonstration tool.
 
 ## Next Steps
 

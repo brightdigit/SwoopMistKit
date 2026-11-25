@@ -47,7 +47,7 @@ public enum CloudKitAuthMethod: Sendable {
   ///
   /// **Usage**: Pass path to .pem file on disk
   /// ```swift
-  /// let method = .pemFile(path: "~/.cloudkit/bushel-private-key.pem")
+  /// let method = .pemFile(path: "~/.cloudkit/swoop-private-key.pem")
   /// ```
   case pemFile(path: String)
 }

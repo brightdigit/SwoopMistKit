@@ -4,14 +4,14 @@ Learn how to build, configure, and run SwoopMistKit.
 
 ## Overview
 
-SwoopMistKit is a command-line demonstration tool that shows how to use MistKit to interact with CloudKit Web Services. This guide will help you get started with building and running the tool.
+SwoopMistKit's `swoopmist` command-line tool syncs Apple OS, Xcode, Swift, SDK and simulator release data into CloudKit with MistKit. This guide covers building, configuring and running it.
 
 ## Prerequisites
 
-- Swift 6.1 or later
-- macOS 14.0+ (for CloudKit functionality)
+- Swift 6.4 (Xcode 27 on macOS)
+- macOS 15 or later, or Linux
 - A CloudKit container with Server-to-Server authentication configured
-- Mint (for development tools): `brew install mint`
+- mise (for the lint tools): `brew install mise`, then `mise install`
 
 ## Building the Project
 

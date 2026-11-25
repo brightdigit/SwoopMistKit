@@ -33,7 +33,7 @@ internal import Testing
 
 @testable import SwoopMistKit
 
-/// Apple's simulator index wins over xcodereleases.com (#93, BushelCloud#42).
+/// Apple's simulator index wins over xcodereleases.com (#93, SwoopMistKit#42).
 ///
 /// Uses the recorded index (2026-11-17) and xcodereleases.com's 27.2 entries as they were
 /// on 2026-11-18.

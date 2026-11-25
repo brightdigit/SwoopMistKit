@@ -205,7 +205,7 @@ public struct SyncEngine: Sendable {
   // swiftlint:disable:next function_body_length
   public func sync(options: SyncOptions = SyncOptions()) async throws -> DetailedSyncResult {
     ConsoleOutput.print("\n" + String(repeating: "=", count: 60))
-    ConsoleOutput.info("Starting Bushel CloudKit Sync")
+    ConsoleOutput.info("Starting SwoopMistKit CloudKit Sync")
     ConsoleOutput.print(String(repeating: "=", count: 60))
     Self.logger.info("Sync started")
 

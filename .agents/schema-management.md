@@ -113,7 +113,7 @@ Check schema syntax without importing:
 ```bash
 xcrun cktool validate-schema \
   --team-id YOUR_TEAM_ID \
-  --container-id iCloud.com.yourcompany.Bushel \
+  --container-id iCloud.com.brightdigit.Swoop \
   --environment development \
   --file schema.ckdb
 ```
@@ -125,7 +125,7 @@ Upload schema to CloudKit:
 ```bash
 xcrun cktool import-schema \
   --team-id YOUR_TEAM_ID \
-  --container-id iCloud.com.yourcompany.Bushel \
+  --container-id iCloud.com.brightdigit.Swoop \
   --environment development \
   --file schema.ckdb
 ```
@@ -139,7 +139,7 @@ Download current schema from CloudKit:
 ```bash
 xcrun cktool export-schema \
   --team-id YOUR_TEAM_ID \
-  --container-id iCloud.com.yourcompany.Bushel \
+  --container-id iCloud.com.brightdigit.Swoop \
   --environment development \
   > schema-backup.ckdb
 ```
@@ -156,7 +156,7 @@ Test queries with cktool:
 ```bash
 xcrun cktool query \
   --team-id YOUR_TEAM_ID \
-  --container-id iCloud.com.yourcompany.Bushel \
+  --container-id iCloud.com.brightdigit.Swoop \
   --environment development \
   --record-type RestoreImage \
   --limit 10
@@ -194,7 +194,7 @@ git commit -m "Add DataSourceMetadata record type"
 xcrun cktool import-schema --environment development --file schema.ckdb
 
 # Test with your app
-bushel-cloud sync --verbose
+swoopmist sync --verbose
 
 # If successful, deploy to production
 xcrun cktool import-schema --environment production --file schema.ckdb
@@ -250,7 +250,7 @@ CloudKit uses different tokens for different purposes:
 | **Server-to-Server Key** | Runtime API operations | Your application | CloudKit Dashboard → Server-to-Server Keys |
 | **API Token** | Simpler runtime auth (deprecated) | Legacy apps | CloudKit Dashboard → API Tokens |
 
-**For BushelCloud:**
+**For SwoopMistKit:**
 - Schema setup: **Management Token** (via `cktool save-token`)
 - Sync/export commands: **Server-to-Server Key** (Key ID + .pem file)
 
@@ -285,8 +285,8 @@ CloudKit schema changes can take a few minutes to propagate. Wait 5-10 minutes a
 
 Schema import applies to the **container level**, making record types available in both public and private databases.
 
-**BushelCloud configuration:**
-- Writes to **public database** (see `BushelCloudKitService.swift`)
+**SwoopMistKit configuration:**
+- Writes to **public database** (see `SwoopMistKitService.swift`)
 - `GRANT READ TO "_world"` enables public read access
 - S2S auth uses public database scope
 
@@ -295,7 +295,7 @@ Schema import applies to the **container level**, making record types available 
 - Different permission model
 - Per-user data isolation
 
-BushelCloud uses public database to demonstrate server-managed shared data accessible to all users.
+SwoopMistKit uses public database to demonstrate server-managed shared data accessible to all users.
 
 ## Advanced: Programmatic Schema Validation
 

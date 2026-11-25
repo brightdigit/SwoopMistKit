@@ -1,163 +1,124 @@
 # CloudKit Integration Patterns
 
-Learn how SwoopMistKit uses MistKit for CloudKit Web Services.
+How SwoopMistKit uses MistKit for CloudKit Web Services.
 
 ## Overview
 
-SwoopMistKit demonstrates production-ready patterns for using MistKit to interact with CloudKit Web Services using Server-to-Server authentication.
+SwoopMistKit writes to the public database of a CloudKit container (by default
+`iCloud.com.brightdigit.Swoop`) through MistKit, with Server-to-Server authentication, so
+no signed-in iCloud user is needed.
 
 ## Server-to-Server Authentication
 
-Initialize ``SwoopMistKitService`` with ECDSA private key:
+Create a ``SwoopMistKitService`` with the key ID and the ECDSA P-256 private key from the
+CloudKit Dashboard, either as PEM text or as a path to the `.pem` file:
 
 ```swift
-let tokenManager = try ServerToServerAuthManager(
-    keyID: "your-key-id",
-    pemString: pemFileContents
-)
-
-let service = CloudKitService(
-    containerIdentifier: "iCloud.com.company.App",
-    tokenManager: tokenManager,
-    environment: .development
+let service = try SwoopMistKitService(
+  containerIdentifier: "iCloud.com.brightdigit.Swoop",
+  keyID: keyID,
+  privateKeyPath: "\(home)/.cloudkit/swoop-private-key.pem",
+  environment: .development
 )
 ```
 
-The database scope is now chosen per call (see "Batch Operations" below).
-
-Authentication tokens are automatically refreshed by MistKit.
+MistKit signs every request and refreshes tokens itself. The database is chosen per call:
+SwoopMistKit always uses `.public(.prefers(.serverToServer))`.
 
 ## Batch Operations
 
-CloudKit limits operations to 200 per request. SwoopMistKit handles this automatically:
+CloudKit accepts at most 200 operations per request. ``SwoopMistKitService`` chunks the
+operations and sends each batch with MistKit's `modifyRecords(_:classification:database:)`,
+which returns a structured result:
 
 ```swift
-let batches = operations.chunked(into: 200)
-for batch in batches {
-    let results = try await service.modifyRecords(
-        batch,
-        database: .public(.prefers(.serverToServer))
-    )
-    // Handle results...
-}
+let batchResult = try await service.modifyRecords(
+  batch,
+  classification: classification,
+  database: .public(.prefers(.serverToServer))
+)
+// batchResult.createdCount, .updatedCount, .failedCount, .failed, .totalCount
 ```
 
-See `SyncEngine` for the complete implementation.
+Every operation is a `.forceReplace` with a deterministic record name (built from the
+build number), so a repeated sync updates records instead of duplicating them.
 
-## Record Creation Pattern
+## Record Mapping
 
-All domain models implement `CloudKitRecord`:
+SwoopKit's records conform to MistKit's `CloudKitRecord` in
+`Sources/SwoopMistKit/Extensions/*+CloudKit.swift`:
 
 ```swift
 protocol CloudKitRecord {
-    static var cloudKitRecordType: String { get }
-    func toCloudKitFields() -> [String: FieldValue]
-    static func from(recordInfo: RecordInfo) -> Self?
+  static var cloudKitRecordType: String { get }
+  var recordName: String { get }
+  func toCloudKitFields() -> [String: FieldValue]
+  static func from(recordInfo: RecordInfo) -> Self?
+  static func formatForDisplay(_ recordInfo: RecordInfo) -> String
 }
 ```
-
-Example implementation:
 
 ```swift
 extension RestoreImageRecord: CloudKitRecord {
-    static var cloudKitRecordType: String { "RestoreImage" }
+  public static var cloudKitRecordType: String { "RestoreImage" }
 
-    func toCloudKitFields() -> [String: FieldValue] {
-        [
-            "version": .string(version),
-            "buildNumber": .string(buildNumber),
-            "releaseDate": .date(releaseDate),
-            "isPrerelease": FieldValue(booleanValue: isPrerelease),
-            // ... more fields
-        ]
-    }
+  public func toCloudKitFields() -> [String: FieldValue] {
+    [
+      "version": .string(.value(version)),
+      "buildNumber": .string(.value(buildNumber)),
+      "releaseDate": .date(.value(releaseDate)),
+      "isPrerelease": FieldValue(booleanValue: isPrerelease),
+      // ...
+    ]
+  }
 }
 ```
 
-## Field Type Conversions
+## Field Types
 
-CloudKit field types map to Swift types:
+Each `FieldValue` kind carries an arity: `.value(x)` for one value, `.list(xs)` for a
+list.
 
-| Swift Type | CloudKit Type | Example |
+| Swift type | CloudKit type | Example |
 |------------|---------------|---------|
-| `String` | `.string()` | `.string("macOS 14.0")` |
-| `Int64` | `.int64()` | `.int64(fileSize)` |
-| `Date` | `.date()` | `.date(releaseDate)` |
-| `Bool` | `.int64()` | `FieldValue(booleanValue: true)` |
-| Reference | `.reference()` | `.reference(Reference(recordName: "RestoreImage-23C71"))` |
+| `String` | `STRING` | `.string(.value("15.1"))` |
+| `Int` | `INT64` | `.int64(.value(fileSize))` |
+| `Date` | `TIMESTAMP` | `.date(.value(releaseDate))` |
+| `Bool` | `INT64` (0 or 1) | `FieldValue(booleanValue: true)` |
+| `URL` | `STRING` | `FieldValue(url: downloadURL)` |
+| Reference | `REFERENCE` | `.reference(.value(Reference(recordName: "RestoreImage-23C71")))` |
 
-**Note**: Booleans are stored as INT64 (0 = false, 1 = true).
+SwoopMistKit writes no list fields: MistKit can't decode `STRING_LIST` responses yet
+(brightdigit/MistKit#509), so a simulator runtime's SDK builds are stored as one
+comma-separated `STRING`, `sdkBuildNumbersText`.
 
-## Date Handling
+CloudKit dates are milliseconds since the epoch; MistKit converts `Date` values both ways.
 
-CloudKit dates use **milliseconds since epoch**. MistKit's `FieldValue.date()` handles conversion:
+## Reading Fields
 
-```swift
-// MistKit converts automatically
-let field: FieldValue = .date(Date())
-```
-
-## Reference Fields
-
-Create relationships using record names:
+Use MistKit's accessors, which return `nil` for a different kind or a list:
 
 ```swift
-fields["minimumMacOS"] = .reference(
-    Reference(recordName: "RestoreImage-23C71")
-)
+let version = recordInfo.fields["version"]?.stringValue
+let isSigned = recordInfo.fields["isSigned"]?.boolValue
+let minimumMacOS = recordInfo.fields["minimumMacOS"]?.referenceValue?.recordName
+let downloadURL = recordInfo.fields["downloadURL"]?.urlValue
 ```
 
-Read references:
+## Upload Order
 
-```swift
-if case .reference(let ref) = fieldValue {
-    let recordName = ref.recordName
-}
-```
-
-## Error Handling
-
-Check for partial failures in batch operations:
-
-```swift
-let results = try await service.modifyRecords(
-    operations,
-    database: .public(.prefers(.serverToServer))
-)
-for result in results {
-    switch result {
-    case .success(let record):
-        logger.debug("Saved: \\(record.recordName)")
-    case .failure(let error):
-        logger.error("Failed \\(error.recordName): \\(error.serverErrorCode.rawValue)")
-    }
-}
-```
+A reference to a record that doesn't exist yet fails with `VALIDATING_REFERENCE_ERROR`,
+so ``SyncEngine`` uploads SwiftVersion and RestoreImage records first, then
+XcodeVersion, then SDKVersion (final SDKs before prereleases, which point at them with
+`supersededBy`), then SimulatorRuntime.
 
 ## Verbose Mode
 
-Enable verbose logging to see MistKit operations:
+Pass `--verbose` (or set `SWOOP_SYNC_VERBOSE=true`) to log MistKit calls, batch details
+and per-record failures. In code, set `ConsoleOutput.isVerbose = true`.
 
-```swift
-BushelLogger.shared.enableVerbose()
-```
+## Key Types
 
-This logs:
-- API requests and responses
-- Batch operation details
-- Field mappings and conversions
-- Authentication token refresh
-
-## Key Classes
-
-- ``SwoopMistKitService`` - Service wrapper for SwoopMistKit operations
-- ``SyncEngine`` - Upload orchestration
-- `CloudKitFieldMapping` - Type conversion utilities
-
-## Best Practices
-
-1. **Batch wisely**: Stay under 200 operations per request
-2. **Order matters**: Upload dependencies first (SwiftVersion before XcodeVersion)
-3. **Handle partials**: Switch over each `RecordResult` (`.success` / `.failure`)
-4. **Use references**: Link related records with CloudKit references
-5. **Verbose development**: Use `--verbose` flag during development
+- ``SwoopMistKitService``: Server-to-Server setup, batching, queries and deletes
+- ``SyncEngine``: fetch, transform and upload in order
+- ``DataSourcePipeline``: fetching, deduplication and reference resolution

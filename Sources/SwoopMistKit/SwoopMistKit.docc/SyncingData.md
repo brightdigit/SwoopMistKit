@@ -160,11 +160,9 @@ Example cron job:
 
 ## Known Limitations
 
-- **No Duplicate Detection**: Running sync multiple times creates duplicate records
 - **No Incremental Sync**: Always fetches all data from sources
 - **No Conflict Resolution**: Concurrent syncs may cause conflicts
 
-These are intentional limitations for this demonstration tool.
 
 ## Next Steps
 

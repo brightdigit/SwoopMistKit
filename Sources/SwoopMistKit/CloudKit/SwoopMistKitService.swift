@@ -38,7 +38,7 @@ public import SwoopKit
 
 // swiftlint:disable file_length
 
-/// CloudKit service wrapper for Bushel demo operations
+/// CloudKit service wrapper for SwoopMistKit's record operations
 ///
 /// **Tutorial**: This demonstrates MistKit's Server-to-Server authentication pattern:
 /// 1. Load ECDSA private key from .pem file
