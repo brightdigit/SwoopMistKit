@@ -27,7 +27,8 @@ let package = Package(
     .executable(name: "swoopmist", targets: ["SwoopMistKitCLI"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/brightdigit/MistKit.git", branch: "mistico"),
+    // TODO: from: "1.0.0-beta.6" once tagged
+    .package(url: "https://github.com/brightdigit/MistKit.git", branch: "v1.0.0-beta.6"),
     .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.2"),
     .package(url: "https://github.com/brightdigit/FelinePine.git", from: "1.0.0"),
     .package(url: "https://github.com/brightdigit/FelinePineSwift.git", from: "1.0.0"),

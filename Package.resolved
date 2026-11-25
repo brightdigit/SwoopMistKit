@@ -1,5 +1,5 @@
 {
-  "originHash" : "046fbc9716f46077129b0ed2ca1d61124c88dbea350891b8d0515857c00ebc17",
+  "originHash" : "bf7bca10b62d798eb731a3ea999de4a684c8dde53f92fe4fd52a987efee8ddba",
   "pins" : [
     {
       "identity" : "configkeykit",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/brightdigit/MistKit.git",
       "state" : {
-        "branch" : "mistico",
-        "revision" : "b491bdabb857771ff5988e821d00baabd93fa81b"
+        "branch" : "v1.0.0-beta.6",
+        "revision" : "61b4a7bbae0be19a7d2ae1e0221fd8ee188296e3"
       }
     },
     {
