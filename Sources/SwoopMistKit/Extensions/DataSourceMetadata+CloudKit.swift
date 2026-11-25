@@ -71,20 +71,20 @@ extension DataSourceMetadata: CloudKitRecord {
 
   public func toCloudKitFields() -> [String: FieldValue] {
     var fields: [String: FieldValue] = [
-      "sourceName": .string(sourceName),
-      "recordTypeName": .string(recordTypeName),
-      "lastFetchedAt": .date(lastFetchedAt),
-      "recordCount": .int64(recordCount),
-      "fetchDurationSeconds": .double(fetchDurationSeconds),
+      "sourceName": .string(.value(sourceName)),
+      "recordTypeName": .string(.value(recordTypeName)),
+      "lastFetchedAt": .date(.value(lastFetchedAt)),
+      "recordCount": .int64(.value(recordCount)),
+      "fetchDurationSeconds": .double(.value(fetchDurationSeconds)),
     ]
 
     // Optional fields
     if let sourceUpdatedAt {
-      fields["sourceUpdatedAt"] = .date(sourceUpdatedAt)
+      fields["sourceUpdatedAt"] = .date(.value(sourceUpdatedAt))
     }
 
     if let lastError {
-      fields["lastError"] = .string(lastError)
+      fields["lastError"] = .string(.value(lastError))
     }
 
     return fields

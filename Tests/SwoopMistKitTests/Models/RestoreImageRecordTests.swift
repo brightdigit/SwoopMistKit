@@ -137,8 +137,8 @@ internal struct RestoreImageRecordTests {
       recordType: "RestoreImage",
       recordName: "test",
       fields: [
-        "version": .string("14.2.1"),
-        "buildNumber": .string("23C71"),
+        "version": .string(.value("14.2.1")),
+        "buildNumber": .string(.value("23C71")),
         // Missing other required fields
       ]
     )

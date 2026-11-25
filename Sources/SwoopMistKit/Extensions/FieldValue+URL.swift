@@ -39,7 +39,7 @@ extension FieldValue {
   ///
   /// ## Usage
   /// ```swift
-  /// let fieldValue: FieldValue = .string("https://example.com/file.dmg")
+  /// let fieldValue: FieldValue = .string(.value("https://example.com/file.dmg"))
   /// if let url = fieldValue.urlValue {
   ///   print(url.absoluteString) // "https://example.com/file.dmg"
   /// }
@@ -47,10 +47,7 @@ extension FieldValue {
   ///
   /// - Returns: The URL if this is a string FieldValue with a valid URL format, otherwise `nil`
   public var urlValue: URL? {
-    if case .string(let value) = self {
-      return URL(string: value)
-    }
-    return nil
+    stringValue.flatMap(URL.init(string:))
   }
 
   /// Create a string FieldValue from a URL
@@ -63,11 +60,11 @@ extension FieldValue {
   /// ```swift
   /// let url = URL(string: "https://example.com/file.dmg")!
   /// let fieldValue = FieldValue(url: url)
-  /// // Equivalent to: FieldValue.string("https://example.com/file.dmg")
+  /// // Equivalent to: FieldValue.string(.value("https://example.com/file.dmg"))
   /// ```
   ///
   /// - Parameter url: The URL to convert to a FieldValue
   public init(url: URL) {
-    self = .string(url.absoluteString)
+    self = .string(.value(url.absoluteString))
   }
 }

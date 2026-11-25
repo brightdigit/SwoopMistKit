@@ -142,7 +142,7 @@ internal struct XcodeVersionRecordTests {
       recordType: "XcodeVersion",
       recordName: "test",
       fields: [
-        "version": .string("15.1")
+        "version": .string(.value("15.1"))
         // Missing buildNumber and releaseDate
       ]
     )

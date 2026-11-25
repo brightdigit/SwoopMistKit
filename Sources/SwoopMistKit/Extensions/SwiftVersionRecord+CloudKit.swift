@@ -65,8 +65,8 @@ extension SwiftVersionRecord: @retroactive CloudKitRecord {
 
   public func toCloudKitFields() -> [String: FieldValue] {
     var fields: [String: FieldValue] = [
-      "version": .string(version),
-      "releaseDate": .date(releaseDate),
+      "version": .string(.value(version)),
+      "releaseDate": .date(.value(releaseDate)),
       "isPrerelease": FieldValue(booleanValue: isPrerelease),
     ]
 
@@ -76,7 +76,7 @@ extension SwiftVersionRecord: @retroactive CloudKitRecord {
     }
 
     if let notes {
-      fields["notes"] = .string(notes)
+      fields["notes"] = .string(.value(notes))
     }
 
     return fields

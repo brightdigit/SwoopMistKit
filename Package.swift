@@ -91,11 +91,11 @@ let package = Package(
         .executable(name: "swoopmist", targets: ["SwoopMistKitCLI"])
     ],
     dependencies: [
-        .package(url: "https://github.com/brightdigit/MistKit.git", from: "1.0.0-beta.4"),
+        .package(url: "https://github.com/brightdigit/MistKit.git", branch: "mistico"),
         .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.2"),
         .package(url: "https://github.com/brightdigit/FelinePine.git", from: "1.0.0"),
         .package(url: "https://github.com/brightdigit/FelinePineSwift.git", from: "1.0.0"),
-        .package(name: "SwoopKit", path: "../SwoopKit"),
+        .package(url: "https://github.com/brightdigit/SwoopKit.git", branch: "simulator"),
         .package(url: "https://github.com/brightdigit/IPSWDownloads.git", from: "1.0.0"),
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
         .package(

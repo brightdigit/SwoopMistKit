@@ -81,27 +81,27 @@ extension SDKVersionRecord: @retroactive CloudKitRecord {
 
   public func toCloudKitFields() -> [String: FieldValue] {
     var fields: [String: FieldValue] = [
-      "platform": .string(platform.rawValue),
-      "version": .string(version),
-      "buildNumber": .string(buildNumber),
+      "platform": .string(.value(platform.rawValue)),
+      "version": .string(.value(version)),
+      "buildNumber": .string(.value(buildNumber)),
       "isPrerelease": FieldValue(booleanValue: isPrerelease),
-      "releaseDate": .date(releaseDate),
+      "releaseDate": .date(.value(releaseDate)),
     ]
 
     if let prereleaseLabel {
-      fields["prereleaseLabel"] = .string(prereleaseLabel)
+      fields["prereleaseLabel"] = .string(.value(prereleaseLabel))
     }
 
     if let xcodeVersion {
-      fields["xcodeVersion"] = .reference(Reference(recordName: xcodeVersion, action: nil))
+      fields["xcodeVersion"] = .reference(.value(Reference(recordName: xcodeVersion, action: nil)))
     }
 
     if let supersededBy {
-      fields["supersededBy"] = .reference(Reference(recordName: supersededBy, action: nil))
+      fields["supersededBy"] = .reference(.value(Reference(recordName: supersededBy, action: nil)))
     }
 
     if let supersededAt {
-      fields["supersededAt"] = .date(supersededAt)
+      fields["supersededAt"] = .date(.value(supersededAt))
     }
 
     return fields

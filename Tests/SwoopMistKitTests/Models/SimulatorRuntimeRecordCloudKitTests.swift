@@ -76,20 +76,20 @@ internal struct SimulatorRuntimeRecordCloudKitTests {
   @Test("Fields hold the label as text, isPrerelease as INT64 and the SDK builds as text")
   internal func fields() {
     let fields = Self.duoFinal.toCloudKitFields()
-    #expect(fields["platform"] == .string("iOS"))
-    #expect(fields["version"] == .string("27.2"))
-    #expect(fields["buildNumber"] == .string("24B91016s"))
-    #expect(fields["isPrerelease"] == .int64(0))
-    #expect(fields["releaseLabel"] == .string("Final"))
+    #expect(fields["platform"] == .string(.value("iOS")))
+    #expect(fields["version"] == .string(.value("27.2")))
+    #expect(fields["buildNumber"] == .string(.value("24B91016s")))
+    #expect(fields["isPrerelease"] == .int64(.value(0)))
+    #expect(fields["releaseLabel"] == .string(.value("Final")))
     // MistKit#509: a comma-separated STRING under a new name, never a LIST<STRING>.
-    #expect(fields["sdkBuildNumbersText"] == .string("24B113,24B8118"))
+    #expect(fields["sdkBuildNumbersText"] == .string(.value("24B113,24B8118")))
     #expect(fields["sdkBuildNumbers"] == nil)
 
-    #expect(Self.singleSDK.toCloudKitFields()["sdkBuildNumbersText"] == .string("24B113"))
+    #expect(Self.singleSDK.toCloudKitFields()["sdkBuildNumbersText"] == .string(.value("24B113")))
 
     let rcFields = Self.releaseCandidate.toCloudKitFields()
-    #expect(rcFields["isPrerelease"] == .int64(1))
-    #expect(rcFields["releaseLabel"] == .string("RC 1"))
+    #expect(rcFields["isPrerelease"] == .int64(.value(1)))
+    #expect(rcFields["releaseLabel"] == .string(.value("RC 1")))
     #expect(rcFields["sdkBuildNumbersText"] == nil)
     #expect(rcFields["sdkBuildNumbers"] == nil)
   }
@@ -98,7 +98,7 @@ internal struct SimulatorRuntimeRecordCloudKitTests {
   internal func noListFields() {
     for record in [Self.duoFinal, Self.singleSDK, Self.releaseCandidate] {
       for value in record.toCloudKitFields().values {
-        if case .list = value {
+        if value.isList {
           Issue.record("\(record.recordName) has a list field")
         }
       }
@@ -129,7 +129,7 @@ internal struct SimulatorRuntimeRecordCloudKitTests {
   @Test("An empty SDK build text field maps to no SDK builds")
   internal func emptyText() {
     var fields = Self.releaseCandidate.toCloudKitFields()
-    fields["sdkBuildNumbersText"] = .string("")
+    fields["sdkBuildNumbersText"] = .string(.value(""))
     let info = RecordInfo(
       recordName: "SimulatorRuntime-watchOS-24S116",
       recordType: "SimulatorRuntime",
@@ -142,7 +142,7 @@ internal struct SimulatorRuntimeRecordCloudKitTests {
   @Test("A missing or unknown label doesn't map")
   internal func badLabel() {
     var fields = Self.releaseCandidate.toCloudKitFields()
-    fields["releaseLabel"] = .string("Seed 4")
+    fields["releaseLabel"] = .string(.value("Seed 4"))
     let info = RecordInfo(
       recordName: "SimulatorRuntime-watchOS-24S116",
       recordType: "SimulatorRuntime",

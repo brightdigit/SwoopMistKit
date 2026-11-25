@@ -84,15 +84,15 @@ extension RestoreImageRecord: @retroactive CloudKitRecord {
 
   public func toCloudKitFields() -> [String: FieldValue] {
     var fields: [String: FieldValue] = [
-      "version": .string(version),
-      "buildNumber": .string(buildNumber),
-      "releaseDate": .date(releaseDate),
+      "version": .string(.value(version)),
+      "buildNumber": .string(.value(buildNumber)),
+      "releaseDate": .date(.value(releaseDate)),
       "downloadURL": FieldValue(url: downloadURL),
-      "fileSize": .int64(fileSize),
-      "sha256Hash": .string(sha256Hash),
-      "sha1Hash": .string(sha1Hash),
+      "fileSize": .int64(.value(fileSize)),
+      "sha256Hash": .string(.value(sha256Hash)),
+      "sha1Hash": .string(.value(sha1Hash)),
       "isPrerelease": FieldValue(booleanValue: isPrerelease),
-      "source": .string(source),
+      "source": .string(.value(source)),
     ]
 
     // Optional fields
@@ -101,11 +101,11 @@ extension RestoreImageRecord: @retroactive CloudKitRecord {
     }
 
     if let notes {
-      fields["notes"] = .string(notes)
+      fields["notes"] = .string(.value(notes))
     }
 
     if let sourceUpdatedAt {
-      fields["sourceUpdatedAt"] = .date(sourceUpdatedAt)
+      fields["sourceUpdatedAt"] = .date(.value(sourceUpdatedAt))
     }
 
     return fields

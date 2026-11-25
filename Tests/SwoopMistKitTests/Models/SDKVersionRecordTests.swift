@@ -106,7 +106,7 @@ internal struct SDKVersionRecordTests {
   @Test("Unknown platform fails to decode")
   internal func testUnknownPlatform() {
     var fields = Self.minimal.toCloudKitFields()
-    fields["platform"] = .string("carOS")
+    fields["platform"] = .string(.value("carOS"))
     let recordInfo = MockRecordInfo.create(
       recordType: SDKVersionRecord.cloudKitRecordType,
       recordName: "SDKVersion-carOS-1A1",

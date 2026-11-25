@@ -107,18 +107,18 @@ extension SimulatorRuntimeRecord: @retroactive CloudKitRecord {
 
   public func toCloudKitFields() -> [String: FieldValue] {
     var fields: [String: FieldValue] = [
-      "platform": .string(platform.rawValue),
-      "version": .string(version),
-      "buildNumber": .string(buildNumber),
+      "platform": .string(.value(platform.rawValue)),
+      "version": .string(.value(version)),
+      "buildNumber": .string(.value(buildNumber)),
       "isPrerelease": FieldValue(booleanValue: isPrerelease),
-      "releaseLabel": .string(releaseLabel.description),
+      "releaseLabel": .string(.value(releaseLabel.description)),
     ]
 
     // MistKit#509 workaround: one comma-separated STRING instead of a LIST<STRING>.
     // TODO: Write `.list(sdkBuildNumbers.map(FieldValue.string))` again once it's fixed.
     // Left out when empty, as the list field was.
     if let text = Self.sdkBuildNumbersText(sdkBuildNumbers) {
-      fields[Self.sdkBuildNumbersFieldName] = .string(text)
+      fields[Self.sdkBuildNumbersFieldName] = .string(.value(text))
     }
 
     return fields

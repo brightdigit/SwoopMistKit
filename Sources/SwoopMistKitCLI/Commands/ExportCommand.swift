@@ -125,48 +125,30 @@ internal enum ExportCommand {
     // Filter signed-only restore images
     if exportConfig.signedOnly {
       restoreImages = restoreImages.filter { record in
-        if case .int64(let isSigned) = record.fields["isSigned"] {
-          return isSigned != 0
-        }
-        return false
+        record.fields["isSigned"]?.intValue.map { $0 != 0 } ?? false
       }
     }
 
     // Filter out betas
     if exportConfig.noBetas {
       restoreImages = restoreImages.filter { record in
-        if case .int64(let isPrerelease) = record.fields["isPrerelease"] {
-          return isPrerelease == 0
-        }
-        return true
+        record.fields["isPrerelease"]?.intValue.map { $0 == 0 } ?? true
       }
 
       xcodeVersions = xcodeVersions.filter { record in
-        if case .int64(let isPrerelease) = record.fields["isPrerelease"] {
-          return isPrerelease == 0
-        }
-        return true
+        record.fields["isPrerelease"]?.intValue.map { $0 == 0 } ?? true
       }
 
       swiftVersions = swiftVersions.filter { record in
-        if case .int64(let isPrerelease) = record.fields["isPrerelease"] {
-          return isPrerelease == 0
-        }
-        return true
+        record.fields["isPrerelease"]?.intValue.map { $0 == 0 } ?? true
       }
 
       sdkVersions = sdkVersions.filter { record in
-        if case .int64(let isPrerelease) = record.fields["isPrerelease"] {
-          return isPrerelease == 0
-        }
-        return true
+        record.fields["isPrerelease"]?.intValue.map { $0 == 0 } ?? true
       }
 
       simulatorRuntimes = simulatorRuntimes.filter { record in
-        if case .int64(let isPrerelease) = record.fields["isPrerelease"] {
-          return isPrerelease == 0
-        }
-        return true
+        record.fields["isPrerelease"]?.intValue.map { $0 == 0 } ?? true
       }
     }
 

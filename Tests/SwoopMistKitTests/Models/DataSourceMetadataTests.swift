@@ -90,7 +90,7 @@ internal struct DataSourceMetadataTests {
       recordType: "DataSourceMetadata",
       recordName: "test",
       fields: [
-        "sourceName": .string("ipsw.me")
+        "sourceName": .string(.value("ipsw.me"))
         // Missing recordTypeName and lastFetchedAt
       ]
     )

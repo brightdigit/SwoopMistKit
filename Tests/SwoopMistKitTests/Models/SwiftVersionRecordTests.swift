@@ -86,7 +86,7 @@ internal struct SwiftVersionRecordTests {
       recordType: "SwiftVersion",
       recordName: "test",
       fields: [
-        "version": .string("5.9.2")
+        "version": .string(.value("5.9.2"))
         // Missing releaseDate
       ]
     )

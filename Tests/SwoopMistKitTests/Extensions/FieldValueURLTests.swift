@@ -41,7 +41,7 @@ internal struct FieldValueURLTests {
     let url = URL(string: "https://example.com/file.dmg")!
     let fieldValue = FieldValue(url: url)
 
-    if case .string(let value) = fieldValue {
+    if case .string(.value(let value)) = fieldValue {
       #expect(value == "https://example.com/file.dmg")
     } else {
       Issue.record("Expected .string FieldValue")
@@ -53,7 +53,7 @@ internal struct FieldValueURLTests {
     let url = URL(string: "https://example.com/path/to/file.ipsw")!
     let fieldValue = FieldValue(url: url)
 
-    if case .string(let value) = fieldValue {
+    if case .string(.value(let value)) = fieldValue {
       #expect(value == "https://example.com/path/to/file.ipsw")
     } else {
       Issue.record("Expected .string FieldValue")
@@ -65,7 +65,7 @@ internal struct FieldValueURLTests {
     let url = URL(string: "https://example.com/file.dmg?version=1.0&platform=mac")!
     let fieldValue = FieldValue(url: url)
 
-    if case .string(let value) = fieldValue {
+    if case .string(.value(let value)) = fieldValue {
       #expect(value == "https://example.com/file.dmg?version=1.0&platform=mac")
     } else {
       Issue.record("Expected .string FieldValue")
@@ -77,7 +77,7 @@ internal struct FieldValueURLTests {
     let url = URL(fileURLWithPath: "/Users/test/file.dmg")
     let fieldValue = FieldValue(url: url)
 
-    if case .string(let value) = fieldValue {
+    if case .string(.value(let value)) = fieldValue {
       #expect(value == "file:///Users/test/file.dmg")
     } else {
       Issue.record("Expected .string FieldValue")
@@ -88,7 +88,7 @@ internal struct FieldValueURLTests {
 
   @Test("Extract URL from string FieldValue")
   internal func testExtractURLFromStringFieldValue() throws {
-    let fieldValue: FieldValue = .string("https://example.com/file.dmg")
+    let fieldValue: FieldValue = .string(.value("https://example.com/file.dmg"))
     let url = fieldValue.urlValue
 
     #expect(url != nil)
@@ -97,7 +97,7 @@ internal struct FieldValueURLTests {
 
   @Test("Extract URL from string FieldValue with path")
   internal func testExtractURLFromStringFieldValueWithPath() throws {
-    let fieldValue: FieldValue = .string("https://downloads.apple.com/restore/macOS/23C71.ipsw")
+    let fieldValue: FieldValue = .string(.value("https://downloads.apple.com/restore/macOS/23C71.ipsw"))
     let url = fieldValue.urlValue
 
     #expect(url != nil)
@@ -111,14 +111,14 @@ internal struct FieldValueURLTests {
     // toolchains rejected outright, so assert the property that holds either
     // way: no scheme, hence no usable absolute URL.
     for raw in ["not a valid url", "ht!tp://invalid"] {
-      let fieldValue: FieldValue = .string(raw)
+      let fieldValue: FieldValue = .string(.value(raw))
       #expect(fieldValue.urlValue?.scheme == nil)
     }
   }
 
   @Test("Extract nil from empty string")
   internal func testExtractNilFromEmptyString() throws {
-    let fieldValue: FieldValue = .string("")
+    let fieldValue: FieldValue = .string(.value(""))
     let url = fieldValue.urlValue
 
     // Note: URL(string: "") returns nil (empty string is not a valid URL)
@@ -127,13 +127,13 @@ internal struct FieldValueURLTests {
 
   @Test("Extract nil from non-string FieldValue")
   internal func testExtractNilFromNonStringFieldValue() throws {
-    let intFieldValue: FieldValue = .int64(42)
+    let intFieldValue: FieldValue = .int64(.value(42))
     #expect(intFieldValue.urlValue == nil)
 
-    let doubleFieldValue: FieldValue = .double(3.14)
+    let doubleFieldValue: FieldValue = .double(.value(3.14))
     #expect(doubleFieldValue.urlValue == nil)
 
-    let dateFieldValue: FieldValue = .date(Date())
+    let dateFieldValue: FieldValue = .date(.value(Date()))
     #expect(dateFieldValue.urlValue == nil)
   }
 
@@ -210,7 +210,7 @@ internal struct FieldValueURLTests {
     let fieldValue = FieldValue(url: url)
 
     // When sent to CloudKit, this becomes a STRING field with the absolute URL
-    if case .string(let stringValue) = fieldValue {
+    if case .string(.value(let stringValue)) = fieldValue {
       // Verify it's a valid absolute URL string
       #expect(stringValue.hasPrefix("https://"))
       #expect(URL(string: stringValue) != nil)

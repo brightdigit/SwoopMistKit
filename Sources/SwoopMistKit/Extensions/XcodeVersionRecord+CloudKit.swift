@@ -75,15 +75,15 @@ extension XcodeVersionRecord: @retroactive CloudKitRecord {
 
   public func toCloudKitFields() -> [String: FieldValue] {
     var fields: [String: FieldValue] = [
-      "version": .string(version),
-      "buildNumber": .string(buildNumber),
-      "releaseDate": .date(releaseDate),
+      "version": .string(.value(version)),
+      "buildNumber": .string(.value(buildNumber)),
+      "releaseDate": .date(.value(releaseDate)),
       "isPrerelease": FieldValue(booleanValue: isPrerelease),
     ]
 
     // Optional fields
     if let prereleaseLabel {
-      fields["prereleaseLabel"] = .string(prereleaseLabel)
+      fields["prereleaseLabel"] = .string(.value(prereleaseLabel))
     }
 
     if let downloadURL {
@@ -91,33 +91,27 @@ extension XcodeVersionRecord: @retroactive CloudKitRecord {
     }
 
     if let fileSize {
-      fields["fileSize"] = .int64(fileSize)
+      fields["fileSize"] = .int64(.value(fileSize))
     }
 
     if let minimumMacOS {
       fields["minimumMacOS"] = .reference(
-        Reference(
-          recordName: minimumMacOS,
-          action: nil
-        )
+        .value(Reference(recordName: minimumMacOS, action: nil))
       )
     }
 
     if let includedSwiftVersion {
       fields["includedSwiftVersion"] = .reference(
-        Reference(
-          recordName: includedSwiftVersion,
-          action: nil
-        )
+        .value(Reference(recordName: includedSwiftVersion, action: nil))
       )
     }
 
     if let sdkVersions {
-      fields["sdkVersions"] = .string(sdkVersions)
+      fields["sdkVersions"] = .string(.value(sdkVersions))
     }
 
     if let notes {
-      fields["notes"] = .string(notes)
+      fields["notes"] = .string(.value(notes))
     }
 
     return fields
