@@ -43,15 +43,7 @@ internal import Testing
 @Suite(
   "VirtualBuddyFetcher Tests",
   .serialized,
-  .enabled(
-    if: {
-      #if os(macOS) || os(Linux)
-        return true
-      #else
-        return false
-      #endif
-    }()
-  )
+  .enabled(if: Platform.isMacOSOrLinux)
 )
 internal struct VirtualBuddyFetcherTests {
   // MARK: - Initialization Tests
