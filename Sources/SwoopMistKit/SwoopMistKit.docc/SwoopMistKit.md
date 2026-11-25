@@ -48,6 +48,8 @@ The package also ships the `swoopmist` command-line tool, with `sync`, `export`,
 ### Configuration
 
 - ``ConfigurationLoader``
+- ``SwoopMistKitConfiguration``
+- ``ValidatedSwoopMistKitConfiguration``
 - ``CloudKitConfiguration``
 - ``SyncConfiguration``
 - ``ExportConfiguration``

@@ -34,7 +34,7 @@ internal import SwoopKit
 
 extension ConfigurationLoader {
   /// Load the complete configuration from all providers
-  public func loadConfiguration() async throws -> BushelConfiguration {
+  public func loadConfiguration() async throws -> SwoopMistKitConfiguration {
     // CloudKit configuration (automatic CLI → ENV → default fallback)
     let cloudKit = CloudKitConfiguration(
       containerID: read(ConfigurationKeys.CloudKit.containerID),
@@ -121,7 +121,7 @@ extension ConfigurationLoader {
       verbose: read(ConfigurationKeys.Clear.verbose)
     )
 
-    return BushelConfiguration(
+    return SwoopMistKitConfiguration(
       cloudKit: cloudKit,
       virtualBuddy: virtualBuddy,
       fetch: fetch,

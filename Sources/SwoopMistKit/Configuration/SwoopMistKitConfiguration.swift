@@ -1,5 +1,5 @@
 //
-//  BushelConfiguration.swift
+//  SwoopMistKitConfiguration.swift
 //  SwoopMistKit
 //
 //  Created by Leo Dion.
@@ -47,7 +47,7 @@ public struct ConfigurationError: Error, Sendable {
 // MARK: - Root Configuration
 
 /// Root configuration containing all subsystem configurations
-public struct BushelConfiguration: Sendable {
+public struct SwoopMistKitConfiguration: Sendable {
   public var cloudKit: CloudKitConfiguration?
   public var virtualBuddy: VirtualBuddyConfiguration?
   public var fetch: FetchConfiguration?
@@ -78,11 +78,11 @@ public struct BushelConfiguration: Sendable {
   }
 
   /// Validate that all required fields are present
-  public func validated() throws -> ValidatedBushelConfiguration {
+  public func validated() throws -> ValidatedSwoopMistKitConfiguration {
     guard let cloudKit = cloudKit else {
       throw ConfigurationError("CloudKit configuration required", key: "cloudkit")
     }
-    return ValidatedBushelConfiguration(
+    return ValidatedSwoopMistKitConfiguration(
       cloudKit: try cloudKit.validated(),
       virtualBuddy: virtualBuddy,
       fetch: fetch,
@@ -98,7 +98,7 @@ public struct BushelConfiguration: Sendable {
 // MARK: - Validated Root Configuration
 
 /// Validated configuration with non-optional required fields
-public struct ValidatedBushelConfiguration: Sendable {
+public struct ValidatedSwoopMistKitConfiguration: Sendable {
   public let cloudKit: ValidatedCloudKitConfiguration
   public let virtualBuddy: VirtualBuddyConfiguration?
   public let fetch: FetchConfiguration?
@@ -128,3 +128,13 @@ public struct ValidatedBushelConfiguration: Sendable {
     self.clear = clear
   }
 }
+
+// MARK: - Names from before the rename
+
+/// The name ``SwoopMistKitConfiguration`` had in BushelCloud.
+@available(*, deprecated, renamed: "SwoopMistKitConfiguration")
+public typealias BushelConfiguration = SwoopMistKitConfiguration
+
+/// The name ``ValidatedSwoopMistKitConfiguration`` had in BushelCloud.
+@available(*, deprecated, renamed: "ValidatedSwoopMistKitConfiguration")
+public typealias ValidatedBushelConfiguration = ValidatedSwoopMistKitConfiguration

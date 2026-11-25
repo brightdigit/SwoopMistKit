@@ -40,7 +40,7 @@ internal import Testing
 /// Comprehensive tests for ConfigurationLoader
 ///
 /// Tests the configuration loading pipeline from CLI arguments and environment
-/// variables through to the final BushelConfiguration structure.
+/// variables through to the final SwoopMistKitConfiguration structure.
 @Suite("ConfigurationLoader Tests")
 internal struct ConfigurationLoaderTests {
   // MARK: - Boolean Parsing Tests
