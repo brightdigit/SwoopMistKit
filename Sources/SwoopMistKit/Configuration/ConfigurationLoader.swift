@@ -32,16 +32,37 @@ internal import Configuration
 internal import Foundation
 
 /// Actor responsible for loading configuration from CLI arguments and environment variables
+///
+/// Each key is looked up in its own source: its flag (`--dry-run`) only on the
+/// command line, and its variable (`SWOOP_SYNC_DRY_RUN`) only in the environment.
+/// A shared reader would also look a flag up as an environment variable
+/// (`--verbose` as `VERBOSE`).
 public actor ConfigurationLoader {
-  private let configReader: ConfigReader
+  private let commandLineReader: ConfigReader
+  private let environmentReader: ConfigReader
+  /// The environment, with `BUSHEL_*` names copied to `SWOOP_*`.
+  internal let environment: [String: String]
 
-  /// Initialize the configuration loader with command-line and environment providers
+  /// Initialize the configuration loader with the process's arguments and environment
   public init() {
-    var providers: [any ConfigProvider] = []
+    self.init(
+      arguments: CommandLine.arguments,
+      environment: ProcessInfo.processInfo.environment
+    )
+  }
 
-    // Priority 1: Command-line arguments (automatically parses all --key value and --flag arguments)
-    providers.append(
-      CommandLineArgumentsProvider(
+  /// Initialize the configuration loader with explicit arguments and environment
+  ///
+  /// - Parameters:
+  ///   - arguments: The command line, starting with the program name
+  ///     (`["swoopmist", "sync", "--dry-run"]`).
+  ///   - environment: The environment variables. Old `BUSHEL_*` names are
+  ///     copied to their `SWOOP_*` names, with a warning.
+  internal init(arguments: [String], environment: [String: String]) {
+    // Priority 1: command-line arguments (`--key value`, `--key=value` and bare `--flag`).
+    self.commandLineReader = ConfigReader(
+      provider: CommandLineArgumentsProvider(
+        arguments: arguments,
         secretsSpecifier: .specific([
           "--cloudkit-key-id",
           "--cloudkit-private-key-path",
@@ -53,50 +74,45 @@ public actor ConfigurationLoader {
 
     // Priority 2: Environment variables. Old BUSHEL_* names still work,
     // with a warning, until they're removed.
-    let migration = LegacyEnvironment.migrating(ProcessInfo.processInfo.environment)
+    let migration = LegacyEnvironment.migrating(environment)
     for (legacy, current) in migration.renamed {
       FileHandle.standardError.write(
         Data("warning: \(legacy) is deprecated; use \(current) instead.\n".utf8)
       )
     }
-    providers.append(EnvironmentVariablesProvider(environmentVariables: migration.environment))
-
-    self.configReader = ConfigReader(providers: providers)
+    self.environment = migration.environment
+    self.environmentReader = ConfigReader(
+      provider: EnvironmentVariablesProvider(environmentVariables: migration.environment)
+    )
   }
-
-  #if DEBUG
-    /// Test-only initializer that accepts a pre-configured ConfigReader
-    ///
-    /// This allows tests to inject controlled configuration sources without
-    /// modifying process-global state (environment variables).
-    ///
-    /// - Parameter configReader: Pre-configured ConfigReader for testing
-    internal init(configReader: ConfigReader) {
-      self.configReader = configReader
-    }
-  #endif
 
   // MARK: - Helper Methods
 
-  /// Read a string value from configuration
-  internal func readString(forKey key: String) -> String? {
-    configReader.string(forKey: ConfigKey(key))
+  /// Read a string value from one source
+  ///
+  /// On the command line a value arrives split on commas, so the parts are
+  /// joined again; an option with no value (a bare `--output`) is absent.
+  internal func readString(forKey key: String, from source: ConfigKeySource) -> String? {
+    switch source {
+    case .commandLine:
+      guard let values = commandLineReader.stringArray(forKey: ConfigKey(key)), !values.isEmpty
+      else {
+        return nil
+      }
+      return values.joined(separator: ",")
+    case .environment:
+      return environmentReader.string(forKey: ConfigKey(key))
+    }
   }
 
-  /// Read an integer value from configuration
-  internal func readInt(forKey key: String) -> Int? {
-    guard let stringValue = configReader.string(forKey: ConfigKey(key)) else {
-      return nil
-    }
-    return Int(stringValue)
+  /// Read an integer value from one source
+  internal func readInt(forKey key: String, from source: ConfigKeySource) -> Int? {
+    readString(forKey: key, from: source).flatMap { Int($0) }
   }
 
-  /// Read a double value from configuration
-  internal func readDouble(forKey key: String) -> Double? {
-    guard let stringValue = configReader.string(forKey: ConfigKey(key)) else {
-      return nil
-    }
-    return Double(stringValue)
+  /// Read a double value from one source
+  internal func readDouble(forKey key: String, from source: ConfigKeySource) -> Double? {
+    readString(forKey: key, from: source).flatMap { Double($0) }
   }
 
   // MARK: - Generic Helper Methods for ConfigKey (with defaults)
@@ -104,9 +120,9 @@ public actor ConfigurationLoader {
   /// Read a string value with automatic CLI → ENV → default fallback
   /// Returns non-optional since ConfigKey has a required default
   internal func read(_ key: ConfigKeyKit.ConfigKey<String>) -> String {
-    for source in ConfigKeySource.allCases {
+    for source in ConfigKeySource.priority {
       guard let keyString = key.key(for: source) else { continue }
-      if let value = readString(forKey: keyString) {
+      if let value = readString(forKey: keyString, from: source) {
         return value
       }
     }
@@ -118,7 +134,8 @@ public actor ConfigurationLoader {
   /// Returns non-optional since ConfigKey has a required default.
   ///
   /// Boolean parsing rules:
-  /// - CLI: Flag presence indicates true (e.g., --verbose)
+  /// - CLI: Flag presence indicates true (e.g., `--verbose`). Only an explicit
+  ///   `--verbose=false` (or `0`, `no`) is false.
   /// - ENV: Accepts "true", "1", "yes" (case-insensitive)
   /// - Empty string in ENV is treated as absent (falls back to default)
   ///
@@ -127,14 +144,18 @@ public actor ConfigurationLoader {
   internal func read(_ key: ConfigKeyKit.ConfigKey<Bool>) -> Bool {
     // Try CLI first (presence-based for flags)
     if let cliKey = key.key(for: .commandLine),
-      configReader.string(forKey: ConfigKey(cliKey)) != nil
+      let values = commandLineReader.stringArray(forKey: ConfigKey(cliKey))
     {
-      return true
+      guard values.count == 1, let value = values.first else {
+        return true
+      }
+      let lowercased = value.lowercased().trimmingCharacters(in: .whitespaces)
+      return !["false", "0", "no"].contains(lowercased)
     }
 
     // Try ENV (may have string value like VERBOSE=true)
     if let envKey = key.key(for: .environment),
-      let envValue = configReader.string(forKey: ConfigKey(envKey))
+      let envValue = readString(forKey: envKey, from: .environment)
     {
       let lowercased = envValue.lowercased().trimmingCharacters(in: .whitespaces)
       return lowercased == "true" || lowercased == "1" || lowercased == "yes"
@@ -149,9 +170,9 @@ public actor ConfigurationLoader {
   /// Read a string value with automatic CLI → ENV fallback
   /// Returns optional since OptionalConfigKey has no default
   internal func read(_ key: ConfigKeyKit.OptionalConfigKey<String>) -> String? {
-    for source in ConfigKeySource.allCases {
+    for source in ConfigKeySource.priority {
       guard let keyString = key.key(for: source) else { continue }
-      if let value = readString(forKey: keyString) {
+      if let value = readString(forKey: keyString, from: source) {
         return value
       }
     }
@@ -161,9 +182,9 @@ public actor ConfigurationLoader {
   /// Read an integer value with automatic CLI → ENV fallback
   /// Returns optional since OptionalConfigKey has no default
   internal func read(_ key: ConfigKeyKit.OptionalConfigKey<Int>) -> Int? {
-    for source in ConfigKeySource.allCases {
+    for source in ConfigKeySource.priority {
       guard let keyString = key.key(for: source) else { continue }
-      if let value = readInt(forKey: keyString) {
+      if let value = readInt(forKey: keyString, from: source) {
         return value
       }
     }
@@ -173,9 +194,9 @@ public actor ConfigurationLoader {
   /// Read a double value with automatic CLI → ENV fallback
   /// Returns optional since OptionalConfigKey has no default
   internal func read(_ key: ConfigKeyKit.OptionalConfigKey<Double>) -> Double? {
-    for source in ConfigKeySource.allCases {
+    for source in ConfigKeySource.priority {
       guard let keyString = key.key(for: source) else { continue }
-      if let value = readDouble(forKey: keyString) {
+      if let value = readDouble(forKey: keyString, from: source) {
         return value
       }
     }

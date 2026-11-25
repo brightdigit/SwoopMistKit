@@ -38,6 +38,11 @@ public enum ConfigKeyPrefix {
   /// The prefix from before the rename (`BUSHEL_SYNC_DRY_RUN`), still read
   /// with a deprecation warning. See ``ConfigurationLoader``.
   public static let legacy = "BUSHEL"
+
+  /// The `SWOOP_` environment variable for a base key: `sync.dry_run` → `SWOOP_SYNC_DRY_RUN`.
+  internal static func environmentName(for base: String) -> String {
+    StandardNamingStyle.screamingSnakeCase(prefix: current).transform(base)
+  }
 }
 
 extension ConfigKey {
@@ -60,10 +65,35 @@ extension ConfigKey where Value == Bool {
   }
 }
 
+extension ConfigKey where Value == Bool {
+  /// A boolean key read from the `--<cli>` flag and the `SWOOP_` environment variable.
+  ///
+  /// `ConfigKey<Bool>(swoopPrefixed: "sync.dry_run", cli: "dry-run")` reads
+  /// `--dry-run` and `SWOOP_SYNC_DRY_RUN`.
+  /// - Parameters:
+  ///   - base: Base key string; the environment variable is built from it.
+  ///   - cli: The flag name without the leading `--`, in kebab-case.
+  ///   - defaultVal: Default value (defaults to false)
+  internal init(swoopPrefixed base: String, cli: String, default defaultVal: Bool = false) {
+    self.init(cli: cli, env: ConfigKeyPrefix.environmentName(for: base), default: defaultVal)
+  }
+}
+
 extension OptionalConfigKey {
   /// Convenience initializer for optional keys with `SWOOP_` environment-variable prefix.
   /// - Parameter base: Base key string (e.g., "sync.min_interval")
   public init(swoopPrefixed base: String) {
     self.init(base, envPrefix: ConfigKeyPrefix.current)
+  }
+
+  /// An optional key read from the `--<cli>` option and the `SWOOP_` environment variable.
+  ///
+  /// `OptionalConfigKey<String>(swoopPrefixed: "export.output", cli: "output")` reads
+  /// `--output` and `SWOOP_EXPORT_OUTPUT`.
+  /// - Parameters:
+  ///   - base: Base key string; the environment variable is built from it.
+  ///   - cli: The option name without the leading `--`, in kebab-case.
+  internal init(swoopPrefixed base: String, cli: String) {
+    self.init(cli: cli, env: ConfigKeyPrefix.environmentName(for: base))
   }
 }

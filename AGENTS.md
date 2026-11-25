@@ -20,6 +20,7 @@ Consumers: [Stewed](https://github.com/brightdigit/Stewed) (its `StewedTools` pa
 - **No swift-docc-plugin in `Package.swift`.** Build docs with `Scripts/docc.sh`.
 - MistKit's `FieldValue` carries an arity: write `.string(.value(x))`, match `case .string(.value(let x))`, or use the convenience accessors (`stringValue`, `intValue`, `dateValue`, …). Never write list fields: MistKit can't decode `STRING_LIST` responses yet (brightdigit/MistKit#509), so `SimulatorRuntime.sdkBuildNumbers` is stored as the comma-separated `sdkBuildNumbersText` string.
 - Environment variables use the `SWOOP_` prefix (`SWOOP_SYNC_DRY_RUN`, …). The old `BUSHEL_` names are still read, with a deprecation warning (`ConfigKeyPrefix.legacy`, `LegacyEnvironment.swift`). That fallback is deliberate (brightdigit/Stewed#174); keep it. `CLOUDKIT_*` and `VIRTUALBUDDY_API_KEY` have no prefix.
+- Every key in `ConfigurationKeys.swift` names its command-line flag with `cli:` (`ConfigKey<Bool>(swoopPrefixed: "sync.dry_run", cli: "dry-run")`). Without it, swift-configuration's `CommandLineArgumentsProvider` reads `sync.dry_run` as `--sync-dry_run`, so the documented `--dry-run` is ignored. Command flags drop the command name; `ConfigurationLoader` reads flags only from the arguments and variables only from the environment. A new flag gets a case in `Tests/SwoopMistKitTests/Configuration/DocumentedFlag.swift` and a mention in the README's command table.
 - One type per file; extensions go in `Type+Feature.swift`. Each source file carries the MIT header (`make headers`).
 
 ## Commands

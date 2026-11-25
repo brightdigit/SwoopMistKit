@@ -7,7 +7,7 @@
 
 SwoopMistKit syncs Apple OS, Xcode, Swift, SDK and simulator release data into CloudKit with [MistKit](https://github.com/brightdigit/MistKit).
 
-It fetches macOS restore images, Xcode versions, Swift versions, SDK versions and simulator runtimes from several public sources, deduplicates and links them, and writes them to the public database of a CloudKit container (`iCloud.com.brightdigit.Swoop` by default) using Server-to-Server authentication, so no signed-in iCloud user is needed. Apps such as [Stewed](https://github.com/brightdigit/Stewed) read the records back to match the software installed on a Mac.
+It fetches macOS restore images, Xcode versions, Swift versions, SDK versions and simulator runtimes from several public sources, deduplicates and links them, and writes them to the public database of a CloudKit container (`iCloud.com.brightdigit.Swoop` by default) using Server-to-Server authentication, so no signed-in iCloud user is needed. Apps such as Stewed read the records back to match the software installed on a Mac.
 
 The package has two products:
 
@@ -16,7 +16,7 @@ The package has two products:
 
 ## Requirements
 
-- Swift 6.4 (Xcode 27 on macOS, or the `swift:6.4` images on Linux)
+- Swift 6.4 (Xcode 27.2 on macOS, or the `swift:6.4` images on Linux)
 - macOS 15, iOS 18, watchOS 11, tvOS 18, visionOS 2, or Linux
 - A CloudKit container with the schema in [`schema.ckdb`](schema.ckdb) and a Server-to-Server key for it
 
@@ -24,7 +24,7 @@ The package has two products:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/brightdigit/SwoopMistKit.git", branch: "simulator")
+  .package(url: "https://github.com/brightdigit/SwoopMistKit.git", from: "1.0.0-alpha.3")
 ],
 targets: [
   .target(name: "MyTool", dependencies: ["SwoopMistKit"])
@@ -43,7 +43,7 @@ let service = try SwoopMistKitService(
 let images = try await service.queryAllRecords(recordType: "RestoreImage")
 ```
 
-Until 1.0 the package tracks branches: SwoopKit's `simulator` and MistKit's `mistico`.
+It depends on SwoopKit 1.0.0-alpha.1 and MistKit 1.0.0-beta.6 or later.
 
 ## Using `swoopmist`
 
@@ -60,16 +60,16 @@ export VIRTUALBUDDY_API_KEY="..."   # optional: live signing status from https:/
 
 | Command | What it does |
 |---------|--------------|
-| `sync` | Fetch from every source, deduplicate, and write to CloudKit. `--dry-run`, `--restore-images-only`, `--xcode-only` (Xcode, SDK and simulator runtime records), `--swift-only`, `--no-betas`, `--force` (ignore fetch intervals). `SWOOP_SYNC_RUNTIMES_ONLY=true` syncs only simulator runtimes. |
-| `export` | Query CloudKit and write the records as JSON: `--output file.json`, `--pretty`, `--signed-only`, `--no-betas`. |
-| `list` | List the records in CloudKit. |
-| `status` | Show each data source's last fetch, record count and errors. |
-| `clear` | Delete every record SwoopMistKit writes. |
+| `sync` | Fetch from every source, deduplicate, and write to CloudKit. `--dry-run` (write nothing), `--verbose`, `--restore-images-only`, `--xcode-only` (Xcode, SDK and simulator runtime records), `--swift-only`, `--runtimes-only` (simulator runtimes only), `--no-betas`, `--no-apple-wiki`, `--force` (ignore fetch intervals), `--min-interval <seconds>`, `--source <name>` (one source, such as `ipsw.me`), `--json-output-file <file.json>`. |
+| `export` | Query CloudKit and write the records as JSON: `--output <file.json>` (stdout otherwise), `--pretty`, `--signed-only`, `--no-betas`, `--verbose`. |
+| `list` | List the records in CloudKit: all of them, or `--restore-images`, `--xcode-versions`, `--swift-versions`. |
+| `status` | Show each data source's last fetch, record count and errors: `--errors-only`, `--detailed`. |
+| `clear` | Delete every record SwoopMistKit writes, after a prompt: `--yes` skips it, `--verbose`. |
 | `delete-runtimes` | Delete only `SimulatorRuntime` records, in Development only; a dry run unless `--confirm-delete`. |
 
-`CLOUDKIT_CONTAINER_ID` defaults to `iCloud.com.brightdigit.Swoop`. The credentials can also be passed as `--cloudkit-key-id`, `--cloudkit-private-key-path` and `--cloudkit-private-key`.
+`CLOUDKIT_CONTAINER_ID` defaults to `iCloud.com.brightdigit.Swoop`. The CloudKit settings can also be passed as `--cloudkit-container-id`, `--cloudkit-key-id`, `--cloudkit-private-key-path`, `--cloudkit-private-key` and `--cloudkit-environment`, the VirtualBuddy key as `--virtualbuddy-api-key`, and fetch intervals as `--fetch-interval-global <seconds>` or per source, such as `--fetch-interval-appledb-dev <seconds>`. Options take `--option value` or `--option=value`.
 
-Every other option can be set with an environment variable named `SWOOP_` plus the option's key in capitals, for example `SWOOP_SYNC_DRY_RUN=true` or `SWOOP_FETCH_INTERVAL_GLOBAL=3600`. The names from before the rename (`BUSHEL_SYNC_DRY_RUN`, …) still work, with a deprecation warning, and a `SWOOP_` value wins when both are set. See [`.env.example`](.env.example).
+Every option can also be set with an environment variable named `SWOOP_` plus the command and option in capitals, for example `SWOOP_SYNC_DRY_RUN=true` for `sync --dry-run` or `SWOOP_FETCH_INTERVAL_GLOBAL=3600`. A flag on the command line wins over its variable. The names from before the rename (`BUSHEL_SYNC_DRY_RUN`, …) still work, with a deprecation warning, and a `SWOOP_` value wins when both are set. See [`.env.example`](.env.example).
 
 ## Data sources
 

@@ -51,7 +51,7 @@ internal struct ConfigurationLoaderTests {
     internal func testCLIFlagPresence() async throws {
       // Simulate: swoopmist sync --verbose
       let loader = ConfigurationLoaderTests.createLoader(
-        cliArgs: ["sync.verbose"],
+        cliArgs: ["sync", "--verbose"],
         env: [:]
       )
 
@@ -169,7 +169,7 @@ internal struct ConfigurationLoaderTests {
     @Test("CLI flag overrides ENV false")
     internal func testCLIOverridesEnvFalse() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
-        cliArgs: ["sync.verbose"],
+        cliArgs: ["sync", "--verbose"],
         env: ["SWOOP_SYNC_VERBOSE": "false"]
       )
 
@@ -196,7 +196,7 @@ internal struct ConfigurationLoaderTests {
     @Test("String value from CLI arguments")
     internal func testStringFromCLI() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
-        cliArgs: ["cloudkit.container_id=iCloud.com.test.App"],
+        cliArgs: ["sync", "--cloudkit-container-id", "iCloud.com.test.App"],
         env: [:]
       )
 
@@ -218,7 +218,7 @@ internal struct ConfigurationLoaderTests {
     @Test("CLI string overrides ENV string")
     internal func testStringCLIPrecedence() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
-        cliArgs: ["cloudkit.container_id=iCloud.com.cli.App"],
+        cliArgs: ["sync", "--cloudkit-container-id=iCloud.com.cli.App"],
         env: ["CLOUDKIT_CONTAINER_ID": "iCloud.com.env.App"]
       )
 
@@ -245,7 +245,7 @@ internal struct ConfigurationLoaderTests {
     @Test("Valid integer from CLI")
     internal func testValidIntFromCLI() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
-        cliArgs: ["sync.min_interval=3600"],
+        cliArgs: ["sync", "--min-interval", "3600"],
         env: [:]
       )
 
@@ -294,7 +294,7 @@ internal struct ConfigurationLoaderTests {
     @Test("Valid double from CLI")
     internal func testValidDoubleFromCLI() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
-        cliArgs: ["fetch.interval.appledb_dev=3600.5"],
+        cliArgs: ["sync", "--fetch-interval-appledb-dev", "3600.5"],
         env: [:]
       )
 
@@ -556,9 +556,10 @@ internal struct ConfigurationLoaderTests {
     internal func testExportFromCLI() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [
-          "export.output=/tmp/export.json",
-          "export.pretty",
-          "export.signed_only",
+          "export",
+          "--output", "/tmp/export.json",
+          "--pretty",
+          "--signed-only",
         ],
         env: [:]
       )
@@ -574,9 +575,9 @@ internal struct ConfigurationLoaderTests {
     internal func testMultipleCommandConfigs() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [
-          "sync.verbose",
-          "export.pretty",
-          "list.restore_images",
+          "--verbose",
+          "--pretty",
+          "--restore-images",
         ],
         env: [:]
       )
@@ -597,9 +598,10 @@ internal struct ConfigurationLoaderTests {
     internal func testCompleteSyncConfig() async throws {
       let loader = ConfigurationLoaderTests.createLoader(
         cliArgs: [
-          "sync.verbose",
-          "sync.dry_run",
-          "sync.min_interval=3600",
+          "sync",
+          "--verbose",
+          "--dry-run",
+          "--min-interval", "3600",
         ],
         env: [
           "SWOOP_SYNC_NO_BETAS": "true",
@@ -646,44 +648,20 @@ internal struct ConfigurationLoaderTests {
 
   /// Create a ConfigurationLoader with simulated CLI args and environment variables
   ///
+  /// Uses the same providers as the `swoopmist` executable: swift-configuration's
+  /// `CommandLineArgumentsProvider` and `EnvironmentVariablesProvider`, with the
+  /// `BUSHEL_*` fallback.
+  ///
   /// - Parameters:
-  ///   - cliArgs: Simulated CLI arguments (format: "key=value" or "key" for flags)
+  ///   - cliArgs: The arguments after the program name, as typed:
+  ///     `["sync", "--dry-run"]` or `["export", "--output", "data.json"]`.
   ///   - env: Simulated environment variables
   /// - Returns: ConfigurationLoader with controlled inputs
-  private static func createLoader(
+  internal static func createLoader(
     cliArgs: [String],
     env: [String: String]
   ) -> ConfigurationLoader {
-    // Parse CLI args: "key=value" or "key" for flags
-    var cliValues: [AbsoluteConfigKey: ConfigValue] = [:]
-    for arg in cliArgs {
-      if arg.contains("=") {
-        let parts = arg.split(separator: "=", maxSplits: 1)
-        if parts.count == 2 {
-          let key = AbsoluteConfigKey(stringLiteral: String(parts[0]))
-          cliValues[key] = .init(.string(String(parts[1])), isSecret: false)
-        }
-      } else {
-        // Flag presence (boolean)
-        let key = AbsoluteConfigKey(stringLiteral: arg)
-        cliValues[key] = .init(.string("true"), isSecret: false)
-      }
-    }
-
-    // ENV vars as-is
-    var envValues: [AbsoluteConfigKey: ConfigValue] = [:]
-    for (key, value) in env {
-      let configKey = AbsoluteConfigKey(stringLiteral: key)
-      envValues[configKey] = .init(.string(value), isSecret: false)
-    }
-
-    let providers: [any ConfigProvider] = [
-      InMemoryProvider(values: cliValues),  // Priority 1: CLI
-      InMemoryProvider(values: envValues),  // Priority 2: ENV
-    ]
-
-    let configReader = ConfigReader(providers: providers)
-    return ConfigurationLoader(configReader: configReader)
+    ConfigurationLoader(arguments: ["swoopmist"] + cliArgs, environment: env)
   }
 }
 // swiftlint:enable file_length type_body_length

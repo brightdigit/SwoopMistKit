@@ -267,7 +267,7 @@ Add flags to the sync command in the workflow:
 BIN_PATH=$(swift build -c release --show-bin-path)
 "$BIN_PATH/swoopmist" sync \
   --verbose \
-  --restore-images-only  # Or --xcode-only, --swift-only
+  --restore-images-only  # Or --xcode-only, --swift-only, --runtimes-only
 ```
 
 ### Force Fetch (Ignore Intervals)

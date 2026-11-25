@@ -258,9 +258,7 @@ runs:
 
         # Run sync with JSON output written directly to file
         # All verbose logs go to console (will be captured in workflow logs)
-        ./binary/swoopmist sync \
-          --verbose \
-          --container-identifier "$CLOUDKIT_CONTAINER_ID"
+        ./binary/swoopmist sync --verbose
 
         # Parse sync results using jq
         RESTORE_CREATED=$(jq '.restoreImages.created' sync-result.json)
@@ -324,8 +322,7 @@ runs:
         ./binary/swoopmist export \
           --output "cloudkit-export-${{ inputs.environment }}.json" \
           --pretty \
-          --verbose \
-          --container-identifier "$CLOUDKIT_CONTAINER_ID"
+          --verbose
 
         # Parse JSON to extract counts
         RESTORE_COUNT=$(jq '.restoreImages | length' "cloudkit-export-${{ inputs.environment }}.json")

@@ -103,7 +103,7 @@ echo 'export CLOUDKIT_CONTAINER_ID="iCloud.com.brightdigit.Swoop"' >> ~/.zshrc
 Test your configuration with a status check:
 
 ```bash
-swoopmist status --verbose
+swoopmist status
 ```
 
 This should connect to CloudKit and display your container configuration.

@@ -51,16 +51,16 @@ extension ConfigurationLoader {
     )
 
     // Fetch configuration: start with the environment, then override with CLI
-    var fetch = FetchConfiguration.loadFromEnvironment()
+    var fetch = FetchConfiguration.loadFromEnvironment(environment)
 
-    // --fetch.interval_global and SWOOP_FETCH_INTERVAL_GLOBAL; --min-interval overrides both.
+    // --fetch-interval-global and SWOOP_FETCH_INTERVAL_GLOBAL; --min-interval overrides both.
     fetch = applyingGlobalInterval(to: fetch)
 
     // Override per-source intervals from CLI or ENV
     var perSourceIntervals = fetch.perSourceIntervals
 
     for source in DataSource.allCases {
-      // Try CLI arg first (e.g., "fetch.interval.appledb_dev")
+      // Try CLI arg first (e.g., "--fetch-interval-appledb-dev")
       // Then try ENV var (e.g., "SWOOP_FETCH_INTERVAL_APPLEDB_DEV")
       let intervalKey = ConfigurationKeys.Fetch.intervalKey(for: source.rawValue)
       if let interval = read(intervalKey) {
