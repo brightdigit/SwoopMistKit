@@ -42,11 +42,11 @@ for batch in batches {
 }
 ```
 
-See ``SyncEngine/uploadRecords(_:recordType:)`` for the complete implementation.
+See `SyncEngine` for the complete implementation.
 
 ## Record Creation Pattern
 
-All domain models implement ``CloudKitRecord``:
+All domain models implement `CloudKitRecord`:
 
 ```swift
 protocol CloudKitRecord {
@@ -152,7 +152,7 @@ This logs:
 
 - ``SwoopMistKitService`` - Service wrapper for SwoopMistKit operations
 - ``SyncEngine`` - Upload orchestration
-- ``CloudKitFieldMapping`` - Type conversion utilities
+- `CloudKitFieldMapping` - Type conversion utilities
 
 ## Best Practices
 

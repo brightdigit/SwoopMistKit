@@ -20,7 +20,7 @@ The ``DataSourcePipeline`` fetches data from multiple external sources in parall
 6. **Mr. Macintosh** - Community-maintained release archive
 7. **VirtualBuddy** - Real-time TSS signing status verification
 
-Each fetcher returns domain-specific records implementing the ``CloudKitRecord`` protocol.
+Each fetcher returns domain-specific records implementing the `CloudKitRecord` protocol.
 
 ### Phase 2: Transform
 
@@ -78,7 +78,7 @@ See <doc:CloudKitIntegration> for details on:
 - ``DataSourcePipeline`` - Orchestrates fetching from all sources
 - ``SyncEngine`` - Manages CloudKit upload process
 - ``SwoopMistKitService`` - Wraps MistKit with SwoopMistKit-specific operations
-- ``CloudKitRecord`` - Protocol for domain models
+- `CloudKitRecord` - Protocol for domain models
 
 ## Observability
 

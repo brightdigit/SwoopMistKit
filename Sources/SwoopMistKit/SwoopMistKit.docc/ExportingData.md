@@ -269,6 +269,6 @@ These are intentional limitations for this demonstration tool.
 
 ## Key Classes
 
-- ``ExportCommand`` - CLI command implementation
+- `ExportCommand` - CLI command implementation
 - ``SwoopMistKitService`` - CloudKit query operations
-- ``CloudKitRecord`` - Protocol for record conversion
+- `CloudKitRecord` - Protocol for record conversion

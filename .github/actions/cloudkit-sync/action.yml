@@ -152,9 +152,9 @@ runs:
         echo "⚠️  Pre-built binary not available (may have expired after retention period)"
         echo "Building fresh binary as fallback..."
 
-        # Build using Swift 6.4 nightly (matches build workflow; the manifest
-        # declares swift-tools-version: 6.4 and 6.4 has no release toolchain yet)
-        docker run --rm -v "$PWD:/workspace" -w /workspace swiftlang/swift:nightly-6.4.x-noble \
+        # Build with the Swift 6.4 release image (matches swoopmist-build.yml;
+        # the manifest declares swift-tools-version: 6.4)
+        docker run --rm -v "$PWD:/workspace" -w /workspace swift:6.4-noble \
           swift build -c release --static-swift-stdlib
 
         # Copy binary to expected location

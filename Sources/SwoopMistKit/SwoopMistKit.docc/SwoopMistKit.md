@@ -1,12 +1,18 @@
 # ``SwoopMistKit``
 
-A CloudKit demonstration tool showcasing MistKit's Server-to-Server authentication and batch operations.
+Syncs Apple OS, Xcode, Swift, SDK and simulator runtime release data into CloudKit with MistKit.
 
 ## Overview
 
-SwoopMistKit is a command-line tool that demonstrates how to use MistKit to interact with CloudKit Web Services. It fetches macOS restore images, Xcode versions, and Swift compiler versions from multiple sources and syncs them to CloudKit using Server-to-Server authentication.
+SwoopMistKit fetches macOS restore images, Xcode versions, Swift versions, SDK versions and
+simulator runtimes from several public sources, deduplicates them, and writes them to the
+public database of a CloudKit container with MistKit's Server-to-Server authentication.
+The record types themselves (`RestoreImageRecord`, `XcodeVersionRecord`,
+`SwiftVersionRecord`, `SDKVersionRecord`, `SimulatorRuntimeRecord`, `DataSourceMetadata`)
+live in SwoopKit; SwoopMistKit adds their MistKit `CloudKitRecord` conformances.
 
-This is an **example application** designed for developers learning CloudKit integration patterns with Swift.
+The package also ships the `swoopmist` command-line tool, with `sync`, `export`, `list`,
+`status`, `clear` and `delete-runtimes` commands.
 
 ## Topics
 
@@ -31,26 +37,17 @@ This is an **example application** designed for developers learning CloudKit int
 - ``SyncEngine``
 - ``DataSourcePipeline``
 
-### Data Models
-
-- ``RestoreImageRecord``
-- ``XcodeVersionRecord``
-- ``SwiftVersionRecord``
-- ``DataSourceMetadata``
-- ``CloudKitRecord``
-
 ### Data Sources
 
-- ``IPSWFetcher``
+- ``DataSourceFetcher``
 - ``AppleDBFetcher``
 - ``XcodeReleasesFetcher``
-- ``SwiftVersionFetcher``
 - ``MESUFetcher``
+- ``SimulatorIndexFetcher``
 
-### Commands
+### Configuration
 
-- ``SyncCommand``
-- ``ExportCommand``
-- ``ClearCommand``
-- ``ListCommand``
-- ``StatusCommand``
+- ``ConfigurationLoader``
+- ``CloudKitConfiguration``
+- ``SyncConfiguration``
+- ``ExportConfiguration``

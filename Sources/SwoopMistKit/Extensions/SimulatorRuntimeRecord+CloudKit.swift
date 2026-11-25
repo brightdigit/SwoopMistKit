@@ -34,7 +34,7 @@ public import MistKit
 // MARK: - SDK builds field
 
 extension SimulatorRuntimeRecord {
-  /// The CloudKit field that holds ``sdkBuildNumbers`` as one comma-separated `STRING`.
+  /// The CloudKit field that holds `sdkBuildNumbers` as one comma-separated `STRING`.
   ///
   /// Workaround for brightdigit/MistKit#509: MistKit can't decode the `STRING_LIST`
   /// type tag in CloudKit responses, so any query or modify response that carried the

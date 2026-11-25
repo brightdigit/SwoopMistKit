@@ -174,7 +174,7 @@ These are intentional limitations for this demonstration tool.
 
 ## Key Classes
 
-- ``SyncCommand`` - CLI command implementation
+- `SyncCommand` - CLI command implementation
 - ``SyncEngine`` - Upload orchestration
 - ``DataSourcePipeline`` - Fetch coordination
 - ``SwoopMistKitService`` - CloudKit operations wrapper
