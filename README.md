@@ -43,7 +43,7 @@ let service = try SwoopMistKitService(
 let images = try await service.queryAllRecords(recordType: "RestoreImage")
 ```
 
-It depends on SwoopKit 1.0.0-alpha.1 and MistKit 1.0.0-beta.6 or later.
+It depends on SwoopKit 1.0.0-beta.1 and MistKit 1.0.0-beta.6 or later.
 
 ## Using `swoopmist`
 

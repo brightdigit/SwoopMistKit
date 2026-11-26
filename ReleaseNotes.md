@@ -17,6 +17,6 @@
 * Tooling: swift-format 604 and SwiftLint 0.65 pinned in `mise.toml`, `Scripts/lint.sh`, `Scripts/docc.sh` and a Makefile; the DocC catalog is now `SwoopMistKit.docc`; `AGENTS.md` and `.agents` for contributors and coding agents by @leogdion in https://github.com/brightdigit/SwoopMistKit/pull/44
 * Tests: a `Platform` helper (`Tests/SwoopMistKitTests/Helpers/Platform.swift`) with `Platform.isMacOSOrLinux`; the VirtualBuddy fetcher suite uses `.enabled(if: Platform.isMacOSOrLinux)` instead of an inline `#if` closure
 * Documentation: the README and DocC articles are rewritten for SwoopMistKit, and the Bushel-era content is removed by @leogdion in https://github.com/brightdigit/SwoopMistKit/pull/44
-* Dependencies: SwoopKit `from: "1.0.0-alpha.1"` and MistKit `from: "1.0.0-beta.6"`; adds FelinePine and FelinePineSwift (Linux, Android, OpenBSD, WASI and Windows only); removes BushelKit. ConfigKeyKit, IPSWDownloads, SwiftSoup and swift-configuration are unchanged
+* Dependencies: SwoopKit `from: "1.0.0-beta.1"` and MistKit `from: "1.0.0-beta.6"`; adds FelinePine and FelinePineSwift (Linux, Android, OpenBSD, WASI and Windows only); removes BushelKit. ConfigKeyKit, IPSWDownloads, SwiftSoup and swift-configuration are unchanged
 
 **Full Changelog**: https://github.com/brightdigit/SwoopMistKit/compare/1.0.0-alpha.2...1.0.0-alpha.3

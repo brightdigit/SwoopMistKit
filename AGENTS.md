@@ -77,7 +77,7 @@ The main workflow (`SwoopMistKit.yml`) triggers on `pull_request` and `workflow_
 - The manifest needs Swift 6.4, so Linux lanes use the release `swift:6.4-<os>` images and Apple lanes use the `xcode-27` runner image with `/Applications/Xcode_27.2.app` (27.2 simulators; devices iPhone 18 Pro, Apple Watch Ultra 4 (49mm), Apple TV 4K (4th generation), Apple Vision Pro).
 - The lint job is pinned to `ubuntu-24.04`: `ubuntu-latest` is Ubuntu 26.04, which lacks the `libxml2.so.2` the SwiftLint binary needs.
 - The Documentation job runs `Scripts/docc.sh`; Swift Package Index builds the published docs (`.spi.yml`).
-- `dependency-policy.yml` fails PRs into `main` while any dependency is a branch, revision or path. It fails on `simulator` → `main` until MistKit and SwoopKit are tagged; don't weaken it.
+- `dependency-policy.yml` fails PRs into `main` while any dependency is a branch, revision or path. It fails on `simulator` → `main` until MistKit is tagged; don't weaken it.
 - `swoopmist-build.yml` builds the Linux binary; `cloudkit-sync-dev.yml` (scheduled) and `cloudkit-sync-prod.yml` (manual) run it through `.github/actions/cloudkit-sync`. See `.github/CLOUDKIT_SYNC_SETUP.md` and `.github/SECRETS_SETUP.md`.
 - No CodeQL: it can't analyze Swift 6.4 yet.
 
