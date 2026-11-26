@@ -9,7 +9,7 @@ kit path dependency any more, so they don't apply until one comes back.
 | Bare store | `trees-bare.git` |
 | `RELEASE_BRANCH` | `v1.0.0-alpha.3` |
 | `MAIN_BRANCH` | `main` |
-| `MISTKIT_REF` | `v1.0.0-beta.6` (branch dependency in `Package.swift`; `mistico` is retired) |
+| `MISTKIT_REF` | `1.0.0-beta.6` (tag; `from: "1.0.0-beta.6"` in `Package.swift`; the `v1.0.0-beta.6` branch and `mistico` are retired) |
 | `KIT_PACKAGE` | none: BushelKit is no longer a dependency, and SwoopKit resolves by URL (`from: "1.0.0-beta.1"`) |
 | `KIT_PATH` | none |
 | Primary workflow | `.github/workflows/SwoopMistKit.yml` |
