@@ -6,7 +6,7 @@
 #
 # **Trigger Strategy**:
 # - Scheduled: 3x daily at randomized minutes (avoids GitHub "thundering herd")
-# - Automatic: After bushel-cloud binary build succeeds (testing integration)
+# - Automatic: After swoopmist binary build succeeds (testing integration)
 # - Manual: workflow_dispatch for on-demand testing
 #
 # **Concurrency**: cancel-in-progress (newer syncs supersede older ones)
@@ -52,13 +52,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: CloudKit Sync
         uses: ./.github/actions/cloudkit-sync
         with:
           environment: development
-          container-id: iCloud.com.brightdigit.Bushel
+          container-id: iCloud.com.brightdigit.Swoop
           cloudkit-key-id: ${{ secrets.CLOUDKIT_KEY_ID }}
           cloudkit-private-key: ${{ secrets.CLOUDKIT_PRIVATE_KEY }}
           virtualbuddy-api-key: ${{ secrets.VIRTUALBUDDY_API_KEY }}

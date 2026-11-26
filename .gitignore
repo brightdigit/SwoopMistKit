@@ -219,7 +219,6 @@ dev-debug.log
 *.gcov
 *.gcno
 *.gcda
-codecov.yml
 .coverage
 
 # Documentation build output

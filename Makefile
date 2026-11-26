@@ -1,69 +1,70 @@
-.PHONY: build test lint format clean install docker-build docker-run docker-test xcode help
+.PHONY: help build test lint format headers docs docs-preview clean install docker-build docker-test docker-run xcode
 
-# Default target
 .DEFAULT_GOAL := help
 
-# Variables
-EXECUTABLE_NAME = bushel-cloud
+EXECUTABLE_NAME = swoopmist
 INSTALL_PATH = /usr/local/bin
 BUILD_PATH = .build/release/$(EXECUTABLE_NAME)
-DOCKER_IMAGE = swift:6.2-noble
+DOCKER_IMAGE = swift:6.4-noble
 
-## build: Build the project in release mode
+## build: Build the package in release mode
 build:
-	@echo "Building BushelCloud..."
 	swift build -c release
 
-## test: Run unit tests
+## test: Run the test suite
 test:
-	@echo "Running tests..."
 	swift test
 
-## lint: Run linting checks (SwiftLint, swift-format, periphery)
+## lint: Format, then run swift-format, SwiftLint, the build and periphery (Scripts/lint.sh)
 lint:
-	@echo "Running linting..."
-	./Scripts/lint.sh
+	@./Scripts/lint.sh
 
-## format: Format code with swift-format
+## format: Format sources in place without linting
 format:
-	@echo "Formatting code..."
-	mint run swift-format format --recursive --parallel --in-place Sources Tests
+	@FORMAT_ONLY=1 ./Scripts/lint.sh
 
-## clean: Clean build artifacts
+## headers: Add or refresh the license header in Sources and Tests
+headers:
+	@./Scripts/header.sh -d Sources -c "Leo Dion" -o "BrightDigit" -p "SwoopMistKit"
+	@./Scripts/header.sh -d Tests -c "Leo Dion" -o "BrightDigit" -p "SwoopMistKit"
+
+## docs: Build the DocC archive (.build/docs); fails on unresolved symbol links
+docs:
+	@./Scripts/docc.sh
+
+## docs-preview: Serve a live DocC preview
+docs-preview:
+	@DOCC_PREVIEW=1 ./Scripts/docc.sh
+
+## clean: Remove build products
 clean:
-	@echo "Cleaning build artifacts..."
 	swift package clean
-	rm -rf .build
+	rm -rf .build DerivedData
 
-## install: Install executable to /usr/local/bin
+## install: Install swoopmist to /usr/local/bin
 install: build
-	@echo "Installing $(EXECUTABLE_NAME) to $(INSTALL_PATH)..."
 	@install -m 755 $(BUILD_PATH) $(INSTALL_PATH)/$(EXECUTABLE_NAME)
-	@echo "Installed successfully!"
+	@echo "Installed $(EXECUTABLE_NAME) to $(INSTALL_PATH)"
 
-## docker-build: Build project in Docker container
+## docker-build: Build in a Linux container ($(DOCKER_IMAGE))
 docker-build:
-	@echo "Building in Docker ($(DOCKER_IMAGE))..."
 	docker run --rm -v $(PWD):/workspace -w /workspace $(DOCKER_IMAGE) swift build
 
-## docker-test: Run tests in Docker container
+## docker-test: Run the tests in a Linux container
 docker-test:
-	@echo "Running tests in Docker ($(DOCKER_IMAGE))..."
 	docker run --rm -v $(PWD):/workspace -w /workspace $(DOCKER_IMAGE) swift test
 
-## docker-run: Run interactive shell in Docker container
+## docker-run: Open a shell in a Linux container
 docker-run:
-	@echo "Starting Docker shell ($(DOCKER_IMAGE))..."
 	docker run -it --rm -v $(PWD):/workspace -w /workspace $(DOCKER_IMAGE) bash
 
-## xcode: Generate Xcode project using XcodeGen
+## xcode: Generate SwoopMistKit.xcodeproj with XcodeGen (project.yml)
 xcode:
-	@echo "Generating Xcode project..."
-	@mint run xcodegen generate
-	@echo "Xcode project generated! Open BushelCloud.xcodeproj"
+	xcodegen generate
 
-## help: Show this help message
+## help: Show this help
 help:
-	@echo "BushelCloud Makefile targets:"
-	@echo ""
+	@echo "SwoopMistKit targets:"
 	@sed -n 's/^##//p' $(MAKEFILE_LIST) | column -t -s ':' | sed -e 's/^/ /'
+	@echo ""
+	@echo "Lint tools are pinned in mise.toml; run 'mise install' once."

@@ -26,6 +26,7 @@ RECORD TYPE XcodeVersion (
     "buildNumber"            STRING QUERYABLE SORTABLE,
     "releaseDate"            TIMESTAMP QUERYABLE SORTABLE,
     "isPrerelease"           INT64 QUERYABLE,
+    "prereleaseLabel"        STRING,
     "downloadURL"            STRING,
     "fileSize"               INT64,
     "minimumMacOS"           REFERENCE,
@@ -34,8 +35,7 @@ RECORD TYPE XcodeVersion (
     "notes"                  STRING,
 
     GRANT READ, CREATE, WRITE TO "_creator",
-    GRANT READ, CREATE, WRITE TO "_icloud",
-    GRANT READ TO "_world"
+    GRANT READ, CREATE TO "_icloud"
 );
 
 RECORD TYPE SwiftVersion (
@@ -49,6 +49,35 @@ RECORD TYPE SwiftVersion (
     GRANT READ, CREATE, WRITE TO "_creator",
     GRANT READ, CREATE, WRITE TO "_icloud",
     GRANT READ TO "_world"
+);
+
+RECORD TYPE SDKVersion (
+    "___recordID"            REFERENCE QUERYABLE,
+    "platform"               STRING QUERYABLE SORTABLE,
+    "version"                STRING QUERYABLE SORTABLE SEARCHABLE,
+    "buildNumber"            STRING QUERYABLE SORTABLE,
+    "isPrerelease"           INT64 QUERYABLE,
+    "prereleaseLabel"        STRING,
+    "releaseDate"            TIMESTAMP QUERYABLE SORTABLE,
+    "xcodeVersion"           REFERENCE QUERYABLE,
+    "supersededBy"           REFERENCE QUERYABLE,
+    "supersededAt"           TIMESTAMP QUERYABLE SORTABLE,
+
+    GRANT READ, CREATE, WRITE TO "_creator",
+    GRANT READ, CREATE TO "_icloud"
+);
+
+RECORD TYPE SimulatorRuntime (
+    "___recordID"            REFERENCE QUERYABLE,
+    "platform"               STRING QUERYABLE SORTABLE,
+    "version"                STRING QUERYABLE SORTABLE SEARCHABLE,
+    "buildNumber"            STRING QUERYABLE SORTABLE,
+    "isPrerelease"           INT64 QUERYABLE,
+    "releaseLabel"           STRING,
+    "sdkBuildNumbersText"    STRING,
+
+    GRANT READ, CREATE, WRITE TO "_creator",
+    GRANT READ, CREATE TO "_icloud"
 );
 
 RECORD TYPE DataSourceMetadata (

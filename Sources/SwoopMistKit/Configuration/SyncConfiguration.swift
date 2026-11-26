@@ -1,0 +1,73 @@
+//
+//  SyncConfiguration.swift
+//  SwoopMistKit
+//
+//  Created by Leo Dion.
+//  Copyright © 2026 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
+/// Sync command configuration
+public struct SyncConfiguration: Sendable {
+  public var dryRun: Bool
+  public var restoreImagesOnly: Bool
+  public var xcodeOnly: Bool
+  public var swiftOnly: Bool
+  /// Sync only `SimulatorRuntime` records from Apple's simulator index.
+  public var runtimesOnly: Bool
+  public var noBetas: Bool
+  public var noAppleWiki: Bool
+  public var verbose: Bool
+  public var force: Bool
+  public var minInterval: Int?
+  public var source: String?
+  public var jsonOutputFile: String?
+
+  public init(
+    dryRun: Bool = false,
+    restoreImagesOnly: Bool = false,
+    xcodeOnly: Bool = false,
+    swiftOnly: Bool = false,
+    runtimesOnly: Bool = false,
+    noBetas: Bool = false,
+    noAppleWiki: Bool = false,
+    verbose: Bool = false,
+    force: Bool = false,
+    minInterval: Int? = nil,
+    source: String? = nil,
+    jsonOutputFile: String? = nil
+  ) {
+    self.dryRun = dryRun
+    self.restoreImagesOnly = restoreImagesOnly
+    self.xcodeOnly = xcodeOnly
+    self.swiftOnly = swiftOnly
+    self.runtimesOnly = runtimesOnly
+    self.noBetas = noBetas
+    self.noAppleWiki = noAppleWiki
+    self.verbose = verbose
+    self.force = force
+    self.minInterval = minInterval
+    self.source = source
+    self.jsonOutputFile = jsonOutputFile
+  }
+}

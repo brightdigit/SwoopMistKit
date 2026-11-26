@@ -1,7 +1,7 @@
 # CloudKit Sync Action
 #
 # Reusable composite action that syncs macOS restore images, Xcode versions, and Swift
-# versions to CloudKit using the bushel-cloud CLI tool. Designed for both development
+# versions to CloudKit using the swoopmist CLI tool. Designed for both development
 # and production environments with comprehensive validation and reporting.
 #
 # ## What This Action Does
@@ -33,7 +33,7 @@
 # **Binary Caching Strategy**:
 # - Pre-building saves ~2 minutes per sync (important for 3x daily schedule)
 # - Fallback ensures robustness when artifacts expire
-# - Both paths use identical Swift 6.2 toolchain for consistency
+# - Both paths use identical Swift 6.4 toolchain for consistency
 #
 # **PEM Validation**:
 # - Early validation prevents cryptic authentication errors during sync
@@ -65,7 +65,7 @@
 # - uses: ./.github/actions/cloudkit-sync
 #   with:
 #     environment: development
-#     container-id: iCloud.com.brightdigit.Bushel
+#     container-id: iCloud.com.brightdigit.Swoop
 #     cloudkit-key-id: ${{ secrets.CLOUDKIT_KEY_ID }}
 #     cloudkit-private-key: ${{ secrets.CLOUDKIT_PRIVATE_KEY }}
 #     virtualbuddy-api-key: ${{ secrets.VIRTUALBUDDY_API_KEY }}
@@ -77,7 +77,7 @@
 # - uses: ./.github/actions/cloudkit-sync
 #   with:
 #     environment: production
-#     container-id: iCloud.com.brightdigit.Bushel
+#     container-id: iCloud.com.brightdigit.Swoop
 #     cloudkit-key-id: ${{ secrets.CLOUDKIT_KEY_ID_PROD }}
 #     cloudkit-private-key: ${{ secrets.CLOUDKIT_PRIVATE_KEY_PROD }}
 #     virtualbuddy-api-key: ${{ secrets.VIRTUALBUDDY_API_KEY }}
@@ -88,7 +88,7 @@
 #
 # - **cloudkit-sync-dev.yml**: Scheduled sync (3x daily) + auto-trigger after builds
 # - **cloudkit-sync-prod.yml**: Manual trigger only (for controlled production deploys)
-# - **bushel-cloud-build.yml**: Builds and caches the binary artifact
+# - **swoopmist-build.yml**: Builds and caches the binary artifact
 #
 # ## Troubleshooting
 #
@@ -98,7 +98,7 @@
 # - Ensure key has correct permissions in CloudKit Console
 #
 # **Binary download fails consistently**:
-# - Check bushel-cloud-build.yml workflow is running successfully
+# - Check swoopmist-build.yml workflow is running successfully
 # - Verify artifact retention hasn't expired (90 days)
 # - Fallback build will trigger automatically (adds ~2 minutes)
 #
@@ -139,9 +139,9 @@ runs:
       uses: dawidd6/action-download-artifact@v3
       continue-on-error: true  # Don't fail if artifact is missing
       with:
-        workflow: bushel-cloud-build.yml
+        workflow: swoopmist-build.yml
         workflow_conclusion: success
-        name: bushel-cloud-binary
+        name: swoopmist-binary
         path: ./binary
         branch: ${{ github.ref_name }}
 
@@ -152,21 +152,22 @@ runs:
         echo "⚠️  Pre-built binary not available (may have expired after retention period)"
         echo "Building fresh binary as fallback..."
 
-        # Build using Swift 6.2 (matches build workflow)
-        docker run --rm -v "$PWD:/workspace" -w /workspace swift:6.2-noble \
+        # Build with the Swift 6.4 release image (matches swoopmist-build.yml;
+        # the manifest declares swift-tools-version: 6.4)
+        docker run --rm -v "$PWD:/workspace" -w /workspace swift:6.4-noble \
           swift build -c release --static-swift-stdlib
 
         # Copy binary to expected location
         mkdir -p ./binary
-        cp .build/release/bushel-cloud ./binary/
+        cp .build/release/swoopmist ./binary/
 
         echo "✅ Binary built successfully"
 
     - name: Validate binary availability
       shell: bash
       run: |
-        if [ ! -f ./binary/bushel-cloud ]; then
-          echo "❌ Error: Binary not found at ./binary/bushel-cloud"
+        if [ ! -f ./binary/swoopmist ]; then
+          echo "❌ Error: Binary not found at ./binary/swoopmist"
           exit 1
         fi
 
@@ -177,11 +178,11 @@ runs:
           echo "✅ Using freshly-built binary (fallback path)"
         fi
 
-        ls -lh ./binary/bushel-cloud
+        ls -lh ./binary/swoopmist
 
     - name: Make binary executable
       shell: bash
-      run: chmod +x ./binary/bushel-cloud
+      run: chmod +x ./binary/swoopmist
 
     - name: Validate required secrets
       shell: bash
@@ -249,7 +250,7 @@ runs:
         CLOUDKIT_ENVIRONMENT: ${{ inputs.environment }}
         CLOUDKIT_CONTAINER_ID: ${{ inputs.container-id }}
         VIRTUALBUDDY_API_KEY: ${{ inputs.virtualbuddy-api-key }}
-        BUSHEL_SYNC_JSON_OUTPUT_FILE: sync-result.json
+        SWOOP_SYNC_JSON_OUTPUT_FILE: sync-result.json
       run: |
         echo "Starting CloudKit sync with change tracking..."
         echo "Container: $CLOUDKIT_CONTAINER_ID"
@@ -257,9 +258,7 @@ runs:
 
         # Run sync with JSON output written directly to file
         # All verbose logs go to console (will be captured in workflow logs)
-        ./binary/bushel-cloud sync \
-          --verbose \
-          --container-identifier "$CLOUDKIT_CONTAINER_ID"
+        ./binary/swoopmist sync --verbose
 
         # Parse sync results using jq
         RESTORE_CREATED=$(jq '.restoreImages.created' sync-result.json)
@@ -320,11 +319,10 @@ runs:
         echo "Exporting CloudKit data for audit trail..."
 
         # Export to JSON
-        ./binary/bushel-cloud export \
+        ./binary/swoopmist export \
           --output "cloudkit-export-${{ inputs.environment }}.json" \
           --pretty \
-          --verbose \
-          --container-identifier "$CLOUDKIT_CONTAINER_ID"
+          --verbose
 
         # Parse JSON to extract counts
         RESTORE_COUNT=$(jq '.restoreImages | length' "cloudkit-export-${{ inputs.environment }}.json")

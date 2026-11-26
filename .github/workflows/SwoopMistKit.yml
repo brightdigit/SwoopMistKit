@@ -1,0 +1,199 @@
+name: SwoopMistKit
+# Pull requests only: a push to a PR branch already triggers `pull_request`,
+# so a `push` trigger would run every commit twice. Use "Run workflow" for a
+# branch without a PR (it gets the full matrix on main and semver branches).
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.github/ISSUE_TEMPLATE/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PACKAGE_NAME: SwoopMistKit
+
+jobs:
+  configure:
+    name: Configure Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      full-matrix: ${{ steps.check.outputs.full }}
+      ubuntu-os: ${{ steps.matrix.outputs.ubuntu-os }}
+      ubuntu-swift: ${{ steps.matrix.outputs.ubuntu-swift }}
+    steps:
+      - id: check
+        name: Determine matrix scope
+        run: |
+          FULL=false
+          REF="${{ github.ref }}"
+          EVENT="${{ github.event_name }}"
+          BASE_REF="${{ github.base_ref }}"
+
+          # Full matrix for PRs into main or a semver branch (v1.0.0, 1.2.3-alpha.1, …)
+          if [[ "$EVENT" == "pull_request" ]]; then
+            if [[ "$BASE_REF" == "main" || "$BASE_REF" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+              FULL=true
+            fi
+          # Full matrix for a manual run on main or a semver branch
+          elif [[ "$REF" == "refs/heads/main" || "$REF" =~ ^refs/heads/v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            FULL=true
+          fi
+
+          echo "full=$FULL" >> "$GITHUB_OUTPUT"
+          echo "Full matrix: $FULL (ref=$REF, event=$EVENT, base_ref=$BASE_REF)"
+
+      - id: matrix
+        name: Build matrix values
+        run: |
+          # Package.swift declares swift-tools-version: 6.4, so 6.4 is the only
+          # Linux lane: an older toolchain can't parse the manifest. An entry
+          # may set `image` (e.g. a swiftlang/swift nightly) to override the
+          # default swift:<version>-<os> image.
+          SWIFT='[{"version":"6.4"}]'
+          if [[ "${{ steps.check.outputs.full }}" == "true" ]]; then
+            echo 'ubuntu-os=["noble","jammy"]' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ubuntu-os=["noble"]' >> "$GITHUB_OUTPUT"
+          fi
+          echo "ubuntu-swift=$SWIFT" >> "$GITHUB_OUTPUT"
+
+  build-ubuntu:
+    name: Build on Ubuntu
+    needs: configure
+    runs-on: ubuntu-latest
+    # A release lane uses swift:<version>-<os>; an entry with `image` (a
+    # nightly) uses <image>-<os> instead.
+    container: ${{ matrix.swift.image && format('{0}-{1}', matrix.swift.image, matrix.os) || format('swift:{0}-{1}', matrix.swift.version, matrix.os) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(needs.configure.outputs.ubuntu-os) }}
+        swift: ${{ fromJSON(needs.configure.outputs.ubuntu-swift) }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: brightdigit/swift-build@v1
+        id: build
+
+  # Minimal macOS builds — always run (SPM + iOS)
+  build-macos:
+    name: Build on macOS
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # A swift-tools-version: 6.4 manifest needs Swift 6.4, so the Apple
+          # lanes run on the xcode-27 image; macos-26 / Xcode 26.x can't parse it.
+          # See build-macos-platforms for why Xcode 27.2 and its device names.
+          # SPM build
+          - runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.2.app"
+
+          # iOS build
+          - type: ios
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.2.app"
+            deviceName: "iPhone 18 Pro"
+            osVersion: "27.2"
+            download-platform: true
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and Test
+        id: build
+        uses: brightdigit/swift-build@v1
+        with:
+          scheme: ${{ env.PACKAGE_NAME }}-Package
+          type: ${{ matrix.type }}
+          xcode: ${{ matrix.xcode }}
+          deviceName: ${{ matrix.deviceName }}
+          osVersion: ${{ matrix.osVersion }}
+          download-platform: ${{ matrix.download-platform }}
+
+  # Full macOS platform builds — only for PRs into main or semver branches
+  build-macos-platforms:
+    name: Build on macOS (Platforms)
+    needs: configure
+    runs-on: ${{ matrix.runs-on }}
+    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # `runs-on: xcode-27` is its own (preview) image label, not a macos-NN
+          # one. As of the 2026-11-04 image it ships Xcode 27.0, 27.1 (default)
+          # and 27.2; these lanes pin /Applications/Xcode_27.2.app, whose
+          # simulator runtimes are 27.2 for every platform. 27.2 renamed the
+          # devices: iPhone 18 Pro, Apple Watch Ultra 4 (49mm), Apple TV 4K
+          # (4th generation). There is no plain "Apple TV" device, and a wrong
+          # name fails the simulator boot.
+          - type: macos
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.2.app"
+
+          - type: watchos
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.2.app"
+            deviceName: "Apple Watch Ultra 4 (49mm)"
+            osVersion: "27.2"
+            download-platform: true
+
+          - type: tvos
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.2.app"
+            deviceName: "Apple TV 4K (4th generation)"
+            osVersion: "27.2"
+            download-platform: true
+
+          - type: visionos
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.2.app"
+            deviceName: "Apple Vision Pro"
+            osVersion: "27.2"
+            download-platform: true
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and Test
+        id: build
+        uses: brightdigit/swift-build@v1
+        with:
+          scheme: ${{ env.PACKAGE_NAME }}-Package
+          type: ${{ matrix.type }}
+          xcode: ${{ matrix.xcode }}
+          deviceName: ${{ matrix.deviceName }}
+          osVersion: ${{ matrix.osVersion }}
+          download-platform: ${{ matrix.download-platform }}
+
+  # Builds the DocC catalog with --warnings-as-errors, so an unresolved symbol
+  # link fails the PR. Swift Package Index hosts the published docs (.spi.yml).
+  docs:
+    name: Documentation
+    runs-on: xcode-27
+    steps:
+      - uses: actions/checkout@v6
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_27.2.app/Contents/Developer
+      - name: Build DocC
+        run: ./Scripts/docc.sh
+
+  lint:
+    name: Linting
+    # Pinned, not ubuntu-latest: ubuntu-latest is Ubuntu 26.04, which lacks
+    # libxml2.so.2, so the mise-installed SwiftLint Linux binary can't start.
+    runs-on: ubuntu-24.04
+    if: ${{ !cancelled() && !failure() }}
+    needs: [build-ubuntu, build-macos, build-macos-platforms]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v4
+        with:
+          cache: true
+      - name: Lint
+        run: |
+          set -e
+          ./Scripts/lint.sh

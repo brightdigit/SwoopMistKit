@@ -13,7 +13,7 @@ This document explains how to configure the scheduled CloudKit sync workflow.
 ### 1. Create Server-to-Server Key (If Not Already Created)
 
 1. Visit https://icloud.developer.apple.com/dashboard/
-2. Select your container: `iCloud.com.brightdigit.Bushel`
+2. Select your container: `iCloud.com.brightdigit.Swoop`
 3. Navigate to: **API Access → Server-to-Server Keys**
 4. Click **+** to create a new key
 5. Download the `.pem` file immediately (you can only download it once)
@@ -91,7 +91,7 @@ The workflow runs automatically every 12 hours at:
 - **Email notifications:** GitHub sends emails on workflow failures (configure in Settings → Notifications)
 - **Status badge (optional):** Add to README.md:
   ```markdown
-  ![CloudKit Sync](https://github.com/brightdigit/BushelCloud-Schedule/actions/workflows/cloudkit-sync.yml/badge.svg)
+  ![CloudKit Sync](https://github.com/brightdigit/SwoopMistKit/actions/workflows/cloudkit-sync-dev.yml/badge.svg)
   ```
 
 ## Troubleshooting
@@ -111,7 +111,7 @@ The workflow runs automatically every 12 hours at:
 **Error:** `Cannot find container`
 
 **Solution:**
-- Verify container ID: `iCloud.com.brightdigit.Bushel`
+- Verify container ID: `iCloud.com.brightdigit.Swoop`
 - Ensure your Apple Developer account has access to this container
 - Check that the S2S key has permissions for this container
 
@@ -129,7 +129,7 @@ The workflow runs automatically every 12 hours at:
 **Error:** Swift build errors
 
 **Solution:**
-- Check if dependencies are accessible (MistKit, BushelKit)
+- Check if dependencies are accessible (MistKit, SwoopKit)
 - Verify Package.resolved is committed to repository
 - Review workflow logs for specific compilation errors
 - Try clearing the cache: Delete the cache key in Actions → Caches
@@ -208,7 +208,7 @@ Simply change the environment variable in `.github/workflows/cloudkit-sync.yml`:
     CLOUDKIT_KEY_ID: ${{ secrets.CLOUDKIT_KEY_ID }}
     CLOUDKIT_PRIVATE_KEY: ${{ secrets.CLOUDKIT_PRIVATE_KEY }}
     CLOUDKIT_ENVIRONMENT: production  # ← Change from 'development' to 'production'
-    CLOUDKIT_CONTAINER_ID: iCloud.com.brightdigit.Bushel
+    CLOUDKIT_CONTAINER_ID: iCloud.com.brightdigit.Swoop
 ```
 
 **Important**: The same key works for both environments. The environment parameter tells CloudKit which database to use.
@@ -254,7 +254,7 @@ Or override with environment variable:
 ```yaml
 export CLOUDKIT_ENVIRONMENT=production
 BIN_PATH=$(swift build -c release --show-bin-path)
-"$BIN_PATH/bushel-cloud" sync --verbose
+"$BIN_PATH/swoopmist" sync --verbose
 ```
 
 **Valid values**: `development`, `production` (case-insensitive)
@@ -265,9 +265,9 @@ Add flags to the sync command in the workflow:
 
 ```yaml
 BIN_PATH=$(swift build -c release --show-bin-path)
-"$BIN_PATH/bushel-cloud" sync \
+"$BIN_PATH/swoopmist" sync \
   --verbose \
-  --restore-images-only  # Or --xcode-only, --swift-only
+  --restore-images-only  # Or --xcode-only, --swift-only, --runtimes-only
 ```
 
 ### Force Fetch (Ignore Intervals)
@@ -276,7 +276,7 @@ Add `--force` flag to bypass fetch throttling:
 
 ```yaml
 BIN_PATH=$(swift build -c release --show-bin-path)
-"$BIN_PATH/bushel-cloud" sync \
+"$BIN_PATH/swoopmist" sync \
   --verbose \
   --force  # Fetch fresh data regardless of intervals
 ```
@@ -287,4 +287,4 @@ BIN_PATH=$(swift build -c release --show-bin-path)
 
 - Review project documentation: [CLAUDE.md](../CLAUDE.md)
 - Check S2S authentication details: [.claude/s2s-auth-details.md](../.claude/s2s-auth-details.md)
-- File an issue: https://github.com/brightdigit/BushelCloud-Schedule/issues
+- File an issue: https://github.com/brightdigit/SwoopMistKit/issues
