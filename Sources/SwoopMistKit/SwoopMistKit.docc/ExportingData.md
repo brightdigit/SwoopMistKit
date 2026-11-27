@@ -34,6 +34,22 @@ Verbose mode shows:
 - CloudKit API request/response details
 - Field deserialization process
 
+## Release-Data Snapshot
+
+`--snapshot` writes a different file: SwoopKit's `ReleaseDataSnapshot`, the release data an app bundles (Stewed's `Resources/release-data-snapshot.json`):
+
+```bash
+swoopmist export --snapshot release-data-snapshot.json
+```
+
+- Only `SDKVersion`, `XcodeVersion` and `SimulatorRuntime`, each queried in full with `queryAllRecords`, which pages past CloudKit's 200-record limit.
+- Every record maps with its `from(recordInfo:)`. The export fails if a type has no records or any record doesn't map, so a committed snapshot never silently loses records.
+- Records are sorted by record name and `fetchedAt` is whole seconds, so the file diffs well. The JSON is SwoopKit's `JSONEncoder.iso8601PrettySorted` with a trailing newline.
+- Read-only, and Development unless `--allow-production` is passed. `--allow-production` is a flag only; no environment variable turns it on.
+- `--output`, `--pretty`, `--signed-only` and `--no-betas` don't apply and are refused.
+
+See ``ReleaseDataSnapshotExport``.
+
 ## JSON Structure
 
 The exported JSON file has this structure:

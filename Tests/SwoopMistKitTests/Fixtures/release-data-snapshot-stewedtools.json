@@ -1,0 +1,82 @@
+{
+  "fetchedAt" : "2025-11-27T12:00:00Z",
+  "sdkVersions" : [
+    {
+      "buildNumber" : "23A339",
+      "isPrerelease" : false,
+      "platform" : "iOS",
+      "releaseDate" : "2025-09-15T17:00:00Z",
+      "version" : "26.0",
+      "xcodeVersion" : "XcodeVersion-17A324"
+    },
+    {
+      "buildNumber" : "23A5318c",
+      "isPrerelease" : true,
+      "platform" : "iOS",
+      "prereleaseLabel" : "Beta 6",
+      "releaseDate" : "2025-08-19T16:00:00Z",
+      "supersededAt" : "2025-09-15T17:00:00Z",
+      "supersededBy" : "SDKVersion-iOS-23A339",
+      "version" : "26.0",
+      "xcodeVersion" : "XcodeVersion-17A5305k"
+    },
+    {
+      "buildNumber" : "25A354",
+      "isPrerelease" : false,
+      "platform" : "macOS",
+      "releaseDate" : "2025-09-15T17:00:00Z",
+      "version" : "26.0",
+      "xcodeVersion" : "XcodeVersion-17A324"
+    },
+    {
+      "buildNumber" : "23R352",
+      "isPrerelease" : false,
+      "platform" : "watchOS",
+      "releaseDate" : "2025-09-15T17:00:00Z",
+      "version" : "26.0"
+    }
+  ],
+  "simulatorRuntimes" : [
+    {
+      "buildNumber" : "23A339",
+      "platform" : "iOS",
+      "releaseLabel" : "Final",
+      "sdkBuildNumbers" : [
+        "23A339",
+        "23A340"
+      ],
+      "version" : "26.0"
+    },
+    {
+      "buildNumber" : "23R5317a",
+      "platform" : "watchOS",
+      "releaseLabel" : "Beta 3",
+      "sdkBuildNumbers" : [
+
+      ],
+      "version" : "26.0"
+    }
+  ],
+  "xcodeVersions" : [
+    {
+      "buildNumber" : "17A324",
+      "downloadURL" : "https:\/\/download.developer.apple.com\/Developer_Tools\/Xcode_26\/Xcode_26.xip",
+      "fileSize" : 3012345678,
+      "includedSwiftVersion" : "SwiftVersion-6.2",
+      "isPrerelease" : false,
+      "minimumMacOS" : "RestoreImage-24G84",
+      "notes" : "Release notes with \"quotes\", a slash \/ and é.",
+      "releaseDate" : "2025-09-15T17:00:00Z",
+      "sdkVersions" : "iOS 26.0, macOS 26.0, watchOS 26.0",
+      "version" : "17.0"
+    },
+    {
+      "buildNumber" : "17A5305k",
+      "isPrerelease" : true,
+      "prereleaseLabel" : "Beta 6",
+      "releaseDate" : "2025-08-19T16:00:00Z",
+      "sdkVersions" : "iOS 26.0, macOS 26.0",
+      "version" : "17.0"
+    }
+  ]
+}

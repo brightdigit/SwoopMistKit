@@ -32,7 +32,7 @@ let package = Package(
     .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.2"),
     .package(url: "https://github.com/brightdigit/FelinePine.git", from: "1.0.0"),
     .package(url: "https://github.com/brightdigit/FelinePineSwift.git", from: "1.0.0"),
-    .package(url: "https://github.com/brightdigit/SwoopKit.git", from: "1.0.0-beta.1"),
+    .package(url: "https://github.com/brightdigit/SwoopKit.git", from: "1.0.0-beta.2"),
     .package(url: "https://github.com/brightdigit/IPSWDownloads.git", from: "1.0.0"),
     .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
     .package(

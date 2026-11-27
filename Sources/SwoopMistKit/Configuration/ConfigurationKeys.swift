@@ -166,6 +166,17 @@ internal enum ConfigurationKeys {
       cli: "no-betas"
     )
     internal static let verbose = ConfigKey<Bool>(swoopPrefixed: "export.verbose", cli: "verbose")
+    /// `--snapshot <output.json>`: write a `ReleaseDataSnapshot` instead of the generic dump.
+    internal static let snapshot = OptionalConfigKey<String>(
+      swoopPrefixed: "export.snapshot",
+      cli: "snapshot"
+    )
+    /// `--allow-production`: let `--snapshot` read Production. A flag only, with no
+    /// environment variable, so a leftover variable can't switch it on.
+    internal static let allowProduction = ConfigKey<Bool>(
+      cli: "allow-production",
+      default: false
+    )
   }
 
   // MARK: - Status Command Configuration
