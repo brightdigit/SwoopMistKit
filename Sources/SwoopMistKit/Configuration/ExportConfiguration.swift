@@ -34,18 +34,26 @@ public struct ExportConfiguration: Sendable {
   public var signedOnly: Bool
   public var noBetas: Bool
   public var verbose: Bool
+  /// Where `--snapshot` writes a `ReleaseDataSnapshot`; `nil` for the generic export.
+  public var snapshot: String?
+  /// Whether `--snapshot` may read Production (`--allow-production`).
+  public var allowProduction: Bool
 
   public init(
     output: String? = nil,
     pretty: Bool = false,
     signedOnly: Bool = false,
     noBetas: Bool = false,
-    verbose: Bool = false
+    verbose: Bool = false,
+    snapshot: String? = nil,
+    allowProduction: Bool = false
   ) {
     self.output = output
     self.pretty = pretty
     self.signedOnly = signedOnly
     self.noBetas = noBetas
     self.verbose = verbose
+    self.snapshot = snapshot
+    self.allowProduction = allowProduction
   }
 }

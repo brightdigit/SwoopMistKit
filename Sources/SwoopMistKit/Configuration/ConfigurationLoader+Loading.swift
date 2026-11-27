@@ -99,7 +99,9 @@ extension ConfigurationLoader {
       pretty: read(ConfigurationKeys.Export.pretty),
       signedOnly: read(ConfigurationKeys.Export.signedOnly),
       noBetas: read(ConfigurationKeys.Export.noBetas),
-      verbose: read(ConfigurationKeys.Export.verbose)
+      verbose: read(ConfigurationKeys.Export.verbose),
+      snapshot: read(ConfigurationKeys.Export.snapshot),
+      allowProduction: read(ConfigurationKeys.Export.allowProduction)
     )
 
     // Status command configuration

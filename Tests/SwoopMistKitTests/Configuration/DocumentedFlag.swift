@@ -120,6 +120,9 @@ extension DocumentedFlag {
       $0.sync?.jsonOutputFile
     },
     .option("export", "--output", "SWOOP_EXPORT_OUTPUT", "data.json") { $0.export?.output },
+    .option("export", "--snapshot", "SWOOP_EXPORT_SNAPSHOT", "snapshot.json") {
+      $0.export?.snapshot
+    },
     .option("sync", "--cloudkit-key-id", "CLOUDKIT_KEY_ID", "key-id") { $0.cloudKit?.keyID },
     .option("sync", "--cloudkit-private-key-path", "CLOUDKIT_PRIVATE_KEY_PATH", "/k.pem") {
       $0.cloudKit?.privateKeyPath

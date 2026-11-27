@@ -1,5 +1,5 @@
 {
-  "originHash" : "15b22232e884c358409063ff099b8fbfb0544ee69d5feabdbd09a2e91186e6ff",
+  "originHash" : "a8a1ce15e9dce2915c3bbb54e886af559e1701c4711c71f4bf89c83ea68b15e8",
   "pins" : [
     {
       "identity" : "configkeykit",
@@ -168,8 +168,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/brightdigit/SwoopKit.git",
       "state" : {
-        "revision" : "a75ebd1b6c4655cf17c66e12a9e7f0a5fccc2fa2",
-        "version" : "1.0.0-beta.1"
+        "revision" : "c109ac3cb58c6c23e5766b2bda034d413990b3cd",
+        "version" : "1.0.0-beta.2"
       }
     }
   ],

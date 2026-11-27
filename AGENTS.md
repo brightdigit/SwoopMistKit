@@ -10,7 +10,7 @@ SwoopMistKit syncs Apple release data into CloudKit with [MistKit](https://githu
 - **Executable `swoopmist`** (target `SwoopMistKitCLI`): `sync`, `export`, `list`, `status`, `clear` and `delete-runtimes`.
 - The record types (`RestoreImageRecord`, `XcodeVersionRecord`, `SwiftVersionRecord`, `SDKVersionRecord`, `SimulatorRuntimeRecord`, `DataSourceMetadata`) live in [SwoopKit](https://github.com/brightdigit/SwoopKit). SwoopMistKit adds CloudKit mapping in `Sources/SwoopMistKit/Extensions/*+CloudKit.swift`.
 
-Consumers: [Stewed](https://github.com/brightdigit/Stewed) (its `StewedTools` package uses `SwoopMistKitService` and the record mappings) and the scheduled sync workflows in this repo.
+Consumers: [Stewed](https://github.com/brightdigit/Stewed) (its `make release-data-snapshot` runs `swoopmist export --snapshot`, which replaced its `StewedTools` package; brightdigit/Stewed#194) and the scheduled sync workflows in this repo.
 
 ## Rules
 
@@ -36,6 +36,7 @@ make docs-preview
 .build/debug/swoopmist sync --dry-run --verbose   # fetch without writing
 .build/debug/swoopmist sync --verbose
 .build/debug/swoopmist export --output data.json --pretty
+.build/debug/swoopmist export --snapshot release-data-snapshot.json   # Development only unless --allow-production
 .build/debug/swoopmist status
 .build/debug/swoopmist delete-runtimes            # Development only; dry run unless --confirm-delete
 ```

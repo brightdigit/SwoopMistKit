@@ -37,6 +37,11 @@ The package also ships the `swoopmist` command-line tool, with `sync`, `export`,
 - ``SyncEngine``
 - ``DataSourcePipeline``
 
+### Release-Data Snapshot
+
+- ``ReleaseDataSnapshotExport``
+- ``SnapshotExportError``
+
 ### Data Sources
 
 - ``DataSourceFetcher``
