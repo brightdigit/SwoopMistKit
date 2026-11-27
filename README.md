@@ -62,6 +62,7 @@ export VIRTUALBUDDY_API_KEY="..."   # optional: live signing status from https:/
 |---------|--------------|
 | `sync` | Fetch from every source, deduplicate, and write to CloudKit. `--dry-run` (write nothing), `--verbose`, `--restore-images-only`, `--xcode-only` (Xcode, SDK and simulator runtime records), `--swift-only`, `--runtimes-only` (simulator runtimes only), `--no-betas`, `--no-apple-wiki`, `--force` (ignore fetch intervals), `--min-interval <seconds>`, `--source <name>` (one source, such as `ipsw.me`), `--json-output-file <file.json>`. |
 | `export` | Query CloudKit and write the records as JSON: `--output <file.json>` (stdout otherwise), `--pretty`, `--signed-only`, `--no-betas`, `--verbose`. |
+| `export --snapshot <file.json>` | Write `SDKVersion`, `XcodeVersion` and `SimulatorRuntime` as SwoopKit's `ReleaseDataSnapshot` (an app's bundled snapshot, such as Stewed's). Read-only; fails if a type is empty or a record doesn't map. Development only unless `--allow-production` is passed (a flag only, with no environment variable). |
 | `list` | List the records in CloudKit: all of them, or `--restore-images`, `--xcode-versions`, `--swift-versions`. |
 | `status` | Show each data source's last fetch, record count and errors: `--errors-only`, `--detailed`. |
 | `clear` | Delete every record SwoopMistKit writes, after a prompt: `--yes` skips it, `--verbose`. |
