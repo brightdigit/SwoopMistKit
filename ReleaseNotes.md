@@ -1,3 +1,14 @@
+## 1.0.0-alpha.4
+
+* Add `swoopmist export --snapshot <output.json>`, which writes SwoopKit's `ReleaseDataSnapshot`: the release-data file Stewed bundles as `Resources/release-data-snapshot.json`, replacing Stewed's `StewedTools` (brightdigit/Stewed#194). It reads only `SDKVersion`, `XcodeVersion` and `SimulatorRuntime`, maps every record with `from(recordInfo:)`, and fails on an empty type or any record that doesn't map, naming the records that didn't. Records are sorted by record name, `fetchedAt` is whole seconds, and the JSON is SwoopKit's `JSONEncoder.iso8601PrettySorted` plus a trailing newline, byte-identical to StewedTools' output for the same data. It only reads by @leogdion in https://github.com/brightdigit/SwoopMistKit/pull/46
+* `export --snapshot` uses Development by default. Production needs `--allow-production`, a command-line flag only: no `SWOOP_*` variable turns it on. `--output`, `--pretty`, `--signed-only` and `--no-betas` are refused alongside `--snapshot` rather than ignored by @leogdion in https://github.com/brightdigit/SwoopMistKit/pull/46
+* Add `ReleaseDataSnapshotExport` and `SyncEngine.exportSnapshot(fetchedAt:)` to the library, so the snapshot can be built and tested without the CLI or CloudKit by @leogdion in https://github.com/brightdigit/SwoopMistKit/pull/46
+* Close the 200-record cap (#17): `export` and `export --snapshot` read every record through MistKit 1.0.0-beta.6's paging `queryAllRecords`, with a regression test that keeps 450 records of one type by @leogdion in https://github.com/brightdigit/SwoopMistKit/pull/46
+* CI: the sync action's summaries now count SDK versions and simulator runtimes, and the sync summary lists the `SDKVersion` records it deleted. The stale "limited to 200 records per type" notes are removed by @leogdion in https://github.com/brightdigit/SwoopMistKit/pull/47
+* Dependencies: SwoopKit `from: "1.0.0-beta.2"` (was `1.0.0-beta.1`), which now provides `ReleaseDataSnapshot` and its JSON coders. MistKit and the other dependencies are unchanged
+
+**Full Changelog**: https://github.com/brightdigit/SwoopMistKit/compare/1.0.0-alpha.3...1.0.0-alpha.4
+
 ## 1.0.0-alpha.3
 
 * **Breaking:** BushelCloud is now SwoopMistKit: the package, the repository ([brightdigit/SwoopMistKit](https://github.com/brightdigit/SwoopMistKit); the old URL redirects), the library product `BushelCloudKit` → `SwoopMistKit` and the executable `bushel-cloud` → `swoopmist` (target `SwoopMistKitCLI`). Depend on `.product(name: "SwoopMistKit", package: "SwoopMistKit")` and `import SwoopMistKit` by @leogdion in https://github.com/brightdigit/SwoopMistKit/pull/44
