@@ -69,6 +69,11 @@ internal enum ExportCommand {
     let rawConfig = try await loader.loadConfiguration()
     let config = try rawConfig.validated()
 
+    if let snapshotPath = config.export?.snapshot {
+      await SnapshotExportCommand.run(config, outputPath: snapshotPath)
+      return
+    }
+
     // Enable verbose console output if requested
     ConsoleOutput.isVerbose = config.export?.verbose ?? false
 

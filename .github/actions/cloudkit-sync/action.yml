@@ -26,7 +26,7 @@
 #    - Exports CloudKit data to JSON
 #    - Generates summary with record counts and signing status
 #    - Uploads artifacts for audit and debugging
-#    - Currently limited to 200 records per type (see issue #17 for pagination)
+#    - Pages through every record of each type (MistKit `queryAllRecords`)
 #
 # ## Key Design Decisions
 #
@@ -101,11 +101,6 @@
 # - Check swoopmist-build.yml workflow is running successfully
 # - Verify artifact retention hasn't expired (90 days)
 # - Fallback build will trigger automatically (adds ~2 minutes)
-#
-# **Export shows 200 records but more expected**:
-# - Known limitation: Export only retrieves first page (see issue #17)
-# - Workaround: Run local export with pagination once implemented
-# - Does not affect sync operation (only reporting)
 
 name: 'CloudKit Sync Action'
 description: 'Reusable action for syncing data to CloudKit with export reporting'
@@ -273,10 +268,20 @@ runs:
         SWIFT_UPDATED=$(jq '.swiftVersions.updated' sync-result.json)
         SWIFT_FAILED=$(jq '.swiftVersions.failed' sync-result.json)
 
+        SDK_CREATED=$(jq '.sdkVersions.created' sync-result.json)
+        SDK_UPDATED=$(jq '.sdkVersions.updated' sync-result.json)
+        SDK_FAILED=$(jq '.sdkVersions.failed' sync-result.json)
+
+        RUNTIME_CREATED=$(jq '.simulatorRuntimes.created' sync-result.json)
+        RUNTIME_UPDATED=$(jq '.simulatorRuntimes.updated' sync-result.json)
+        RUNTIME_FAILED=$(jq '.simulatorRuntimes.failed' sync-result.json)
+
+        SDK_DELETED=$(jq '.deletedSDKVersionRecordNames | length' sync-result.json)
+
         # Calculate totals manually
-        TOTAL_CREATED=$((RESTORE_CREATED + XCODE_CREATED + SWIFT_CREATED))
-        TOTAL_UPDATED=$((RESTORE_UPDATED + XCODE_UPDATED + SWIFT_UPDATED))
-        TOTAL_FAILED=$((RESTORE_FAILED + XCODE_FAILED + SWIFT_FAILED))
+        TOTAL_CREATED=$((RESTORE_CREATED + XCODE_CREATED + SWIFT_CREATED + SDK_CREATED + RUNTIME_CREATED))
+        TOTAL_UPDATED=$((RESTORE_UPDATED + XCODE_UPDATED + SWIFT_UPDATED + SDK_UPDATED + RUNTIME_UPDATED))
+        TOTAL_FAILED=$((RESTORE_FAILED + XCODE_FAILED + SWIFT_FAILED + SDK_FAILED + RUNTIME_FAILED))
 
         # Generate summary showing changes (not just totals)
         cat > sync-summary.md <<EOF
@@ -293,6 +298,8 @@ runs:
         | Restore Images | ${RESTORE_CREATED} | ${RESTORE_UPDATED} | ${RESTORE_FAILED} | $((RESTORE_CREATED + RESTORE_UPDATED + RESTORE_FAILED)) |
         | Xcode Versions | ${XCODE_CREATED} | ${XCODE_UPDATED} | ${XCODE_FAILED} | $((XCODE_CREATED + XCODE_UPDATED + XCODE_FAILED)) |
         | Swift Versions | ${SWIFT_CREATED} | ${SWIFT_UPDATED} | ${SWIFT_FAILED} | $((SWIFT_CREATED + SWIFT_UPDATED + SWIFT_FAILED)) |
+        | SDK Versions | ${SDK_CREATED} | ${SDK_UPDATED} | ${SDK_FAILED} | $((SDK_CREATED + SDK_UPDATED + SDK_FAILED)) |
+        | Simulator Runtimes | ${RUNTIME_CREATED} | ${RUNTIME_UPDATED} | ${RUNTIME_FAILED} | $((RUNTIME_CREATED + RUNTIME_UPDATED + RUNTIME_FAILED)) |
         | **TOTAL** | **${TOTAL_CREATED}** | **${TOTAL_UPDATED}** | **${TOTAL_FAILED}** | **$((TOTAL_CREATED + TOTAL_UPDATED + TOTAL_FAILED))** |
 
         ## Summary
@@ -300,6 +307,7 @@ runs:
         - ✨ **${TOTAL_CREATED}** new records added
         - 🔄 **${TOTAL_UPDATED}** existing records updated
         - ❌ **${TOTAL_FAILED}** operations failed
+        - 🗑️ **${SDK_DELETED}** SDK version records replaced by a build from Apple's index
         EOF
 
         # Append to GitHub Actions summary
@@ -328,7 +336,9 @@ runs:
         RESTORE_COUNT=$(jq '.restoreImages | length' "cloudkit-export-${{ inputs.environment }}.json")
         XCODE_COUNT=$(jq '.xcodeVersions | length' "cloudkit-export-${{ inputs.environment }}.json")
         SWIFT_COUNT=$(jq '.swiftVersions | length' "cloudkit-export-${{ inputs.environment }}.json")
-        TOTAL_COUNT=$((RESTORE_COUNT + XCODE_COUNT + SWIFT_COUNT))
+        SDK_COUNT=$(jq '.sdkVersions | length' "cloudkit-export-${{ inputs.environment }}.json")
+        RUNTIME_COUNT=$(jq '.simulatorRuntimes | length' "cloudkit-export-${{ inputs.environment }}.json")
+        TOTAL_COUNT=$((RESTORE_COUNT + XCODE_COUNT + SWIFT_COUNT + SDK_COUNT + RUNTIME_COUNT))
 
         # Count signed restore images
         SIGNED_COUNT=$(jq '[.restoreImages[] | select(.fields.isSigned == "int64(1)")] | length' "cloudkit-export-${{ inputs.environment }}.json" || echo "0")
@@ -348,6 +358,8 @@ runs:
         | Restore Images | ${RESTORE_COUNT} |
         | Xcode Versions | ${XCODE_COUNT} |
         | Swift Versions | ${SWIFT_COUNT} |
+        | SDK Versions | ${SDK_COUNT} |
+        | Simulator Runtimes | ${RUNTIME_COUNT} |
         | **Total** | **${TOTAL_COUNT}** |
 
         ## Restore Image Status
